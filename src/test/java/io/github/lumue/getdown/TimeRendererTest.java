@@ -1,7 +1,7 @@
 package io.github.lumue.getdown;
 
 import static org.junit.Assert.*;
-import io.github.lumue.getdown.TimeRenderer;
+import io.github.lumue.getdown.application.TimeRenderer;
 
 import org.junit.Test;
 

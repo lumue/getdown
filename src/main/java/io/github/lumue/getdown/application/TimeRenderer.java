@@ -1,4 +1,4 @@
-package io.github.lumue.getdown;
+package io.github.lumue.getdown.application;
 
 import java.time.Clock;
 import java.time.Instant;
