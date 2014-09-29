@@ -1,0 +1,33 @@
+//plugins
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+
+//java configuration
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+
+//eclipse configuration
+//eclipse.project {
+//	natures 'org.springsource.ide.eclipse.gradle.core.nature'
+//}
+//eclipse.classpath {
+//	containers 'org.springsource.ide.eclipse.gradle.classpathcontainer'
+//}
+
+//project properties
+version = '0.1'
+mainClassName = 'io.github.lumue.getdown.Main'
+
+
+//dependencies
+repositories {
+	mavenCentral()
+}
+dependencies {
+	
+	compile 'com.google.http-client:google-http-client:1.19.0'
+	
+	testCompile 'junit:junit:4.11'
+}
