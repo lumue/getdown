@@ -14,16 +14,19 @@ import java.net.URI;
 public class Main {
 
 	public static void main(String[] args) {
+
 		ContentDownloader asyncContentDownloader = AsyncContentDownloader.builder().build();
+
 		String url = args[0];
 		String filename = args[1];
+
 		File file = new File(filename);
 		OutputStream targetStream;
 		DownloadProgressListener progress = new DownloadProgressListener();
+
 		try {
 			targetStream = new FileOutputStream(file);
-			asyncContentDownloader.downloadContent(URI.create(url),
- targetStream, progress);
+			asyncContentDownloader.downloadContent(URI.create(url), targetStream, progress);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -34,7 +37,6 @@ public class Main {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
