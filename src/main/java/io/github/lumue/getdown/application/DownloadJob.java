@@ -49,6 +49,10 @@ public interface DownloadJob {
 			return true;
 		}
 
+		@Override
+		public String toString() {
+			return key;
+		}
 
 	}
 

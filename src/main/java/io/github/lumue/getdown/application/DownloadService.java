@@ -7,11 +7,13 @@ import io.github.lumue.getdown.downloader.AsyncContentDownloader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.FileSystems;
 import java.util.concurrent.ExecutorService;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,6 +30,9 @@ public class DownloadService {
 
 	@Autowired
 	private DownloadJobRepository jobRepository;
+
+	@Value("{getdown.downloadPath}")
+	private String downloadPath;
 
 	private AsyncContentDownloader downloader;
 
@@ -54,7 +59,8 @@ public class DownloadService {
 	}
 
 	private String resolveFilename(String url) {
-		return null;
+		String path = URI.create(url).getPath();
+		return FileSystems.getDefault().getPath(downloadPath, path.substring(path.lastIndexOf('/') + 1)).toString();
 	}
 
 }

@@ -16,8 +16,8 @@ public class DownloadController {
 	DownloadService downloadService;
 
 	@RequestMapping("/download/add")
-	public DownloadJobHandle addDownload(@RequestParam(value = "url", required = true) String url) {
-		return downloadService.addDownload(url);
+	public String addDownload(@RequestParam(value = "url", required = true) String url) {
+		return downloadService.addDownload(url).toString();
 	}
 
 	@RequestMapping("/download/start")
