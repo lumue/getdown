@@ -1,7 +1,21 @@
+buildscript {
+	repositories {
+		maven { url "http://repo.spring.io/libs-release" }
+		mavenLocal()
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.5.RELEASE")
+	}
+}
+
+
 //plugins
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
+apply plugin: 'spring-boot'
+
 
 //java configuration
 sourceCompatibility = '1.8'
@@ -9,12 +23,12 @@ targetCompatibility = '1.8'
 
 
 //eclipse configuration
-//eclipse.project {
-//	natures 'org.springsource.ide.eclipse.gradle.core.nature'
-//}
-//eclipse.classpath {
-//	containers 'org.springsource.ide.eclipse.gradle.classpathcontainer'
-//}
+eclipse.project {
+	natures 'org.springsource.ide.eclipse.gradle.core.nature'
+}
+eclipse.classpath {
+	containers 'org.springsource.ide.eclipse.gradle.classpathcontainer'
+}
 
 //project properties
 version = '0.1'
@@ -23,11 +37,18 @@ mainClassName = 'io.github.lumue.getdown.Main'
 
 //dependencies
 repositories {
-	mavenCentral()
+	mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.spring.io/libs-release" }
 }
 dependencies {
 	
+	compile("org.springframework.boot:spring-boot-starter-web")
+	compile("org.springframework.boot:spring-boot-starter-logging")
+	
 	compile 'com.google.http-client:google-http-client:1.19.0'
+	
+	testCompile("org.springframework.boot:spring-boot-starter-test")
 	
 	testCompile 'junit:junit:4.11'
 }
