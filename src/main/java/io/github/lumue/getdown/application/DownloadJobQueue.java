@@ -1,6 +1,7 @@
 package io.github.lumue.getdown.application;
 
-import io.github.lumue.getdown.application.DownloadService.DownloadJobHandle;
+
+import io.github.lumue.getdown.application.DownloadJob.DownloadJobHandle;
 
 import java.util.Optional;
 
