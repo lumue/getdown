@@ -9,12 +9,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import org.springframework.stereotype.Component;
+
 /**
  * not thread safe, in memory repository
  * 
  * @author lm
  *
  */
+@Component
 class VolatileDownloadJobRepository implements DownloadJobRepository {
 
 	private final Map<DownloadJobHandle, DownloadJob> jobMap = new HashMap<DownloadJobHandle, DownloadJob>();

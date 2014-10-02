@@ -11,7 +11,7 @@ public interface DownloadJob {
 
 	}
 
-	class DownloadJobHandleImpl implements DownloadJobHandle, Serializable {
+	static class DownloadJobHandleImpl implements DownloadJobHandle, Serializable {
 		private final String key = UUID.randomUUID().toString();
 
 		@Override
@@ -41,7 +41,7 @@ public interface DownloadJob {
 
 	}
 
-	class DownloadJobImpl implements DownloadJob, Serializable {
+	static class DownloadJobImpl implements DownloadJob, Serializable {
 
 		@Override
 		public int hashCode() {
@@ -102,7 +102,7 @@ public interface DownloadJob {
 
 	}
 
-	public class DownloadJobBuilder {
+	public static class DownloadJobBuilder {
 		private DownloadProgressListener progressListener;
 		private String outputFilename;
 		private String url;

@@ -1,15 +1,18 @@
 package io.github.lumue.getdown.application;
 
+import io.github.lumue.getdown.application.DownloadJob.DownloadJobBuilder;
 import io.github.lumue.getdown.application.DownloadJob.DownloadJobHandle;
-import io.github.lumue.getdown.downloader.BasicContentDownloader;
-import io.github.lumue.getdown.downloader.ContentDownloader;
+import io.github.lumue.getdown.downloader.AsyncContentDownloader;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * manage the execution of downloads
@@ -17,79 +20,41 @@ import java.util.concurrent.Executors;
  * @author lm
  *
  */
+@Service
 public class DownloadService {
 
-	public enum DownloadServiceState {
-		RUNNING, STOPPED
+	@Autowired
+	private ExecutorService executorService;
+
+	@Autowired
+	private DownloadJobRepository jobRepository;
+
+	private AsyncContentDownloader downloader;
+
+	@PostConstruct
+	public void init() {
+		downloader = AsyncContentDownloader.builder().withExecutor(executorService).build();
 	}
 
-	private DownloadServiceState serviceState = DownloadServiceState.STOPPED;
+	public DownloadJobHandle addDownload(String url) {
+		String filename = resolveFilename(url);
+		DownloadJobBuilder jobBuilder = new DownloadJobBuilder().withUrl(url).withOutputFilename(filename);
+		return jobRepository.create(jobBuilder).getHandle();
+	}
 
-	ExecutorService executorService = Executors.newCachedThreadPool();
+	public void startDownload(DownloadJobHandle handle) {
+		DownloadJob job = jobRepository.get(handle);
+		try {
+			downloader.downloadContent(URI.create(job.getUrl()), new FileOutputStream(job.getOutputFilename()), job.getProgressListener());
+		} catch (IOException e) {
+			// can not happen with async download, check download for error
+			// state
+		}
+		;
+	}
 
-
-
-	private DownloadJobQueue jobQueue = new VolatileDownloadJobQueue();
-
-	private DownloadJobRepository jobRepository = new VolatileDownloadJobRepository();
-
-	private ContentDownloader downloader = new BasicContentDownloader();
-
-	public DownloadJobHandle queueDownload(String url) {
+	private String resolveFilename(String url) {
 		return null;
 	}
 
-	DownloadJobQueue getJobQueue() {
-		return jobQueue;
-	}
-
-	public void start() {
-
-		serviceState = DownloadServiceState.RUNNING;
-
-		while (DownloadServiceState.RUNNING.equals(serviceState)) {
-
-			while (jobQueue.hasNextJob()) {
-				DownloadJob job = jobQueue.pollJob();
-				if (job != null)
-					executeJob(job);
-			}
-
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
-		}
-
-	}
-
-	public void shutdown() {
-		serviceState = DownloadServiceState.STOPPED;
-	}
-
-	private void executeJob(DownloadJob job) {
-		executorService.submit(new Runnable() {
-			
-			@Override
-			public void run() {
-				runDownloadJob(job);
-			}
-		});
-	}
-
-	private void runDownloadJob(DownloadJob job) {
-		ContentDownloader downloader = getDownloader();
-		try {
-			final OutputStream targetStream = new FileOutputStream(job.getOutputFilename());
-			downloader.downloadContent(URI.create(job.getUrl()), targetStream, job.getProgressListener());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	private ContentDownloader getDownloader() {
-		return downloader;
-	}
 }
