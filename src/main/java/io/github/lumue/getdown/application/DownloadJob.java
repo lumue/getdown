@@ -8,11 +8,21 @@ import java.util.UUID;
 public interface DownloadJob {
 
 	public interface DownloadJobHandle {
-
+		public static DownloadJobHandle create(String key) {
+			return new DownloadJobHandleImpl(key);
+		}
 	}
 
 	static class DownloadJobHandleImpl implements DownloadJobHandle, Serializable {
-		private final String key = UUID.randomUUID().toString();
+		private final String key;
+
+		DownloadJobHandleImpl() {
+			this(UUID.randomUUID().toString());
+		}
+
+		public DownloadJobHandleImpl(String key) {
+			this.key = key;
+		}
 
 		@Override
 		public int hashCode() {
@@ -38,6 +48,7 @@ public interface DownloadJob {
 				return false;
 			return true;
 		}
+
 
 	}
 
