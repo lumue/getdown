@@ -52,3 +52,16 @@ dependencies {
 	
 	testCompile 'junit:junit:4.11'
 }
+
+
+//dart tasks
+task pubBuild(type:Exec) {
+	workingDir 'src/main/dart'
+	commandLine 'pub','build','web','--output','../../../build/classes/main/static'
+}
+
+task pubGet(type:Exec) {
+	workingDir 'src/main/dart'
+	commandLine 'pub','get'
+}
+

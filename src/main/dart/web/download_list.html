@@ -1,0 +1,23 @@
+<link rel="import" href="packages/polymer/polymer.html">
+<link rel="import" href="download_list_item.html">
+
+<polymer-element name="download-list"> 
+  <template>
+
+		<table>
+			<thead>
+				<tr>
+					<td width="60%">filename</td>
+					<td width="20%">size</td>
+					<td width="20%">progress</td>
+				</tr>
+			</thead>
+			<tbody>
+				<template repeat="{{download in downloads}}">
+          <download-list-item download="{{download}}"></download-list-item>
+        </template>
+			</tbody>
+		</table>
+
+  </template>
+</polymer-element>

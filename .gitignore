@@ -5,3 +5,8 @@
 /.direcotry
 /.gradle/
 /bin/
+/dartbuild/
+/src/main/dart/packages/
+/src/main/dart/web/packages/
+/src/main/dart/.pub
+

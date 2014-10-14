@@ -1,0 +1,14 @@
+name: getdown_client
+description: A sample web application
+name: polymer_and_dart
+description: Sample app built with the polymer.dart package
+environment:
+  sdk: '>=1.2.0 <2.0.0'
+dependencies:
+  polymer: '>=0.12.0 <0.13.0'
+dev_dependencies:
+  unittest: '>=0.10.0 <0.11.0'
+transformers:
+- polymer:
+    entry_points:
+    - web/index.html
