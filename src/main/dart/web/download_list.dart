@@ -1,17 +1,15 @@
-import 'dart:html';
+import 'package:polymer/polymer.dart';
+import 'model.dart' show Download;
+/*
+ * Class to represent a collection of Codelab objects.
+ */
+@CustomTag('download-list')
+class DownloadList extends PolymerElement {
+ 
+  @observable List<Download> downloads = toObservable([]);
 
-void main() {
-  querySelector("#sample_text_id")
-      ..text = "Reverse"
-      ..onClick.listen(reverseText);
-}
+  DownloadList.created() : super.created();
 
-void reverseText(MouseEvent event) {
-  var text = querySelector("#sample_text_id").text;
-  String url="../api/strings/revert/"+text;
-      HttpRequest.getString(url).then((String result){
-        querySelector("#sample_text_id").text = result.toString();
-      });
  
   
 }

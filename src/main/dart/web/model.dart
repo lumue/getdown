@@ -5,8 +5,8 @@ import 'package:polymer/polymer.dart';
 class Download extends Observable {
   
   @observable String name;
-  @observable long size;
-  @observable long progress;
+  @observable int size;
+  @observable int progress;
 
   // Constructor.
   Download([this.name = "",
