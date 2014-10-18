@@ -8,8 +8,14 @@ class Download extends Observable {
   @observable int size;
   @observable int progress;
 
-  // Constructor.
   Download([this.name = "",
             this.size=0,
             this.progress=0]);
+}
+
+class DownloadRequest extends Observable {
+  
+  @observable String url;  
+  
+  DownloadRequest([this.url = ""]);
 }

@@ -1,0 +1,15 @@
+<link rel="import" href="packages/polymer/polymer.html">
+
+<polymer-element name="add-download-form">
+<template>
+<section>
+<h3>new download</h3>
+<form style="width: 100%;" on-submit="{{sendDownloadRequest}}">
+  <div >
+		<input width="90%" "URL" value="{{downloadRequest.url}}"></input>
+		<button type="submit">Add</button>
+	</div>
+</form>
+</section>
+</template> <script type="application/dart" src="add_download_form.dart"></script>
+</polymer-element>
