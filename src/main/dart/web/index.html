@@ -5,22 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>getdown webconsole</title>
     <script src="packages/web_components/platform.js"></script>
-    <script src="packages/web_components/dart_support.js"></script>
+   
+    <!-- web components -->
     <link rel="import" href="download_list.html">
+    <link rel="import" href="packages/core_elements/core_toolbar.html">
+    <link rel="import" href="packages/core_elements/core_icons.html">
+    <link rel="import" href="packages/core_elements/core_icon_button.html">
+    
+    <!-- style -->
     <link rel="stylesheet" href="styles.css">
     
   </head>
-  <body>
+  <body unresolved>
 
-  <header>
-    <h1 class="header">getdown</h1>
-  </header>
+  <core-toolbar>
+      <core-icon-button icon="menu"></core-icon-button>
+      <h1 align="right" style="text-align: right">getdown</h1>
+  </core-toolbar>
 
-  <section>
-    <h3>downloads</h3>
-    <download-list></download-list>
-  </section>
+  <download-list></download-list>
 
-<script type="application/dart">export 'package:polymer/init.dart';</script>
+  <script type="application/dart">export 'package:polymer/init.dart';</script>
 </body>
 </html>

@@ -1,43 +1,40 @@
 <link rel="import" href="packages/polymer/polymer.html">
 
 <polymer-element name="download-list"> 
-  <template>
-<style>
-      select {
-        margin-bottom: 30px;
-        display: inline;
-        padding: 6px 12px;
-        font-size: 14px;
-        line-height: 1.42857143;
-        color: #555;
-        background-color: #fff;
-        background-image: none;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-      }
-    </style>
-		<table>
-			<thead>
-				<tr>
-					<th width="60%">filename</th>
-					<th width="20%">size</th>
-					<th width="20%">progress</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- 				<template repeat="{{download in downloads}}"> -->
-				<!--           <download-list-item download="{{download}}"></download-list-item> -->
-				<!--         </template> -->
-				<tr>
-					<td>{{download.name}}</td>
-					<td>{{download.size}}</td>
-					<td>{{download.progress}}</td>
-				</tr>
-			</tbody>
-		</table>
-  </template> 
+	<template>
+	<style>
+/* 	progress { */
+/* 		color: #0063a6; */
+/* 		font-size: .6em; */
+/* 		line-height: 1.5em; */
+/* 		text-indent: .5em; */
+/* 		width: 15em; */
+/* 		height: 1.8em; */
+/* 		border: 1px solid #0063a6; */
+/* 		background: #fff; */
+/* 	} */
+	</style>
+	<h3>downloads</h3>
+	<table width="100%">
+		<thead>
+			<tr>
+				<th align="left" width="70%">filename</th>
+				<th align="left" width="5%">size</th>
+				<th align="left" width="20%">progress</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr template repeat="{{download in downloads}}">
+				<td align="left">{{download.name}}</td>
+				<td align="right">{{download.size}}</td>
+				<td align="right" >
+				  &nbsp;
+				  <progress style="float: left;" id="progress" max="{{download.size}}" value="{{download.progress}}"></progress>
+				  <output  for="progress" id="progressLabel">{{(download.progress*100)/download.size}} %</output>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	</template>
+	<script type="application/dart" src="download_list.dart" />
 </polymer-element>
