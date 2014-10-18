@@ -41,10 +41,10 @@ public class DownloadService {
 		downloader = AsyncContentDownloader.builder().withExecutor(executorService).build();
 	}
 
-	public DownloadJobHandle addDownload(String url) {
+	public DownloadJob addDownload(String url) {
 		String filename = resolveFilename(url);
 		DownloadJobBuilder jobBuilder = new DownloadJobBuilder().withUrl(url).withOutputFilename(filename);
-		return jobRepository.create(jobBuilder).getHandle();
+		return jobRepository.create(jobBuilder);
 	}
 
 	public void startDownload(DownloadJobHandle handle) {

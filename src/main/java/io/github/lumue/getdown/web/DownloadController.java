@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import io.github.lumue.getdown.application.DownloadJob;
 import io.github.lumue.getdown.application.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.application.DownloadService;
-import io.github.lumue.getdown.util.CollectionUtil;
+import io.github.lumue.getdown.util.StreamUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +21,8 @@ public class DownloadController {
 	DownloadService downloadService;
 
 	@RequestMapping("/download/add")
-	public String addDownload(@RequestParam(value = "url", required = true) String url) {
-		return downloadService.addDownload(url).toString();
+	public DownloadViewItem addDownload(@RequestParam(value = "url", required = true) String url) {
+		return DownloadViewItem.wrap(downloadService.addDownload(url));
 	}
 
 	@RequestMapping("/download/start")
@@ -32,7 +32,7 @@ public class DownloadController {
 
 	@RequestMapping("/download/list" )
 	public Iterable<DownloadViewItem> listDownloads() {
-		Stream<DownloadJob> stream = CollectionUtil.stream(downloadService.listDownloads());
+		Stream<DownloadJob> stream = StreamUtils.stream(downloadService.listDownloads());
 		return stream.map(downloadJob -> DownloadViewItem.wrap(downloadJob)).collect(Collectors.toList());
 	}
 	

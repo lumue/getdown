@@ -1,8 +1,12 @@
 package io.github.lumue.getdown.web;
 
+import java.io.Serializable;
+
 import io.github.lumue.getdown.application.DownloadJob;
 
-public interface DownloadViewItem {
+public interface DownloadViewItem extends Serializable{
+	
+	public String getHandle();
 	public String getName();
 	public String getURL();
 	public Long getSize();
@@ -11,6 +15,11 @@ public interface DownloadViewItem {
 	public static DownloadViewItem wrap( final DownloadJob download)
 	{
 		return new DownloadViewItem(){
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -1845543382826294810L;
 
 			@Override
 			public String getName() {
@@ -30,6 +39,11 @@ public interface DownloadViewItem {
 			@Override
 			public Long getProgress() {
 				return download.getProgressListener().getDownloadedSize();
+			}
+
+			@Override
+			public String getHandle() {
+				return download.getHandle().toString();
 			}
 			
 		};

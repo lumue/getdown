@@ -14,6 +14,8 @@ public interface DownloadJob {
 	}
 
 	static class DownloadJobHandleImpl implements DownloadJobHandle, Serializable {
+		
+		private static final long serialVersionUID = -7582907691952041979L;
 		private final String key;
 
 		DownloadJobHandleImpl() {
@@ -57,6 +59,11 @@ public interface DownloadJob {
 	}
 
 	static class DownloadJobImpl implements DownloadJob, Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6228176038070877982L;
 
 		@Override
 		public int hashCode() {
