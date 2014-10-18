@@ -8,7 +8,7 @@ public interface DownloadViewItem extends Serializable{
 	
 	public String getHandle();
 	public String getName();
-	public String getURL();
+	public String getUrl();
 	public Long getSize();
 	public Long getProgress();
 	
@@ -27,18 +27,18 @@ public interface DownloadViewItem extends Serializable{
 			}
 
 			@Override
-			public String getURL() {
+			public String getUrl() {
 				return download.getUrl();
 			}
 
 			@Override
 			public Long getSize() {
-				return download.getProgressListener().getSize();
+				return (download.getProgressListener()!=null)?download.getProgressListener().getSize():1;
 			}
 
 			@Override
 			public Long getProgress() {
-				return download.getProgressListener().getDownloadedSize();
+				return (download.getProgressListener()!=null)?download.getProgressListener().getDownloadedSize():0;
 			}
 
 			@Override
