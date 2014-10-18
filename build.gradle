@@ -57,7 +57,7 @@ dependencies {
 //dart tasks
 task pubBuild(type:Exec) {
 	workingDir 'src/main/dart'
-	commandLine 'pub','build','web','--output','../../../build/classes/main/static'
+	commandLine 'pub','build','web','--output','../../../src/main/resources/static'
 }
 
 task pubGet(type:Exec) {

@@ -20,7 +20,7 @@ class AddDownloadFormElement extends PolymerElement {
   sendDownloadRequest(Event event, Object detail, Node sender) {
       event.preventDefault();
        
-        dispatchEvent(new CustomEvent('download_requested',
+        dispatchEvent(new CustomEvent('downloadrequested',
             detail: {'downloadRequest': downloadRequest}));
       
     }

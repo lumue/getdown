@@ -1,24 +1,20 @@
 import 'package:polymer/polymer.dart';
-import 'model.dart' show Download;
+import 'model.dart' show Download,TestData,DownloadRequest;
+import 'dart:html' show Event, Node;
 /*
  * Class to represent a collection of Codelab objects.
  */
 @CustomTag('download-list')
 class DownloadList extends PolymerElement {
  
-  @observable List<Download> downloads = toObservable([]);
-
-  DownloadList.created() : super.created()
-  {
-    downloads.add(new Download("file 1.zip",20000,5000));
-    downloads.add(new Download("file 2.zip",20000,3000));
-    downloads.add(new Download("file 3.zip",20000,8000));
-    downloads.add(new Download("file 4.zip",20000,10000));
-    downloads.add(new Download("file 5.zip",20000,9000));
-    downloads.add(new Download("file 6.zip",20000,5000));
-    downloads.add(new Download("file 7.zip",20000,1000));
-  }
-
- 
+  @observable List<Download> downloads = toObservable(TestData.TESTLIST);
   
+  addDownload(Event e, var detail, Node sender) {
+    e.preventDefault();
+    DownloadRequest downloadRequest=detail['downloadRequest'];
+    downloads.add(new Download(downloadRequest.url,downloadRequest.url,10000,399));
+  }
+  
+  DownloadList.created() : super.created();
+
 }

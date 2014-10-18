@@ -1,5 +1,5 @@
 <link rel="import" href="packages/polymer/polymer.html">
-
+<link rel="import" href="add_download_form.html">
 <polymer-element name="download-list"> <template>
 <style>
 /* 	progress { */
@@ -13,12 +13,13 @@
 /* 		background: #fff; */
 /* 	} */
 </style>
-<section>
+<section  >
 <h3>downloads</h3>
-<table width="100%">
+<table width="100%" >
 	<thead>
 		<tr>
-			<th align="left" width="70%">filename</th>
+			<th align="left" width="30%">filename</th>
+			<th align="left" width="45%">url</th>
 			<th align="left" width="5%">size</th>
 			<th align="left" width="20%">progress</th>
 		</tr>
@@ -26,6 +27,7 @@
 	<tbody>
 		<tr template repeat="{{download in downloads}}">
 			<td align="left">{{download.name}}</td>
+			<td align="left">{{download.url}}</td>
 			<td align="right">{{download.size}}</td>
 			<td align="right">&nbsp; <progress style="float: left;"
 					id="progress" max="{{download.size}}" value="{{download.progress}}"></progress>
@@ -35,6 +37,9 @@
 		</tr>
 	</tbody>
 </table>
+</section>
+<section on-downloadrequested="{{addDownload}}">
+  <add-download-form></add-download-form>
 </section>
 <script type="application/dart" src="download_list.dart" ></script>
 </template> </polymer-element>
