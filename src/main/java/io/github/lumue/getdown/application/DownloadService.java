@@ -57,6 +57,10 @@ public class DownloadService {
 		}
 		;
 	}
+	
+	public Iterable<DownloadJob> listDownloads(){
+		return this.jobRepository.list();
+	}
 
 	private String resolveFilename(String url) {
 		String path = URI.create(url).getPath();
