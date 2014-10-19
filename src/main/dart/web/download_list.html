@@ -1,18 +1,22 @@
 <link rel="import" href="packages/polymer/polymer.html">
+<link rel="import" href="packages/paper_elements/paper_shadow.html">
 <link rel="import" href="add_download_form.html">
 <polymer-element name="download-list"> <template>
+
 <style>
   section {
-        background: linear-gradient(rgb(214, 227, 231), rgb(173, 216, 230));
+        padding: 4px;
+        margin-top: 2px;
       }
 </style>
 
 <section on-downloadrequested="{{addDownload}}">
+  <paper-shadow z="1"></paper-shadow>
   <add-download-form></add-download-form>
 </section>
 
 <section>
-  <h3>downloads</h3>
+  <paper-shadow z="1"></paper-shadow>
   <table width="100%">
     <thead>
       <tr>
@@ -38,6 +42,4 @@
   </table>
 </section>
 	
-
-
 <script type="application/dart" src="download_list.dart"></script> </template> </polymer-element>

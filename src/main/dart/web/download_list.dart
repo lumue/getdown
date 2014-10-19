@@ -11,7 +11,7 @@ class DownloadList extends PolymerElement {
   static final String ADD_DOWNLOAD_SERVICE_PATH = '../download/add';
   
   
-  @observable List<DownloadViewItem> downloads = toObservable([]);
+  @observable List<DownloadViewItem> downloads = toObservable(TestData.TESTLIST);
   
   addDownload(Event e, var detail, Node sender) {
     e.preventDefault();
