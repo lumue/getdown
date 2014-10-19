@@ -18,9 +18,10 @@
 <table width="100%" >
 	<thead>
 		<tr>
-			<th align="left" width="30%">filename</th>
+			<th align="left" width="25%">filename</th>
 			<th align="left" width="45%">url</th>
 			<th align="left" width="5%">size</th>
+			<th align="left" width="5%">state</th>
 			<th align="left" width="20%">progress</th>
 		</tr>
 	</thead>
@@ -28,6 +29,7 @@
 		<tr template repeat="{{download in downloads}}">
 			<td align="left">{{download.name}}</td>
 			<td align="left">{{download.url}}</td>
+			<td align="left">{{download.state}}</td>
 			<td align="right">{{download.size}}</td>
 			<td align="right">&nbsp; <progress style="float: left;"
 					id="progress" max="{{download.size}}" value="{{download.progress}}"></progress>

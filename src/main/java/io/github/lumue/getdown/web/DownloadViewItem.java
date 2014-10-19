@@ -9,6 +9,7 @@ public interface DownloadViewItem extends Serializable{
 	public String getHandle();
 	public String getName();
 	public String getUrl();
+	public String getState();
 	public Long getSize();
 	public Long getProgress();
 	
@@ -16,10 +17,7 @@ public interface DownloadViewItem extends Serializable{
 	{
 		return new DownloadViewItem(){
 
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = -1845543382826294810L;
+			private static final long serialVersionUID = 2033910253254112701L;
 
 			@Override
 			public String getName() {
@@ -44,6 +42,11 @@ public interface DownloadViewItem extends Serializable{
 			@Override
 			public String getHandle() {
 				return download.getHandle().toString();
+			}
+
+			@Override
+			public String getState() {
+				return download.getProgressListener().getState().name();
 			}
 			
 		};

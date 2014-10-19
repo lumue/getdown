@@ -9,13 +9,18 @@ class DownloadViewItem extends Observable {
   @observable String url;
   @observable int size;
   @observable int progress;
+  /**
+   * valid values are PENDING, RUNNING, PAUSED, CANCELLED, ERROR, FINISHED
+   */
+  @observable String state;
 
   DownloadViewItem([
             this.handle = "",
             this.name = "",
             this.url="",
             this.size=0,
-            this.progress=0]);
+            this.progress=0,
+            this.state="PENDING"]);
 }
 
 class DownloadRequest extends Observable {

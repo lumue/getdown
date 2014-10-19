@@ -7,6 +7,7 @@ environment:
 dependencies:
   polymer: '>=0.15.0 <0.20.0'
   core_elements: ">=0.3.0+1 <0.4.0"
+  paper_elements: any
   http: any
   
 dev_dependencies:
