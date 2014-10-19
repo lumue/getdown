@@ -1,8 +1,8 @@
 package io.github.lumue.getdown.web;
 
-import java.io.Serializable;
-
 import io.github.lumue.getdown.application.DownloadJob;
+
+import java.io.Serializable;
 
 public interface DownloadViewItem extends Serializable{
 	
@@ -21,7 +21,8 @@ public interface DownloadViewItem extends Serializable{
 
 			@Override
 			public String getName() {
-				return download.getOutputFilename();
+				String outputFilename = download.getOutputFilename();
+				return outputFilename.substring(outputFilename.lastIndexOf('/') + 1);
 			}
 
 			@Override

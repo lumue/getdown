@@ -2,46 +2,42 @@
 <link rel="import" href="add_download_form.html">
 <polymer-element name="download-list"> <template>
 <style>
-/* 	progress { */
-/* 		color: #0063a6; */
-/* 		font-size: .6em; */
-/* 		line-height: 1.5em; */
-/* 		text-indent: .5em; */
-/* 		width: 15em; */
-/* 		height: 1.8em; */
-/* 		border: 1px solid #0063a6; */
-/* 		background: #fff; */
-/* 	} */
+  section {
+        background: linear-gradient(rgb(214, 227, 231), rgb(173, 216, 230));
+      }
 </style>
-<section  >
-<h3>downloads</h3>
-<table width="100%" >
-	<thead>
-		<tr>
-			<th align="left" width="25%">filename</th>
-			<th align="left" width="45%">url</th>
-			<th align="left" width="5%">size</th>
-			<th align="left" width="5%">state</th>
-			<th align="left" width="20%">progress</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr template repeat="{{download in downloads}}">
-			<td align="left">{{download.name}}</td>
-			<td align="left">{{download.url}}</td>
-			<td align="left">{{download.state}}</td>
-			<td align="right">{{download.size}}</td>
-			<td align="right">&nbsp; <progress style="float: left;"
-					id="progress" max="{{download.size}}" value="{{download.progress}}"></progress>
-				<output for="progress" id="progressLabel">{{(download.progress*100)/download.size}}
-					%</output>
-			</td>
-		</tr>
-	</tbody>
-</table>
-</section>
+
 <section on-downloadrequested="{{addDownload}}">
   <add-download-form></add-download-form>
 </section>
-<script type="application/dart" src="download_list.dart" ></script>
-</template> </polymer-element>
+
+<section>
+  <h3>downloads</h3>
+  <table width="100%">
+    <thead>
+      <tr>
+        <th align="left" width="25%">filename</th>
+        <th align="left" width="45%">url</th>
+        <th align="left" width="5%">size</th>
+        <th align="left" width="5%">state</th>
+        <th align="left" width="20%">progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr template repeat="{{download in downloads}}">
+        <td align="left">{{download.name}}</td>
+        <td align="left">{{download.url}}</td>
+        <td align="left">{{download.state}}</td>
+        <td align="right">{{download.size}}</td>
+        <td align="right">
+          <progress style="float: left;" id="progress" max="{{download.size}}" value="{{download.progress}}"></progress>
+          <output for="progress" id="progressLabel">{{(download.progress*100)/download.size}}%</output>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+	
+
+
+<script type="application/dart" src="download_list.dart"></script> </template> </polymer-element>

@@ -28,7 +28,8 @@ class DownloadList extends PolymerElement {
                   decodedResponse["name"],
                   decodedResponse["url"],
                   decodedResponse["size"],
-                  decodedResponse["progress"]);
+                  decodedResponse["progress"],
+                  decodedResponse["state"]);
               
               downloads.add(download);
     });
