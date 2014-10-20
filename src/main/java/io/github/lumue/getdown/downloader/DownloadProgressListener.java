@@ -17,7 +17,7 @@ public class DownloadProgressListener {
 	}
 
 	private DownloadState state = DownloadState.PENDING;
-	private Long size = null; // null = unknown
+	private Long size = 1L; // null = unknown
 	private long downloadedSize = 0;
 	private Throwable error;
 	private final String id = UUID.randomUUID().toString();

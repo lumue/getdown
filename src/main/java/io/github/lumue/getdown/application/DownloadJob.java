@@ -125,7 +125,7 @@ public interface DownloadJob {
 	}
 
 	public static class DownloadJobBuilder {
-		private DownloadProgressListener progressListener;
+		private DownloadProgressListener progressListener=new DownloadProgressListener();
 		private String outputFilename;
 		private String url;
 
