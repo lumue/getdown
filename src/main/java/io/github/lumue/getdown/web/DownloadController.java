@@ -1,16 +1,17 @@
 package io.github.lumue.getdown.web;
 
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import io.github.lumue.getdown.application.DownloadJob;
-import io.github.lumue.getdown.application.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.application.DownloadService;
 import io.github.lumue.getdown.util.StreamUtils;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,22 +21,23 @@ public class DownloadController {
 	@Autowired
 	DownloadService downloadService;
 
-	@RequestMapping("/download/add")
+	@RequestMapping(value = "/download/add", method = RequestMethod.PUT)
 	public DownloadViewItem addDownload(@RequestParam(value = "url", required = true) String url) {
-		return DownloadViewItem.wrap(downloadService.addDownload(url));
+		DownloadJob download = downloadService.addDownload(url);
+		downloadService.startDownload(download.getHandle());
+		return DownloadViewItem.wrap(download);
 	}
-
-	@RequestMapping("/download/start")
-	public void startDownload(@RequestParam(value = "handle", required = true) String handle) {
-		downloadService.startDownload(DownloadJobHandle.create(handle));
-	}
-
-	@RequestMapping("/download/list" )
+	
+	@RequestMapping(value = "/download/list", method = RequestMethod.GET)
 	public Iterable<DownloadViewItem> listDownloads() {
 		Stream<DownloadJob> stream = StreamUtils.stream(downloadService.listDownloads());
 		return stream.map(downloadJob -> DownloadViewItem.wrap(downloadJob)).collect(Collectors.toList());
 	}
 	
-
+	@RequestMapping(value = "/download/{handle}", method = RequestMethod.GET)
+	public Iterable<DownloadViewItem> getDownload(@PathVariable String handle) {
+		Stream<DownloadJob> stream = StreamUtils.stream(downloadService.listDownloads());
+		return stream.map(downloadJob -> DownloadViewItem.wrap(downloadJob)).collect(Collectors.toList());
+	}
 
 }

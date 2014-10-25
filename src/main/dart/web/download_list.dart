@@ -9,15 +9,18 @@ import 'dart:convert';
 class DownloadList extends PolymerElement {
  
   static final String ADD_DOWNLOAD_SERVICE_PATH = '../download/add';
+  static final String LIST_DOWNLOAD_SERVICE_PATH = '../download/list';
   
   
   @observable List<DownloadViewItem> downloads = toObservable(TestData.TESTLIST);
   
+
+  DownloadList.created() : super.created();
+  
   addDownload(Event e, var detail, Node sender) {
+    
     e.preventDefault();
     DownloadRequest downloadRequest=detail['downloadRequest'];
-    
-    
     
     HttpRequest.getString(ADD_DOWNLOAD_SERVICE_PATH+"?url="+Uri.encodeQueryComponent(downloadRequest.url))
           .then((response) {
@@ -31,13 +34,26 @@ class DownloadList extends PolymerElement {
                   decodedResponse["progress"],
                   decodedResponse["state"]);
               
-              downloads.add(download);
-    });
-    
-    
-    
+              refreshDownloadList();
+    });  
   }
   
-  DownloadList.created() : super.created();
-
+  refreshDownloadList(){
+    
+    HttpRequest.getString(LIST_DOWNLOAD_SERVICE_PATH+"?url="+Uri.encodeQueryComponent(downloadRequest.url))
+              .then((response) {
+                  var decodedResponse=JSON.decode(response);
+                  
+                  DownloadViewItem download=new DownloadViewItem(
+                      decodedResponse["handle"],
+                      decodedResponse["name"],
+                      decodedResponse["url"],
+                      decodedResponse["size"],
+                      decodedResponse["progress"],
+                      decodedResponse["state"]);
+                  
+                  refreshDownloadList();
+        });   
+  }
+  
 }

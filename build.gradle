@@ -28,11 +28,12 @@ eclipse.project {
 }
 eclipse.classpath {
 	containers 'org.springsource.ide.eclipse.gradle.classpathcontainer'
+	downloadSources = true;
 }
 
 //project properties
 version = '0.1'
-mainClassName = 'io.github.lumue.getdown.Main'
+mainClassName = 'io.github.lumue.getdown.application.Application'
 
 
 //dependencies
