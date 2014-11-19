@@ -1,27 +1,39 @@
 library getdown.web.models;
 
+import 'package:json_object/json_object.dart';
 import 'package:polymer/polymer.dart';
 
-class DownloadViewItem extends Observable {
+abstract class DownloadViewItem extends JsonObject {
   
   String handle;
-  @observable String name;
-  @observable String url;
-  @observable int size;
-  @observable int progress;
+  
+  String name;
+  
+  String url;
+  
+  int size;
+  
+  int progress;
+  
   /**
-   * valid values are PENDING, RUNNING, PAUSED, CANCELLED, ERROR, FINISHED
-   */
-  @observable String state;
-
-  DownloadViewItem([
-            this.handle = "",
-            this.name = "",
-            this.url="",
-            this.size=0,
-            this.progress=0,
-            this.state="PENDING"]);
+    * valid values are PENDING, RUNNING, PAUSED, CANCELLED, ERROR, FINISHED
+    */
+   String state;
 }
+
+
+class JsonDownloadViewItem  extends JsonObject implements DownloadViewItem
+{
+  
+  JsonDownloadViewItem();
+  
+  factory JsonDownloadViewItem.fromJsonString(string) {
+      return new JsonObject.fromJsonString(string, new JsonDownloadViewItem());
+    }
+
+ 
+}
+
 
 class DownloadRequest extends Observable {
   
@@ -30,12 +42,4 @@ class DownloadRequest extends Observable {
   DownloadRequest([this.url = ""]);
 }
 
-class TestData{
-  static final List<DownloadViewItem> TESTLIST=[new DownloadViewItem("X","file 1.zip","http://testhost/download/file1.zip",20000,5000),
-                                                  new DownloadViewItem("X","file 2.zip","http://testhost/download/file1.zip",20000,3000),
-                                                  new DownloadViewItem("X","file 3.zip","http://testhost/download/file1.zip",20000,8000),
-                                                  new DownloadViewItem("X","file 4.zip","http://testhost/download/file1.zip",20000,10000),
-                                                  new DownloadViewItem("X","file 5.zip","http://testhost/download/file1.zip",20000,9000),
-                                                  new DownloadViewItem("X","file 6.zip","http://testhost/download/file1.zip",20000,5000),
-                                                  new DownloadViewItem("X","file 7.zip","http://testhost/download/file1.zip",20000,1000)];
-}
+

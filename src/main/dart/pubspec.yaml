@@ -9,6 +9,7 @@ dependencies:
   core_elements: ">=0.3.0+1 <0.4.0"
   paper_elements: any
   http: any
+  json_object: any
   
 dev_dependencies:
   unittest: '>=0.10.0 <0.11.0'

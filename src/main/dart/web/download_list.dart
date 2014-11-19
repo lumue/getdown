@@ -1,18 +1,15 @@
 import 'package:polymer/polymer.dart';
 import 'model.dart' show DownloadViewItem,TestData,DownloadRequest;
-import 'dart:html' show Event, Node,HttpRequest;
-import 'dart:convert';
-/*
- * Class to represent a collection of Codelab objects.
- */
+import 'controller.dart';
+import 'dart:html' show Event, Node;
+
+
 @CustomTag('download-list')
 class DownloadList extends PolymerElement {
  
-  static final String ADD_DOWNLOAD_SERVICE_PATH = '../download/add';
-  static final String LIST_DOWNLOAD_SERVICE_PATH = '../download/list';
+   DownloadController downloadController=new DownloadController();
   
-  
-  @observable List<DownloadViewItem> downloads = toObservable(TestData.TESTLIST);
+  @observable List<DownloadViewItem> downloads=new List<DownloadViewItem>();
   
 
   DownloadList.created() : super.created();
@@ -22,38 +19,14 @@ class DownloadList extends PolymerElement {
     e.preventDefault();
     DownloadRequest downloadRequest=detail['downloadRequest'];
     
-    HttpRequest.getString(ADD_DOWNLOAD_SERVICE_PATH+"?url="+Uri.encodeQueryComponent(downloadRequest.url))
-          .then((response) {
-              var decodedResponse=JSON.decode(response);
-              
-              DownloadViewItem download=new DownloadViewItem(
-                  decodedResponse["handle"],
-                  decodedResponse["name"],
-                  decodedResponse["url"],
-                  decodedResponse["size"],
-                  decodedResponse["progress"],
-                  decodedResponse["state"]);
-              
-              refreshDownloadList();
-    });  
+    downloadController.addDownload(downloadRequest).then((downloadViewItem){
+      refreshDownloadList();
+    });
+    
   }
   
   refreshDownloadList(){
-    
-    HttpRequest.getString(LIST_DOWNLOAD_SERVICE_PATH+"?url="+Uri.encodeQueryComponent(downloadRequest.url))
-              .then((response) {
-                  var decodedResponse=JSON.decode(response);
-                  
-                  DownloadViewItem download=new DownloadViewItem(
-                      decodedResponse["handle"],
-                      decodedResponse["name"],
-                      decodedResponse["url"],
-                      decodedResponse["size"],
-                      decodedResponse["progress"],
-                      decodedResponse["state"]);
-                  
-                  refreshDownloadList();
-        });   
+    downloadController.listDownloads().then((freshDownloadList){downloads=freshDownloadList;});
   }
   
 }

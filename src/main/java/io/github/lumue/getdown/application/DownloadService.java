@@ -41,13 +41,13 @@ public class DownloadService {
 		downloader = AsyncContentDownloader.builder().withExecutor(executorService).build();
 	}
 
-	public DownloadJob addDownload(String url) {
+	public DownloadJob addDownload(final String url) {
 		String filename = resolveFilename(url);
 		DownloadJobBuilder jobBuilder = new DownloadJobBuilder().withUrl(url).withOutputFilename(filename);
 		return jobRepository.create(jobBuilder);
 	}
 
-	public void startDownload(DownloadJobHandle handle) {
+	public void startDownload(final DownloadJobHandle handle) {
 		DownloadJob job = jobRepository.get(handle);
 		try {
 			downloader.downloadContent(URI.create(job.getUrl()), new FileOutputStream(job.getOutputFilename()), job.getProgressListener());
@@ -62,7 +62,7 @@ public class DownloadService {
 		return this.jobRepository.list();
 	}
 
-	private String resolveFilename(String url) {
+	private String resolveFilename(final String url) {
 		String path = URI.create(url).getPath();
 		return FileSystems.getDefault().getPath(downloadPath, path.substring(path.lastIndexOf('/') + 1)).toString();
 	}
