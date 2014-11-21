@@ -18,11 +18,13 @@ class AddDownloadFormElement extends PolymerElement {
      * for the dispatch and handle the validated codelab object.
      */
   sendDownloadRequest(Event event, Object detail, Node sender) {
-      event.preventDefault();
-       
-        dispatchEvent(new CustomEvent('downloadrequested',
+    
+  	event.preventDefault();
+  	 
+    dispatchEvent(new CustomEvent('downloadrequested',
             detail: {'downloadRequest': downloadRequest}));
-      
-    }
+        
+    downloadRequest=new DownloadRequest();   
+   }
   
 }
