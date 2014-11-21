@@ -1,38 +1,42 @@
 library getdown.web.models;
 
-import 'package:json_object/json_object.dart';
+import 'dart:convert';
 import 'package:polymer/polymer.dart';
 
-abstract class DownloadViewItem extends JsonObject {
+
+class DownloadJob extends Observable{
   
-  String handle;
+  @observable String handle;
   
-  String name;
+  @observable String name;
   
-  String url;
+  @observable String url;
   
-  int size;
+  @observable int size;
   
-  int progress;
+  @observable int progress;
   
   /**
     * valid values are PENDING, RUNNING, PAUSED, CANCELLED, ERROR, FINISHED
     */
-   String state;
+  @observable String state;
+   
+   DownloadJob(String handle,String name,String url, int size, int progress,String state){
+      this.handle=handle;
+      this.name=name;
+      this.url=url;
+      this.size=size;
+      this.progress=progress;
+      this.state=state;
+   }
+   
+   factory DownloadJob.fromMap(Map map) {
+         return new DownloadJob(map['handle'],map['name'],map['url'],map['size'],map['progress'],map['state']);
+       }
+
 }
 
 
-class JsonDownloadViewItem  extends JsonObject implements DownloadViewItem
-{
-  
-  JsonDownloadViewItem();
-  
-  factory JsonDownloadViewItem.fromJsonString(string) {
-      return new JsonObject.fromJsonString(string, new JsonDownloadViewItem());
-    }
-
- 
-}
 
 
 class DownloadRequest extends Observable {

@@ -15,26 +15,26 @@ class DownloadController
   static final String ADD_DOWNLOAD_SERVICE_PATH = '../download/add';  
   static final String LIST_DOWNLOAD_SERVICE_PATH = '../download/list';
   
-  Future<DownloadViewItem> addDownload(DownloadRequest downloadRequest){
+  Future<DownloadJob> addDownload(DownloadRequest downloadRequest){
       
-      return HttpRequest.getString(ADD_DOWNLOAD_SERVICE_PATH+"?url="+Uri.encodeQueryComponent(downloadRequest.url))
-               .then((response) {
-                   DownloadViewItem download=new JsonDownloadViewItem.fromJsonString(response);
+      return HttpRequest.request(ADD_DOWNLOAD_SERVICE_PATH+"?url="+Uri.encodeQueryComponent(downloadRequest.url),method: 'PUT')
+               .then((HttpRequest response) {
+                   DownloadJob download=new DownloadJob.fromMap(JSON.decode(response.responseText));
                    return download;
     }
     );
   }
   
-  Future<List<DownloadViewItem>> listDownloads(){
+  Future<List<DownloadJob>> listDownloads(){
     
       return HttpRequest.getString(LIST_DOWNLOAD_SERVICE_PATH)
                .then((response) {
         
-                   List jsonStrings=JSON.decode(response);
+                   List jsonMaps=JSON.decode(response);
                    
-                   List<DownloadViewItem> result=new List<DownloadViewItem>(jsonStrings.length);
-                   jsonStrings.forEach((jsonString){
-                     result.add(new JsonDownloadViewItem.fromJsonString(response));
+                   List<DownloadJob> result=new List<DownloadJob>();
+                   jsonMaps.forEach((jsonMap){
+                     result.add(new DownloadJob.fromMap(jsonMap));
                    });
                    
                    return result;

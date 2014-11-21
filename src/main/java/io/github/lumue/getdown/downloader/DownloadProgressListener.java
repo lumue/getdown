@@ -51,7 +51,7 @@ public class DownloadProgressListener {
 	}
 
 
-	void error(Throwable t) {
+	public void error(Throwable t) {
 		this.error = t;
 		this.state = DownloadState.ERROR;
 	}

@@ -4,7 +4,7 @@ import io.github.lumue.getdown.application.DownloadJob;
 
 import java.io.Serializable;
 
-public interface DownloadViewItem extends Serializable{
+public interface DownloadJobView extends Serializable {
 	
 	public String getHandle();
 	public String getName();
@@ -13,9 +13,9 @@ public interface DownloadViewItem extends Serializable{
 	public Long getSize();
 	public Long getProgress();
 	
-	public static DownloadViewItem wrap( final DownloadJob download)
+	public static DownloadJobView wrap(final DownloadJob download)
 	{
-		return new DownloadViewItem(){
+		return new DownloadJobView() {
 
 			private static final long serialVersionUID = 2033910253254112701L;
 

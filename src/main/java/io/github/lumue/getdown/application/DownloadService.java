@@ -2,18 +2,11 @@ package io.github.lumue.getdown.application;
 
 import io.github.lumue.getdown.application.DownloadJob.DownloadJobBuilder;
 import io.github.lumue.getdown.application.DownloadJob.DownloadJobHandle;
-import io.github.lumue.getdown.downloader.AsyncContentDownloader;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileSystems;
-import java.util.concurrent.ExecutorService;
-
-import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,21 +18,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class DownloadService {
 
-	@Autowired
-	private ExecutorService executorService;
 
 	@Autowired
 	private DownloadJobRepository jobRepository;
 
-	@Value("{getdown.downloadPath}")
-	private String downloadPath;
+	private String downloadPath = "/home/lm/getdown";
 
-	private AsyncContentDownloader downloader;
+	@Autowired
+	private DownloadJobRunner downloadJobRunner;
 
-	@PostConstruct
-	public void init() {
-		downloader = AsyncContentDownloader.builder().withExecutor(executorService).build();
-	}
+	
 
 	public DownloadJob addDownload(final String url) {
 		String filename = resolveFilename(url);
@@ -49,13 +37,7 @@ public class DownloadService {
 
 	public void startDownload(final DownloadJobHandle handle) {
 		DownloadJob job = jobRepository.get(handle);
-		try {
-			downloader.downloadContent(URI.create(job.getUrl()), new FileOutputStream(job.getOutputFilename()), job.getProgressListener());
-		} catch (IOException e) {
-			// can not happen with async download, check download for error
-			// state
-		}
-		;
+		downloadJobRunner.runJob(job);
 	}
 	
 	public Iterable<DownloadJob> listDownloads(){

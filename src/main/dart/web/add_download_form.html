@@ -1,5 +1,6 @@
 <link rel="import" href="packages/polymer/polymer.html">
 <link rel="import" href="packages/paper_elements/paper_button.html">
+<link rel="import" href="packages/paper_elements/paper_input.html">
 <polymer-element name="add-download-form">
 <template>
 
@@ -14,8 +15,7 @@
 
   <div style="width: 100%;height: 40px;">
 	  <div style="float: left;width:90%;margin-top: 4px;">
-		  <label for="url_input">URL</label>
-			<input id="url_input" style="width:90%" value="{{downloadRequest.url}}" />
+			<paper-input label="URL" id="url_input" style="width:90%" value='{{ downloadRequest.url }}' ></paper-input> 
 		</div>
 		 <paper-button id="addbutton" on-click="{{sendDownloadRequest}}" raised >add</paper-button>
 	</div>

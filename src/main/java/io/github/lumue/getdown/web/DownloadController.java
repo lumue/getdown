@@ -22,22 +22,22 @@ public class DownloadController {
 	DownloadService downloadService;
 
 	@RequestMapping(value = "/download/add", method = RequestMethod.PUT)
-	public DownloadViewItem addDownload(@RequestParam(value = "url", required = true) String url) {
+	public DownloadJobView addDownload(@RequestParam(value = "url", required = true) String url) {
 		DownloadJob download = downloadService.addDownload(url);
 		downloadService.startDownload(download.getHandle());
-		return DownloadViewItem.wrap(download);
+		return DownloadJobView.wrap(download);
 	}
 	
 	@RequestMapping(value = "/download/list", method = RequestMethod.GET)
-	public Iterable<DownloadViewItem> listDownloads() {
+	public Iterable<DownloadJobView> listDownloads() {
 		Stream<DownloadJob> stream = StreamUtils.stream(downloadService.listDownloads());
-		return stream.map(downloadJob -> DownloadViewItem.wrap(downloadJob)).collect(Collectors.toList());
+		return stream.map(downloadJob -> DownloadJobView.wrap(downloadJob)).collect(Collectors.toList());
 	}
 	
 	@RequestMapping(value = "/download/{handle}", method = RequestMethod.GET)
-	public Iterable<DownloadViewItem> getDownload(@PathVariable String handle) {
+	public Iterable<DownloadJobView> getDownload(@PathVariable String handle) {
 		Stream<DownloadJob> stream = StreamUtils.stream(downloadService.listDownloads());
-		return stream.map(downloadJob -> DownloadViewItem.wrap(downloadJob)).collect(Collectors.toList());
+		return stream.map(downloadJob -> DownloadJobView.wrap(downloadJob)).collect(Collectors.toList());
 	}
 
 }
