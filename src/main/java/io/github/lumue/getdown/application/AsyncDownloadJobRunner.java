@@ -1,6 +1,5 @@
 package io.github.lumue.getdown.application;
 
-import io.github.lumue.getdown.downloader.AsyncContentDownloader;
 import io.github.lumue.getdown.downloader.BasicContentDownloader;
 import io.github.lumue.getdown.downloader.ContentDownloader;
 import io.github.lumue.getdown.downloader.ContentDownloader.DownloadState;
@@ -11,8 +10,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
-
-import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +32,6 @@ public class AsyncDownloadJobRunner implements DownloadJobRunner {
 		this.executorService = executorService;
 	}
 
-	@PostConstruct
-	public void init() {
-		downloader = AsyncContentDownloader.builder().withExecutor(executorService).build();
-	}
 
 	@Override
 	public void runJob(final DownloadJob job) {
