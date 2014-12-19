@@ -16,32 +16,26 @@
 </section>
 
 <section>
-  <paper-shadow z="1"></paper-shadow>
-  <table width="100%">
-    <thead>
-      <tr>
-        <th align="left" width="20%">filename</th>
-        <th align="left" width="50%">url</th>
-        <th align="left" width="5%">state</th>
-        <th align="left" width="5%">size</th>
-        <th align="left" width="20%">progress</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr template repeat="{{download in downloads}}">
-        <td align="left">{{download.name}}</td>
-        <td align="left">{{download.url}}</td>
-        <td align="left">{{download.state}}</td>
-        <td align="right">{{(download.size/1024).round()}}Kb</td>
-        <td align="right" width="20%">
-        	<progress style="float: left;" id="progress" max="{{download.size}}" value="{{download.progress}}">       		
-        	</progress>
-        	<span>{{(download.progress/1024).round()}}Kb</span>
-        	<span>({{((download.progress*100)/download.size).round()}}%)</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  	<paper-shadow z="1"></paper-shadow>
+  	<template repeat="{{download in downloads}}">
+		<div>
+	        <paper-shadow z="1"></paper-shadow>
+	        <div>
+				<h4>{{download.name}}</h4>
+				<p>{{download.url}}</p>
+				<p>{{download.state}}</p>
+			</div>
+	    	<div >
+	     		<p>{{(download.size/1024).round()}}Kb</p>
+	        	<p>
+		        	<progress style="float: left;" id="progress" max="{{download.size}}" value="{{download.progress}}">       		
+		        	</progress>
+		        	<span>{{(download.progress/1024).round()}}Kb</span>
+		        	<span>({{((download.progress*100)/download.size).round()}}%)</span>
+		        </p>
+			</div>
+		</div>
+	</template>
 </section>
 	
 <script type="application/dart" src="download_list.dart"></script> </template> </polymer-element>
