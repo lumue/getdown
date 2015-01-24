@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 @ComponentScan(basePackages = "io.github.lumue.getdown")
 @EnableAutoConfiguration
 @Configuration
-@PropertySource(ignoreResourceNotFound = true, value = "${getdown.path.config}/*.properties}")
+@PropertySource(ignoreResourceNotFound = true, value = "file://${getdown.path.config}/getdown.properties}")
 public class Application {
 
     public static void main(String[] args) {

@@ -46,6 +46,7 @@ dependencies {
 	
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
+	compile("org.springframework.boot:spring-boot-starter-actuator")
 	
 	compile 'com.google.http-client:google-http-client:1.19.0'
 	compile 'org.jsoup:jsoup:1.7.2'
