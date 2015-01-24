@@ -1,6 +1,6 @@
 library getdown.web.models;
 
-import 'dart:convert';
+
 import 'package:polymer/polymer.dart';
 
 
@@ -17,7 +17,7 @@ class DownloadJob extends Observable{
   @observable int progress;
   
   /**
-    * valid values are PENDING, RUNNING, PAUSED, CANCELLED, ERROR, FINISHED
+    * valid values are PENDING,RESOLVING,RUNNING, PAUSED, CANCELLED, ERROR, FINISHED
     */
   @observable String state;
    

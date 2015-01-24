@@ -3,8 +3,9 @@ package io.github.lumue.getdown.scraper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import io.github.lumue.getdown.scraper.StreamcloudUrlScraper;
-import io.github.lumue.getdown.scraper.UrlScraper;
+import io.github.lumue.getdown.hosts.streamcloud.StreamcloudContentLocationResolver;
+import io.github.lumue.getdown.resolver.ContentLocation;
+import io.github.lumue.getdown.resolver.ContentLocationResolver;
 
 import java.io.IOException;
 import java.net.CookieHandler;
@@ -20,7 +21,7 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 
-public abstract class AbstractUrlScraperTest {
+public abstract class AbstractUrlResolverTest {
 
 	private static final HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
 
@@ -32,7 +33,7 @@ public abstract class AbstractUrlScraperTest {
 
 	private static final HttpRequestFactory REQUEST_FACTORY = HTTP_TRANSPORT.createRequestFactory();
 
-	public AbstractUrlScraperTest() {
+	public AbstractUrlResolverTest() {
 		super();
 	}
 
@@ -43,18 +44,23 @@ public abstract class AbstractUrlScraperTest {
 	}
 
 	@Test
-	public void testScrape() throws IOException {
+	public void testResolve() throws IOException {
 	
-		UrlScraper scraper = new StreamcloudUrlScraper();
-		String result = scraper.scrape(getStartUrl());
+		ContentLocationResolver scraper = new StreamcloudContentLocationResolver();
+		ContentLocation contentLocation = scraper.resolve(getStartUrl());
+		String location = contentLocation.getUrl();
 		
-		assertNotNull("scraper returned null", result);
+		assertNotNull("scraper returned null", location);
+		
+		assertEquals("wrong filename",getExpectedFilename() ,contentLocation.getFilename());
 	
-		assertTrue("scraped url expected to end with "+getExpectedTargetSuffix(), result.endsWith(getExpectedTargetSuffix()));
+		assertTrue("scraped url expected to end with "+getExpectedTargetSuffix(), location.endsWith(getExpectedTargetSuffix()));
 	
-		long size = getContentSize(result);
+		long size = getContentSize(location);
 		assertEquals("content at scraped url has wrong size", getExpectedContentSize(), size);
 	}
+
+	public abstract String getExpectedFilename();
 
 	private long getContentSize(String result) throws IOException {
 		HttpRequest request = REQUEST_FACTORY.buildGetRequest(new GenericUrl(result));

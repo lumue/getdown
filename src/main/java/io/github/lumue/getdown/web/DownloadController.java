@@ -8,6 +8,8 @@ import io.github.lumue.getdown.util.StreamUtils;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +23,14 @@ public class DownloadController {
 	@Autowired
 	DownloadService downloadService;
 
+	private final static Logger LOGGER = LoggerFactory.getLogger(DownloadController.class);
+
 	@RequestMapping(value = "/download/add", method = RequestMethod.PUT)
 	public DownloadJobView addDownload(@RequestParam(value = "url", required = true) String url) {
+		LOGGER.debug("adding and starting download job for " + url);
 		DownloadJob download = downloadService.addDownload(url);
 		downloadService.startDownload(download.getHandle());
+		LOGGER.debug("download job for " + url + " added and started");
 		return DownloadJobView.wrap(download);
 	}
 	

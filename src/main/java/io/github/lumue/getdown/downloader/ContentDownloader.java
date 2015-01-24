@@ -7,7 +7,7 @@ import java.net.URI;
 public interface ContentDownloader {
 
 	public enum DownloadState {
-		PENDING, SCRAPING, DOWNLOADING, PAUSED, CANCELLED, ERROR, FINISHED;
+		PENDING, RESOLVING, DOWNLOADING, PAUSED, CANCELLED, ERROR, FINISHED;
 	}
 
 	

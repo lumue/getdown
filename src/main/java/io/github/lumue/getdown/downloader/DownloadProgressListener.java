@@ -71,4 +71,8 @@ public class DownloadProgressListener {
 		this.size = size;
 	}
 
+	public void resolveContentLocation() {
+		this.state = DownloadState.RESOLVING;
+	}
+
 }

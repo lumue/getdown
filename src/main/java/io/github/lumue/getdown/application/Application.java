@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-@ComponentScan(basePackages = "io.github.lumue.getdown.scraper")
+@ComponentScan(basePackages = "io.github.lumue.getdown")
 @EnableAutoConfiguration
 @Configuration
 public class Application {
@@ -22,4 +22,6 @@ public class Application {
 	public ExecutorService executorService() {
 		return Executors.newCachedThreadPool();
 	}
+	
+
 }

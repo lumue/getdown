@@ -15,7 +15,7 @@ class DownloadList extends PolymerElement {
   Timer refreshListTimer;
   
   DownloadList.created() : super.created(){
-    this.refreshListTimer=new Timer.periodic(new Duration(seconds: 5),(timer) => this.onRefreshDownloadList());
+    this.refreshListTimer=new Timer.periodic(new Duration(seconds: 1),(timer) => this.onRefreshDownloadList());
   }
   
   

@@ -4,7 +4,6 @@ import io.github.lumue.getdown.application.DownloadJob.DownloadJobBuilder;
 import io.github.lumue.getdown.application.DownloadJob.DownloadJobHandle;
 
 import java.net.URI;
-import java.nio.file.FileSystems;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +20,6 @@ public class DownloadService {
 
 	@Autowired
 	private DownloadJobRepository jobRepository;
-
-	private String downloadPath = "/home/lm/getdown";
-
 	@Autowired
 	private DownloadJobRunner downloadJobRunner;
 
@@ -46,7 +42,7 @@ public class DownloadService {
 
 	private String resolveFilename(final String url) {
 		String path = URI.create(url).getPath();
-		return FileSystems.getDefault().getPath(downloadPath, path.substring(path.lastIndexOf('/') + 1)).toString();
+		return path.substring(path.lastIndexOf('/') + 1).toString();
 	}
 
 }
