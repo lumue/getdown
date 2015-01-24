@@ -27,7 +27,7 @@ public class XhamsterContentLocationResolver implements ContentLocationResolver 
 
 	private static Logger LOGGER = LoggerFactory.getLogger(XhamsterContentLocationResolver.class);
 
-	private final static String[] HOSTS = { "xhamster.de", "xhamster.com" };
+	private final static String[] HOSTS = { "xhamster.com" };
 
 	private HttpClient client = new DefaultHttpClient();
 
