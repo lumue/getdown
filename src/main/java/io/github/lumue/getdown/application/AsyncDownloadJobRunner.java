@@ -37,7 +37,7 @@ public class AsyncDownloadJobRunner implements DownloadJobRunner {
 
 	@Autowired
 	AsyncDownloadJobRunner(ExecutorService executorService, ContentLocationResolverRegistry contentLocationResolverRegistry,
-			@Value("${getdown.downloadPath}") String downloadPath) {
+			@Value("${getdown.path.download}") String downloadPath) {
 		super();
 		this.executorService = executorService;
 		this.contentLocationResolverRegistry = contentLocationResolverRegistry;
