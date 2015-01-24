@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-@ComponentScan(basePackages = "io.github.lumue.getdown")
+@ComponentScan(basePackages = "io.github.lumue.getdown.scraper")
 @EnableAutoConfiguration
 @Configuration
 public class Application {

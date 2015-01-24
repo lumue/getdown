@@ -32,7 +32,7 @@ public class Main {
 			return;
 		}
 
-		while(!DownloadState.RUNNING.equals(progress.getState()))
+		while(!DownloadState.DOWNLOADING.equals(progress.getState()))
 		{
 			try {
 				Thread.sleep(100);

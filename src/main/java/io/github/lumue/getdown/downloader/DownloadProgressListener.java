@@ -39,7 +39,7 @@ public class DownloadProgressListener {
 	}
 
 	void start() {
-		this.state = DownloadState.RUNNING;
+		this.state = DownloadState.DOWNLOADING;
 	}
 
 	void finish() {

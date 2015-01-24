@@ -4,6 +4,8 @@ import io.github.lumue.getdown.downloader.BasicContentDownloader;
 import io.github.lumue.getdown.downloader.ContentDownloader;
 import io.github.lumue.getdown.downloader.ContentDownloader.DownloadState;
 import io.github.lumue.getdown.downloader.DownloadProgressListener;
+import io.github.lumue.getdown.scraper.StreamcloudUrlScraper;
+import io.github.lumue.getdown.scraper.UrlScraper;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,6 +25,8 @@ public class AsyncDownloadJobRunner implements DownloadJobRunner {
 	private final ExecutorService executorService;
 
 	private ContentDownloader downloader = new BasicContentDownloader();
+
+	private UrlScraper scraper = new StreamcloudUrlScraper();
 
 	private static Logger LOGGER = LoggerFactory.getLogger(AsyncDownloadJobRunner.class);
 
