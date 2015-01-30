@@ -33,7 +33,7 @@ public class BasicContentDownloader implements ContentDownloader {
 			}
 			InputStream inputStream = response.getContent();
 			int count;
-			byte[] buffer = new byte[8192];
+			byte[] buffer = new byte[1024 * 512];
 			while ((count = inputStream.read(buffer)) > 0) {
 				targetStream.write(buffer, 0, count);
 				if (progress != null)
