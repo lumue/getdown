@@ -1,0 +1,41 @@
+<link rel="import" href="packages/polymer/polymer.html">
+<link rel="import" href="download_list.html">
+<link rel="import" href="packages/core_elements/core_header_panel.html">
+<link rel="import" href="packages/core_elements/core_toolbar.html">
+<link rel="import" href="packages/core_elements/core_icons.html">
+<link rel="import" href="packages/core_elements/core_icon_button.html">
+
+<polymer-element name="getdown-webclient" noscript>
+
+  <template>
+    <style>    
+      :host {
+        font-family: monospace;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
+      #core_header_panel {
+        width: 100%;
+        height: 100%;
+        left: 0px;
+        top: 0px;
+        position: absolute;
+      }
+      #core_toolbar {
+        color: white;
+        background-color: blue;
+      }
+      
+    </style>
+    <core-header-panel mode="standard" id="core_header_panel">
+      <core-toolbar id="core_toolbar">
+        <core-icon-button icon="menu" id="core_icon_button"></core-icon-button>
+        <div id="app_title">getdown console</div>
+      </core-toolbar>
+        <download-list></download-list>
+    </core-header-panel>
+  </template>
+
+</polymer-element>

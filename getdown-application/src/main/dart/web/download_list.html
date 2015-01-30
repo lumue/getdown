@@ -1,0 +1,41 @@
+<link rel="import" href="packages/polymer/polymer.html">
+<link rel="import" href="packages/paper_elements/paper_shadow.html">
+<link rel="import" href="add_download_form.html">
+<polymer-element name="download-list"> <template>
+
+<style>
+  section {
+        padding: 4px;
+        margin-top: 2px;
+      }
+</style>
+
+<section on-downloadrequested="{{addDownload}}">
+  <paper-shadow z="1"></paper-shadow>
+  <add-download-form></add-download-form>
+</section>
+
+<section>
+  	<paper-shadow z="1"></paper-shadow>
+  	<template repeat="{{download in downloads}}">
+		<div>
+	        <paper-shadow z="1"></paper-shadow>
+	        <div>
+				<h4>{{download.name}}</h4>
+				<p>{{download.url}}</p>
+				<p>{{download.state}}</p>
+			</div>
+	    	<div >
+	     		<p>{{(download.size/1024).round()}}Kb</p>
+	        	<p>
+		        	<progress style="float: left;" id="progress" max="{{download.size}}" value="{{download.progress}}">       		
+		        	</progress>
+		        	<span>{{(download.progress/1024).round()}}Kb</span>
+		        	<span>({{((download.progress*100)/download.size).round()}}%)</span>
+		        </p>
+			</div>
+		</div>
+	</template>
+</section>
+	
+<script type="application/dart" src="download_list.dart"></script> </template> </polymer-element>
