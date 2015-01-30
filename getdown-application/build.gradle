@@ -26,7 +26,6 @@ dependencies {
 	
 	compile project(':getdown-common')
 	compile project(':getdown-hosts-sc')
-	compile project(':getdown-hosts-xh')
 	
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")

@@ -1,5 +1,5 @@
 rootProject.name = 'getdown'
 include (			'getdown-application',
 				'getdown-common',
-				'getdown-hosts-sc',
-				'getdown-hosts-xh')
+				'getdown-hosts-sc'
+				)
