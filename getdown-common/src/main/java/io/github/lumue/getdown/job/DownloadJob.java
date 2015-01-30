@@ -144,7 +144,7 @@ public interface DownloadJob {
 			return this;
 		}
 
-		DownloadJob build() {
+		public DownloadJob build() {
 			return new DownloadJobImpl(url, outputFilename, progressListener);
 		}
 	}
