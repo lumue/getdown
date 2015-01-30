@@ -15,9 +15,18 @@ import java.util.function.Predicate;
  * @author lm
  *
  */
-public class VolatileDownloadJobRepository implements DownloadJobRepository {
+public class MapBasedDownloadJobRepository implements DownloadJobRepository {
 
-	private final Map<DownloadJobHandle, DownloadJob> jobMap = new HashMap<DownloadJobHandle, DownloadJob>();
+	private final Map<DownloadJobHandle, DownloadJob> jobMap;
+
+	public MapBasedDownloadJobRepository(Map<DownloadJobHandle, DownloadJob> jobMap) {
+		super();
+		this.jobMap = jobMap;
+	}
+
+	MapBasedDownloadJobRepository() {
+		this(new HashMap<DownloadJobHandle, DownloadJob>());
+	}
 
 	@Override
 	public DownloadJob create(DownloadJobBuilder downloadJobBuilder) {
