@@ -24,6 +24,13 @@ allprojects {
 		classpath {	containers 'org.springsource.ide.eclipse.gradle.classpathcontainer'
 				downloadSources = true;}
 	}
+	
+	dependencies{
+		
+		compile 'org.slf4j:slf4j-api:1.7.7'
+		
+		testCompile 'junit:junit:4.11'
+	}
 }
 
 
