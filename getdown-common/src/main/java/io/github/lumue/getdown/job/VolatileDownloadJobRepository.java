@@ -1,15 +1,13 @@
-package io.github.lumue.getdown.application;
+package io.github.lumue.getdown.job;
 
-import io.github.lumue.getdown.application.DownloadJob.DownloadJobBuilder;
-import io.github.lumue.getdown.application.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.downloader.ContentDownloader.DownloadState;
+import io.github.lumue.getdown.job.DownloadJob.DownloadJobBuilder;
+import io.github.lumue.getdown.job.DownloadJob.DownloadJobHandle;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import org.springframework.stereotype.Component;
 
 /**
  * not thread safe, in memory repository
@@ -17,8 +15,7 @@ import org.springframework.stereotype.Component;
  * @author lm
  *
  */
-@Component
-class VolatileDownloadJobRepository implements DownloadJobRepository {
+public class VolatileDownloadJobRepository implements DownloadJobRepository {
 
 	private final Map<DownloadJobHandle, DownloadJob> jobMap = new HashMap<DownloadJobHandle, DownloadJob>();
 

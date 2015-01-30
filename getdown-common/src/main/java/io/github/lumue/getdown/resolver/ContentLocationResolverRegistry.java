@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * 
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
  * @author lm
  *
  */
-@Component
 public class ContentLocationResolverRegistry implements Iterable<ContentLocationResolver> {
 
 	private Map<String, ContentLocationResolver> resolverMap = new HashMap<String, ContentLocationResolver>();

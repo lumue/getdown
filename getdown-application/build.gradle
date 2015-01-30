@@ -20,28 +20,19 @@ apply plugin: 'spring-boot'
 sourceCompatibility = jdk_version
 targetCompatibility = jdk_version
 
-
-
 mainClassName = 'io.github.lumue.getdown.application.Application'
-
 
 dependencies {
 	
 	compile project(':getdown-common')
-
+	compile project(':getdown-hosts-sc')
+	compile project(':getdown-hosts-xh')
+	
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
 	compile("org.springframework.boot:spring-boot-starter-actuator")
 	
-	compile 'com.google.http-client:google-http-client:1.19.0'
-	compile 'org.jsoup:jsoup:1.7.2'
-	compile 'javax.media:jmf:2.1.1e'
-
-
-	
 	testCompile("org.springframework.boot:spring-boot-starter-test")
-	
-	testCompile 'junit:junit:4.11'
 }
 
 

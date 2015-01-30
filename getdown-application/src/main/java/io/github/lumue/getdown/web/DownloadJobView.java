@@ -1,6 +1,6 @@
 package io.github.lumue.getdown.web;
 
-import io.github.lumue.getdown.application.DownloadJob;
+import io.github.lumue.getdown.job.DownloadJob;
 
 import java.io.Serializable;
 

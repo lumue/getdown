@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.application;
+package io.github.lumue.getdown.job;
 
 import io.github.lumue.getdown.downloader.DownloadProgressListener;
 

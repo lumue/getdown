@@ -1,12 +1,9 @@
-package io.github.lumue.getdown.application;
+package io.github.lumue.getdown.job;
 
-import io.github.lumue.getdown.application.DownloadJob.DownloadJobBuilder;
-import io.github.lumue.getdown.application.DownloadJob.DownloadJobHandle;
+import io.github.lumue.getdown.job.DownloadJob.DownloadJobBuilder;
+import io.github.lumue.getdown.job.DownloadJob.DownloadJobHandle;
 
 import java.net.URI;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * manage the execution of downloads
@@ -14,16 +11,19 @@ import org.springframework.stereotype.Service;
  * @author lm
  *
  */
-@Service
 public class DownloadService {
 
 
-	@Autowired
-	private DownloadJobRepository jobRepository;
-	@Autowired
-	private DownloadJobRunner downloadJobRunner;
+	private final DownloadJobRepository jobRepository;
+
+	private final DownloadJobRunner downloadJobRunner;
 
 	
+	public DownloadService(DownloadJobRepository jobRepository, DownloadJobRunner downloadJobRunner) {
+		super();
+		this.jobRepository = jobRepository;
+		this.downloadJobRunner = downloadJobRunner;
+	}
 
 	public DownloadJob addDownload(final String url) {
 		String filename = resolveFilename(url);

@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.inject.Named;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -22,11 +24,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-@Component
+@Named
 public class StreamcloudContentLocationResolver implements ContentLocationResolver {
 	
 	private final static String[] HOSTS = { "streamcloud.eu" };
@@ -51,8 +52,6 @@ public class StreamcloudContentLocationResolver implements ContentLocationResolv
 
 		return new ContentLocation(contentUrl, StreamcloudUrlParser.fromUrl(url).getFilename());
 	}
-
-
 
 
 

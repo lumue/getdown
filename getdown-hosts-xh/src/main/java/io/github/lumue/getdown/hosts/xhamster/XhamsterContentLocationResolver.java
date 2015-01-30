@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import javax.inject.Named;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -18,11 +20,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-@Component
+@Named
 public class XhamsterContentLocationResolver implements ContentLocationResolver {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(XhamsterContentLocationResolver.class);

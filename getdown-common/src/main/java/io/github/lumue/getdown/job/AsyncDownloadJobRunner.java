@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.application;
+package io.github.lumue.getdown.job;
 
 import io.github.lumue.getdown.downloader.BasicContentDownloader;
 import io.github.lumue.getdown.downloader.ContentDownloader;
@@ -17,12 +17,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-
-@Component
 public class AsyncDownloadJobRunner implements DownloadJobRunner {
 
 	private final ExecutorService executorService;
@@ -35,9 +30,9 @@ public class AsyncDownloadJobRunner implements DownloadJobRunner {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(AsyncDownloadJobRunner.class);
 
-	@Autowired
-	AsyncDownloadJobRunner(ExecutorService executorService, ContentLocationResolverRegistry contentLocationResolverRegistry,
-			@Value("${getdown.path.download}") String downloadPath) {
+
+	public AsyncDownloadJobRunner(ExecutorService executorService, ContentLocationResolverRegistry contentLocationResolverRegistry,
+			String downloadPath) {
 		super();
 		this.executorService = executorService;
 		this.contentLocationResolverRegistry = contentLocationResolverRegistry;

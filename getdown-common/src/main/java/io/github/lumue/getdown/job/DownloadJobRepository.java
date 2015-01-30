@@ -1,10 +1,10 @@
-package io.github.lumue.getdown.application;
+package io.github.lumue.getdown.job;
 
-import io.github.lumue.getdown.application.DownloadJob.DownloadJobBuilder;
-import io.github.lumue.getdown.application.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.downloader.ContentDownloader.DownloadState;
+import io.github.lumue.getdown.job.DownloadJob.DownloadJobBuilder;
+import io.github.lumue.getdown.job.DownloadJob.DownloadJobHandle;
 
-interface DownloadJobRepository {
+public interface DownloadJobRepository {
 
 	public DownloadJob create(DownloadJobBuilder builder);
 

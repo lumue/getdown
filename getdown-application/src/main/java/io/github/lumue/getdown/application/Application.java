@@ -1,8 +1,15 @@
 package io.github.lumue.getdown.application;
 
+import io.github.lumue.getdown.job.AsyncDownloadJobRunner;
+import io.github.lumue.getdown.job.DownloadJobRunner;
+import io.github.lumue.getdown.job.DownloadService;
+import io.github.lumue.getdown.job.VolatileDownloadJobRepository;
+import io.github.lumue.getdown.resolver.ContentLocationResolverRegistry;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -25,5 +32,20 @@ public class Application {
 		return Executors.newCachedThreadPool();
 	}
 	
+	@Bean
+	public DownloadJobRunner downloadJobRunner(ExecutorService executorService,
+			ContentLocationResolverRegistry contentLocationResolverRegistry, @Value("${getdown.path.download}") String downloadPath) {
+		return new AsyncDownloadJobRunner(executorService, contentLocationResolverRegistry, downloadPath);
+	}
+
+	@Bean
+	DownloadService downloadService(DownloadJobRunner downloadJobRunner) {
+		return new DownloadService(new VolatileDownloadJobRepository(), downloadJobRunner);
+	}
+
+	@Bean
+	ContentLocationResolverRegistry contentLocationResolverRegistry() {
+		return new ContentLocationResolverRegistry();
+	}
 
 }
