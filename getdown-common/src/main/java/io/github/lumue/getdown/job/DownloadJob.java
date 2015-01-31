@@ -19,7 +19,15 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 	static class DownloadJobHandleImpl implements DownloadJobHandle, Serializable {
 		
 		private static final long serialVersionUID = -7582907691952041979L;
-		private final String key;
+		private String key;
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
+		}
 
 		DownloadJobHandleImpl() {
 			this(UUID.randomUUID().toString());
