@@ -12,7 +12,7 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 
-public class BasicContentDownloader implements ContentDownloader {
+public class HttpContentDownloader implements ContentDownloader {
 
 	private static final HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
 

@@ -1,6 +1,6 @@
 package io.github.lumue.getdown.job;
 
-import io.github.lumue.getdown.downloader.BasicContentDownloader;
+import io.github.lumue.getdown.downloader.HttpContentDownloader;
 import io.github.lumue.getdown.downloader.ContentDownloader;
 import io.github.lumue.getdown.downloader.ContentDownloader.DownloadState;
 import io.github.lumue.getdown.downloader.DownloadProgressListener;
@@ -26,7 +26,7 @@ public class AsyncDownloadJobRunner implements DownloadJobRunner {
 
 	private final String downloadPath;
 
-	private ContentDownloader downloader = new BasicContentDownloader();
+	private ContentDownloader downloader = new HttpContentDownloader();
 
 	private static Logger LOGGER = LoggerFactory.getLogger(AsyncDownloadJobRunner.class);
 

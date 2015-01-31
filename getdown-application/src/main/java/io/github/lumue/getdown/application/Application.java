@@ -4,7 +4,7 @@ import io.github.lumue.getdown.job.AsyncDownloadJobRunner;
 import io.github.lumue.getdown.job.DownloadJobRepository;
 import io.github.lumue.getdown.job.DownloadJobRunner;
 import io.github.lumue.getdown.job.DownloadService;
-import io.github.lumue.getdown.jobrepo.hazel.HazelJobRepository;
+import io.github.lumue.getdown.job.SingleJsonFileDownloadJobRepository;
 import io.github.lumue.getdown.resolver.ContentLocationResolverRegistry;
 
 import java.util.concurrent.ExecutorService;
@@ -17,9 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
 
 @ComponentScan(basePackages = "io.github.lumue.getdown")
 @EnableAutoConfiguration
@@ -43,18 +40,13 @@ public class Application {
 	}
 
 	@Bean
-	HazelcastInstance hazelcastInstance() {
-		return Hazelcast.newHazelcastInstance();
-	}
-
-	@Bean
-	public HazelJobRepository hazelcastDownloadJobRepository(HazelcastInstance hazelcastInstance) {
-		return new HazelJobRepository(hazelcastInstance);
-	}
-
-	@Bean
 	DownloadService downloadService(DownloadJobRepository downloadJobRepository, DownloadJobRunner downloadJobRunner) {
 		return new DownloadService(downloadJobRepository, downloadJobRunner);
+	}
+
+	@Bean
+	DownloadJobRepository downloadJobRepository(@Value("${getdown.path.repository}") String repositoryPath) {
+		return new SingleJsonFileDownloadJobRepository(repositoryPath);
 	}
 
 	@Bean

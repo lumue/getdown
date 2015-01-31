@@ -23,15 +23,14 @@ targetCompatibility = jdk_version
 mainClassName = 'io.github.lumue.getdown.application.Application'
 
 dependencies {
-	
 	compile project(':getdown-common')
-	compile project(':getdown-hosts-sc')
-	compile project(':getdown-hosts-xh')
-	compile project(':getdown-jobrepo-hazel')
 	
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
 	compile("org.springframework.boot:spring-boot-starter-actuator")
+	
+	runtime project(':getdown-hosts-sc')
+	runtime project(':getdown-hosts-xh')
 	
 	testCompile("org.springframework.boot:spring-boot-starter-test")
 }

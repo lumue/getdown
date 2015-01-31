@@ -64,7 +64,7 @@ public class AsyncContentDownloader implements ContentDownloader {
 		}
 
 		public AsyncContentDownloader build() {
-			return new AsyncContentDownloader(delegate != null ? delegate : new BasicContentDownloader(), executor != null ? executor
+			return new AsyncContentDownloader(delegate != null ? delegate : new HttpContentDownloader(), executor != null ? executor
 					: Executors.newSingleThreadExecutor());
 		}
 	}
