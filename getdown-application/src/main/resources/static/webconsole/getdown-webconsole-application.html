@@ -6,144 +6,93 @@
 <link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="bower_components/core-menu/core-submenu.html">
-<link rel="import" href="bower_components/paper-input/paper-input.html">
 <link rel="import" href="bower_components/core-icons/core-icons.html">
-<link rel="import" href="bower_components/core-icons/av-icons.html">
-<link rel="import" href="bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="bower_components/paper-progress/paper-progress.html">
-<link rel="import" href="bower_components/paper-shadow/paper-shadow.html">
-<link rel="import" href="bower_components/core-icon/core-icon.html">
+
+<!-- project imports -->
+<link rel="import" href="add-download-form.html" />
+<link rel="import" href="download-list-view.html" />
 
 <polymer-element name="getdown-webconsole-application">
 
-  <template>
-    <style>    
-      :host {
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-      }
-      #core_scaffold {
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        bottom: 0px;
-        left: 0px;
-        width: 100%;
-        height: 100%;
-      }
-      #core_header_panel {
-        background-color: rgb(255, 255, 255);
-      }
-      #core_toolbar {
-        color: rgb(255, 255, 255);
-      }
-      #core_menu {
-        font-size: 16px;
-      }
-      #list-item {
-        padding: 5px;
-        background-color: rgb(255, 255, 255);
-      }
-      #section {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        width: 100%;
-        height: 100%;
-      }
-      #list-item-action {
-        padding: 10px;
-      }
-      .h1 {
-        font-size: 18px;
-      }
-      #list-item-status {
-        padding: 10px;
-        width: 100%;
-      }
-      #paper_shadow {
-        margin: 10px;
-      }
-      #add_download {
-        width: 100%;
-        height: 100%;
-        padding: 10px;
-        font-size: 16px;
-        opacity: 1;
-        background-color: rgb(255, 255, 255);
-      }
-      #paper_fab1 {
-        background-color: rgb(18, 15, 235);
-      }
-      #paper_input {
-        width: 100%;
-      }
-      #add-form-action {
-        margin: 10px;
-      }
-      #add-form-input {
-        width: 92%;
-      }
-    </style>
-    <core-scaffold id="core_scaffold">
-      <core-header-panel mode="seamed" id="core_header_panel" navigation flex>
-        <core-toolbar id="core_toolbar"></core-toolbar>
-        <core-menu selected="Downloads" valueattr="label" selectedindex="0" id="core_menu" theme="core-light-theme">
-          <core-item id="core_item" icon="file-download" label="Downloads" horizontal center layout active></core-item>
-          <core-item id="core_item1" icon="folder-open" label="Files" horizontal center layout></core-item>
-          <core-item id="core_item1" icon="settings" label="Settings" horizontal center layout></core-item>
-        </core-menu>
-      </core-header-panel>
-      <div id="div" tool>getdown</div>
-      <section id="section" class="content">
-        <paper-shadow id="paper_shadow1">
-          <section id="add_download" horizontal layout>
-            <section id="add-form-input">
-              <paper-input label="url" id="paper_input" start one flex></paper-input>
-            </section>
-            <section id="add-form-action">
-              <paper-fab icon="av:queue" id="paper_fab1"></paper-fab>
-            </section>
-          </section>
-        </paper-shadow>
-        <paper-shadow id="paper_shadow">
-          <div id="list-item" start one flex horizontal layout start-justified>
-            <section id="list-item-action">
-              <paper-fab icon="av:pause" id="paper_fab" start></paper-fab>
-            </section>
-            <section id="list-item-status">
-              <h1 id="h1">The Big Bang Theory - S01E01.mp4</h1>
-              <p id="p">downloading</p>
-              <paper-progress step="1" value="80" ratio="80" id="paper_progress"></paper-progress>
-            </section>
-          </div>
-        </paper-shadow>
-        <paper-shadow id="paper_shadow">
-          <div id="list-item" start one flex horizontal layout start-justified>
-            <section id="list-item-action">
-              <paper-fab icon="av:play-arrow" id="paper_fab" start></paper-fab>
-            </section>
-            <section id="list-item-status">
-              <h1 id="h1">The Big Bang Theory - S01E01.mp4</h1>
-              <p id="p">pending</p>
-              <paper-progress step="1" id="paper_progress"></paper-progress>
-            </section>
-            <section id="list-item-actions">
-              <core-icon icon="reorder" id="core_icon"></core-icon>
-            </section>
-          </div>
-        </paper-shadow>
-      </section>
-    </core-scaffold>
-  </template>
-
-  <script>
-
-    Polymer({
-      
-    });
-
-  </script>
-
+	<template>
+	
+		<style>
+		:host {
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+		}
+		
+		#core_scaffold {
+			position: absolute;
+			top: 0px;
+			right: 0px;
+			bottom: 0px;
+			left: 0px;
+			width: 100%;
+			height: 100%;
+		}
+		
+		#core_header_panel {
+			background-color: rgb(255, 255, 255);
+		}
+		
+		#core_toolbar {
+			color: rgb(255, 255, 255);
+		}
+		
+		#core_menu {
+			font-size: 16px;
+		}
+		
+		#list-item {
+			padding: 5px;
+			background-color: rgb(255, 255, 255);
+		}
+		
+		#section {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 100%;
+			height: 100%;
+		}
+		
+		
+		</style>
+		
+		<core-scaffold id="core_scaffold">
+			
+			<core-header-panel mode="seamed" id="core_header_panel" navigation flex>
+				<core-toolbar id="core_toolbar">
+				</core-toolbar>
+				<core-menu selected="Downloads" valueattr="label" selectedindex="0" id="core_menu" theme="core-light-theme">
+					<core-item id="core_item" icon="file-download" label="Downloads" horizontal center layout active></core-item>
+					<core-item id="core_item1" icon="folder-open" label="Files" horizontal center layout></core-item>
+					<core-item id="core_item1" icon="settings" label="Settings" horizontal center layout></core-item>
+				</core-menu>
+			</core-header-panel>
+			
+			<div id="div" tool>getdown</div>
+			
+			<section id="section" class="content">
+				
+				<!-- Add Link Form -->
+				<add-download-form></add-download-form>
+				
+				<!-- Download List -->
+				<download-list-view></download-list-view>
+				
+			</section>
+		</core-scaffold>
+	
+	</template>
+	
+	<script>
+	
+	    Polymer({
+	      
+	    });
+	
+	</script>
 </polymer-element>

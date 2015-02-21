@@ -8,12 +8,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.api.client.util.Strings;
@@ -25,6 +29,8 @@ public class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>, K, V ext
 	private final String filename;
 
 	private final Map<K, V> objectMap;
+
+	private final static Logger LOGGER = LoggerFactory.getLogger(SingleJsonFileObjectRepository.class);
 
 	ExecutorService flushExecutorService = Executors.newSingleThreadExecutor();
 
@@ -77,11 +83,19 @@ public class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>, K, V ext
 		if (Strings.isNullOrEmpty(filecontent))
 			return;
 
-		List<V> objects = JsonUtil.deserializeBeans(new TypeReference<List<V>>() {
-		}, filecontent);
+		try {
 
-		objectMap.clear();
-		objects.forEach(object -> objectMap.put(object.getHandle(), object));
+			List<V> objects = Arrays.asList(JsonUtil.deserializeBeans(new TypeReference<V[]>() {
+			}, filecontent));
+			objectMap.clear();
+			objects.forEach(object -> objectMap.put(object.getHandle(), object));
+
+		} catch (Exception e)
+		{
+			LOGGER.error("Object deserialisation failed during restore", e);
+		}
+
+
 	}
 
 
@@ -90,7 +104,7 @@ public class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>, K, V ext
 		byte[] encoded;
 		try {
 			encoded = Files.readAllBytes(Paths.get(filename));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		String filecontent=new String(encoded);

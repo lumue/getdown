@@ -1,0 +1,72 @@
+<!-- this component accepts the url for a new download job -->
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-shadow/paper-shadow.html">
+<link rel="import" href="bower_components/paper-fab/paper-fab.html">
+
+<polymer-element name="add-download-form">
+
+
+	<template>
+	
+		<style>
+			
+			#add-download-card{
+				margin: 10px;
+			}
+		
+			#add-download-content{
+				width: 100%;
+				height: 100%;
+				padding: 10px;
+				font-size: 16px;
+				opacity: 1;
+			 	background-color: rgb(255, 255, 255);
+			}
+
+			#add-download-button{
+				background-color: rgb(18, 15, 235);
+			}
+
+			#add-download-input{
+				width: 100%;
+			}
+		      	
+		      	#add-form-action {
+		        	margin: 10px;
+		      	}
+		      
+		      	#add-form-input {
+		        	width: 92%;
+		      	}
+
+		</style>
+	
+		<paper-shadow id="add-download-card">
+			
+			<section id="add-download-content" horizontal layout>
+				
+				<section>
+					<paper-input label="url" id="add-download-input" start one flex></paper-input>
+				</section>
+		
+				<section>
+					<paper-fab icon="av:queue" id="add-download-button"></paper-fab>
+				</section>
+			
+			</section>
+		
+		</paper-shadow>
+	
+	</template>
+
+
+	<script>
+		Polymer({
+		
+			});
+	</script>
+
+
+</polymer-element>
