@@ -20,6 +20,7 @@ apply plugin: 'spring-boot'
 sourceCompatibility = jdk_version
 targetCompatibility = jdk_version
 
+
 mainClassName = 'io.github.lumue.getdown.application.Application'
 
 dependencies {
@@ -36,14 +37,13 @@ dependencies {
 }
 
 
-//dart tasks
-task pubBuild(type:Exec) {
-	workingDir 'src/main/dart'
-	commandLine 'pub','build','web','--output','../../../src/main/resources/static','--mode','debug'
+eclipse {
+		project { 
+			natures 'org.eclipse.wst.jsdt.core.jsNature'
+			natures 'org.springframework.ide.eclipse.core.springnature'
+
+			buildCommand 'org.springframework.ide.eclipse.core.springbuilder'		
+		}
 }
 
-task pubGet(type:Exec) {
-	workingDir 'src/main/dart'
-	commandLine 'pub','get'
-}
 

@@ -7,10 +7,13 @@
 <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="bower_components/core-menu/core-submenu.html">
 <link rel="import" href="bower_components/core-icons/core-icons.html">
+<link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
 
 <!-- project imports -->
-<link rel="import" href="add-download-form.html" />
+<link rel="import" href="add-download-dialog.html" />
 <link rel="import" href="download-list-view.html" />
+
+<script src="getdown-webconsole-application.js"></script>
 
 <polymer-element name="getdown-webconsole-application">
 
@@ -45,10 +48,11 @@
 			font-size: 16px;
 		}
 		
-		#list-item {
-			padding: 5px;
-			background-color: rgb(255, 255, 255);
-		}
+ 		#content-toolbar{ 
+			background-color: #526E9C;
+			width: 100%;
+			margin: 0px;
+   		} 
 		
 		#section {
 			position: absolute;
@@ -59,40 +63,38 @@
 		}
 		
 		
+		
+		
 		</style>
 		
 		<core-scaffold id="core_scaffold">
 			
 			<core-header-panel mode="seamed" id="core_header_panel" navigation flex>
+			
 				<core-toolbar id="core_toolbar">
 				</core-toolbar>
+	
 				<core-menu selected="Downloads" valueattr="label" selectedindex="0" id="core_menu" theme="core-light-theme">
 					<core-item id="core_item" icon="file-download" label="Downloads" horizontal center layout active></core-item>
 					<core-item id="core_item1" icon="folder-open" label="Files" horizontal center layout></core-item>
 					<core-item id="core_item1" icon="settings" label="Settings" horizontal center layout></core-item>
 				</core-menu>
+				
 			</core-header-panel>
 			
-			<div id="div" tool>getdown</div>
+			<core-toolbar tool id="content-toolbar">
+				<span flex>getdown</span>
+				<core-icon-button icon="add" on-click="{{onAddDownloadButtonClicked}}"></core-icon-button>
+			</core-toolbar>
 			
-			<section id="section" class="content">
-				
-				<!-- Add Link Form -->
-				<add-download-form></add-download-form>
-				
-				<!-- Download List -->
-				<download-list-view></download-list-view>
-				
-			</section>
+			<!--  application views -->
+			<download-list-view></download-list-view>
+		
+			<!--  dialogs -->
+			<add-download-dialog id="add_download_dialog"></add-download-dialog>
+		
 		</core-scaffold>
 	
 	</template>
 	
-	<script>
-	
-	    Polymer({
-	      
-	    });
-	
-	</script>
 </polymer-element>

@@ -71,11 +71,11 @@ public class XhamsterContentLocationResolver implements ContentLocationResolver 
 		LOGGER.debug("parse xhamster mediaplayer page for content url");
 
 		Document viewerPageDocument = Jsoup.parse(viewerPageContent);
-
 		Element videoElement = viewerPageDocument.getElementsByTag("video").first();
-
 		String contentUrl = videoElement.attr("file");
+
 		LOGGER.debug("parsed content url" + contentUrl + " from xhamster mediaplayer page");
+
 		return contentUrl;
 	}
 }
