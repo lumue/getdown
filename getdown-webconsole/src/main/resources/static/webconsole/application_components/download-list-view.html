@@ -1,0 +1,83 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
+<link rel="import" href="../bower_components/core-icons/av-icons.html">
+<link rel="import" href="../bower_components/core-icon/core-icon.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+<link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
+<link rel="import" href="../bower_components/core-signals/core-signals.html">
+
+<script src="download-list-view.js"></script>
+
+<polymer-element name="download-list-view">
+
+	<template>
+	
+		<style>
+			#list-item-action {
+				padding: 10px;
+			}
+			
+			.h1 {
+				font-size: 18px;
+			}
+			
+			#list-item-status {
+				padding: 10px;
+				width: 100%;
+			}
+			
+			#paper_shadow {
+				margin: 10px;
+			}
+			#content-toolbar{ 
+				background-color: #526E9C;
+				width: 100%;
+				margin: 0px;
+   			}
+   			#section {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+			} 
+		</style>
+	
+		<core-signals on-core-signal-download-added="{{reload}}"></core-signals>	
+			
+		<section id="section" class="content">
+		
+			<template repeat="{{download in downloads}}">
+			
+				<paper-shadow id="paper_shadow">
+					<div id="list-item" start one flex horizontal layout start-justified>
+					
+						<section id="list-item-action">
+							<paper-fab icon="av:pause" id="paper_fab" start></paper-fab>
+						</section>
+						
+						<section id="list-item-status">
+							<h1 id="h1">{{download.name}}</h1>
+							<p id="p">{{download.state}}</p>
+							<paper-progress step="1" value="{{(download.progress / download.size)*100}}" id="paper_progress"></paper-progress>
+						</section>
+						
+						<section id="list-item-actions">
+							<core-icon icon="reorder" id="core_icon"></core-icon>
+						</section>
+						
+					</div>
+				</paper-shadow>
+						
+			</template>
+		
+		</section>
+	
+	</template>
+
+	
+
+</polymer-element>

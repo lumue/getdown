@@ -1,5 +1,9 @@
 rootProject.name = 'getdown'
-include (			'getdown-application',
-				'getdown-common',
-				'getdown-hosts-sc',
-				'getdown-hosts-xh')
+
+include (
+	  'getdown-application',
+	  'getdown-common',
+	  'getdown-webconsole',
+	  'getdown-hosts-sc',
+	  'getdown-hosts-xh'
+)
