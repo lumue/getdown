@@ -1,5 +1,4 @@
-sourceCompatibility = jdk_version
-targetCompatibility = jdk_version
+
 
 dependencies {
     	compile project(':getdown-common')

@@ -11,14 +11,11 @@ buildscript {
 
 
 //plugins
-apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'spring-boot'
 
 
-//java configuration
-sourceCompatibility = jdk_version
-targetCompatibility = jdk_version
+
 
 
 mainClassName = 'io.github.lumue.getdown.application.Application'
