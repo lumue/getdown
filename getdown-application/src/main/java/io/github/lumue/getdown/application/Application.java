@@ -1,9 +1,10 @@
 package io.github.lumue.getdown.application;
 
 import io.github.lumue.getdown.job.AsyncDownloadJobRunner;
+import io.github.lumue.getdown.job.DownloadJobRepository;
 import io.github.lumue.getdown.job.DownloadJobRunner;
 import io.github.lumue.getdown.job.DownloadService;
-import io.github.lumue.getdown.job.VolatileDownloadJobRepository;
+import io.github.lumue.getdown.job.SingleJsonFileDownloadJobRepository;
 import io.github.lumue.getdown.resolver.ContentLocationResolverRegistry;
 
 import java.util.concurrent.ExecutorService;
@@ -39,8 +40,13 @@ public class Application {
 	}
 
 	@Bean
-	DownloadService downloadService(DownloadJobRunner downloadJobRunner) {
-		return new DownloadService(new VolatileDownloadJobRepository(), downloadJobRunner);
+	DownloadService downloadService(DownloadJobRepository downloadJobRepository, DownloadJobRunner downloadJobRunner) {
+		return new DownloadService(downloadJobRepository, downloadJobRunner);
+	}
+
+	@Bean
+	DownloadJobRepository downloadJobRepository(@Value("${getdown.path.repository}") String repositoryPath) {
+		return new SingleJsonFileDownloadJobRepository(repositoryPath);
 	}
 
 	@Bean

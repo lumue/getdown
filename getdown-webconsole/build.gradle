@@ -1,0 +1,11 @@
+apply plugin: 'eclipse-wtp'
+
+eclipse {
+	project {
+		natures 'org.eclipse.wst.jsdt.core.jsNature'
+		natures 'org.eclipse.wst.common.project.facet.core.nature'
+		
+		buildCommand 'org.eclipse.wst.jsdt.core.javascriptValidator'
+		buildCommand 'org.eclipse.wst.common.project.facet.core.builder'
+	}
+}

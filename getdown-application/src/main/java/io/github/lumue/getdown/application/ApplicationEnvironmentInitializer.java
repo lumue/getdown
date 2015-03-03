@@ -22,6 +22,8 @@ public class ApplicationEnvironmentInitializer implements InitializingBean{
 	private FileSystemResource logPath;
 	@Value("${getdown.path.download}")
 	private FileSystemResource downloadPath;
+	@Value("${getdown.path.repository}")
+	private FileSystemResource repositoryPath;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -33,6 +35,7 @@ public class ApplicationEnvironmentInitializer implements InitializingBean{
 		createIfNotExists(configPath);
 		createIfNotExists(logPath);
 		createIfNotExists(downloadPath);
+		createIfNotExists(repositoryPath);
 	}
 
 	private void createIfNotExists(FileSystemResource fileSystemResource) {

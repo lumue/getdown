@@ -1,5 +1,4 @@
-sourceCompatibility = jdk_version
-targetCompatibility = jdk_version
+
 
 dependencies {
 	
@@ -9,8 +8,3 @@ dependencies {
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.3.3'
 	
 }
-
-test {
-    systemProperties 'property': 'value'
-}
-

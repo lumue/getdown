@@ -1,0 +1,35 @@
+<!-- this component accepts the url for a new download job -->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/core-signals/core-signals.html">
+
+<script src="add-download-dialog.js"></script>
+
+<polymer-element name="add-download-dialog">
+
+	<template>
+	
+		<style>
+			html /deep/ paper-dialog {
+				color: green;
+			}
+			
+			html /deep/ paper-dialog::shadow #scroller {
+				height: 300px;
+				width: 300px;
+			}
+		</style>
+	
+		 <paper-dialog heading="Add Download" id="adddownloaddialog">
+			 <p>enter download location</p>
+			 <p><paper-input label="url" id="add-download-input" value="{{input}}" start one flex></paper-input></p>
+			<paper-button dismissive on-click="{{onCancelClicked}}">Cancel</paper-button>
+			<paper-button affirmative autofocus on-click="{{onAcceptClicked}}">Accept</paper-button>
+		</paper-dialog>
+	
+	</template>
+
+</polymer-element>

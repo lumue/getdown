@@ -1,11 +1,14 @@
 package io.github.lumue.getdown.job;
 
 import io.github.lumue.getdown.downloader.DownloadProgressListener;
+import io.github.lumue.getdown.job.DownloadJob.DownloadJobHandle;
+import io.github.lumue.getdown.persistence.HasIdentity;
+import io.github.lumue.getdown.persistence.ObjectBuilder;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-public interface DownloadJob {
+public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
 	public interface DownloadJobHandle {
 		public static DownloadJobHandle create(String key) {
@@ -16,7 +19,15 @@ public interface DownloadJob {
 	static class DownloadJobHandleImpl implements DownloadJobHandle, Serializable {
 		
 		private static final long serialVersionUID = -7582907691952041979L;
-		private final String key;
+		private String key;
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
+		}
 
 		DownloadJobHandleImpl() {
 			this(UUID.randomUUID().toString());
@@ -124,7 +135,7 @@ public interface DownloadJob {
 
 	}
 
-	public static class DownloadJobBuilder {
+	public static class DownloadJobBuilder implements ObjectBuilder<DownloadJob> {
 		private DownloadProgressListener progressListener=new DownloadProgressListener();
 		private String outputFilename;
 		private String url;
@@ -144,11 +155,13 @@ public interface DownloadJob {
 			return this;
 		}
 
-		DownloadJob build() {
+		@Override
+		public DownloadJob build() {
 			return new DownloadJobImpl(url, outputFilename, progressListener);
 		}
 	}
 
+	@Override
 	DownloadJobHandle getHandle();
 
 	DownloadProgressListener getProgressListener();

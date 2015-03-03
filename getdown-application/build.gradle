@@ -11,38 +11,38 @@ buildscript {
 
 
 //plugins
-apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'spring-boot'
 
 
-//java configuration
-sourceCompatibility = jdk_version
-targetCompatibility = jdk_version
+
+
 
 mainClassName = 'io.github.lumue.getdown.application.Application'
 
 dependencies {
-	
-	compile project(':getdown-common')
+	compile project(':getdown-common')	
+	compile project(':getdown-webconsole')
 	compile project(':getdown-hosts-sc')
+	compile project(':getdown-hosts-xh')
+	
 	
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
 	compile("org.springframework.boot:spring-boot-starter-actuator")
+
+	
+  
 	
 	testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 
-//dart tasks
-task pubBuild(type:Exec) {
-	workingDir 'src/main/dart'
-	commandLine 'pub','build','web','--output','../../../src/main/resources/static','--mode','debug'
+eclipse {
+		project { 
+			natures 'org.springframework.ide.eclipse.core.springnature'
+			buildCommand 'org.springframework.ide.eclipse.core.springbuilder'		
+		}
 }
 
-task pubGet(type:Exec) {
-	workingDir 'src/main/dart'
-	commandLine 'pub','get'
-}
 
