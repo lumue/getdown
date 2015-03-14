@@ -20,7 +20,7 @@ public class HttpContentDownloader implements ContentDownloader {
 	
 
 	@Override
-	public void downloadContent(URI url, OutputStream targetStream, DownloadProgressListener progress) throws IOException {
+	public void downloadContent(URI url, OutputStream targetStream, DownloadProgress progress) throws IOException {
 
 
 		try {

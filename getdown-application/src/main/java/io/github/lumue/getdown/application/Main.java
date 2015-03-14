@@ -3,7 +3,7 @@ package io.github.lumue.getdown.application;
 import io.github.lumue.getdown.downloader.AsyncContentDownloader;
 import io.github.lumue.getdown.downloader.ContentDownloader;
 import io.github.lumue.getdown.downloader.ContentDownloader.DownloadState;
-import io.github.lumue.getdown.downloader.DownloadProgressListener;
+import io.github.lumue.getdown.downloader.DownloadProgress;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +22,7 @@ public class Main {
 
 		File file = new File(filename);
 		OutputStream targetStream;
-		DownloadProgressListener progress = new DownloadProgressListener();
+		DownloadProgress progress = new DownloadProgress();
 
 		try {
 			targetStream = new FileOutputStream(file);

@@ -24,7 +24,8 @@ import com.google.api.client.util.Strings;
 
 
 
-public class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>, K, V extends HasIdentity<K>> implements ObjectRepository<B, K, V> {
+public abstract class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>, K, V extends HasIdentity<K>> implements
+		ObjectRepository<B, K, V> {
 
 	private final String filename;
 
@@ -85,8 +86,8 @@ public class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>, K, V ext
 
 		try {
 
-			List<V> objects = Arrays.asList(JsonUtil.deserializeBeans(new TypeReference<V[]>() {
-			}, filecontent));
+			TypeReference<V[]> typeReference = newTypeReference();
+			List<V> objects = Arrays.asList(JsonUtil.deserializeBeans(typeReference, filecontent));
 			objectMap.clear();
 			objects.forEach(object -> objectMap.put(object.getHandle(), object));
 
@@ -97,6 +98,10 @@ public class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>, K, V ext
 
 
 	}
+
+
+
+	protected abstract TypeReference<V[]> newTypeReference();
 
 
 

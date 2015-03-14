@@ -32,12 +32,14 @@ public interface DownloadJobView extends Serializable {
 
 			@Override
 			public Long getSize() {
-				return (download.getProgressListener()!=null)?download.getProgressListener().getSize():1;
+				// TODO implement
+				return 1L;
 			}
 
 			@Override
 			public Long getProgress() {
-				return (download.getProgressListener()!=null)?download.getProgressListener().getDownloadedSize():0;
+				// TODO implement
+				return 0L;
 			}
 
 			@Override
@@ -47,7 +49,7 @@ public interface DownloadJobView extends Serializable {
 
 			@Override
 			public String getState() {
-				return download.getProgressListener().getState().name();
+				return download.getProgress().getState().name();
 			}
 			
 		};

@@ -1,24 +1,26 @@
 package io.github.lumue.getdown.job;
 
-import io.github.lumue.getdown.downloader.DownloadProgressListener;
+import io.github.lumue.getdown.downloader.DownloadProgress;
 import io.github.lumue.getdown.job.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.persistence.HasIdentity;
 import io.github.lumue.getdown.persistence.ObjectBuilder;
+import io.github.lumue.getdown.resolver.ContentLocationResolverRegistry;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
-	public interface DownloadJobHandle {
-		public static DownloadJobHandle create(String key) {
-			return new DownloadJobHandleImpl(key);
-		}
-	}
 
-	static class DownloadJobHandleImpl implements DownloadJobHandle, Serializable {
-		
+	static class DownloadJobHandle implements Serializable {
+
 		private static final long serialVersionUID = -7582907691952041979L;
+
+		@JsonProperty("key")
 		private String key;
 
 		public String getKey() {
@@ -29,11 +31,12 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 			this.key = key;
 		}
 
-		DownloadJobHandleImpl() {
+		DownloadJobHandle() {
 			this(UUID.randomUUID().toString());
 		}
 
-		public DownloadJobHandleImpl(String key) {
+		@JsonCreator
+		public DownloadJobHandle(@JsonProperty("key") String key) {
 			this.key = key;
 		}
 
@@ -53,7 +56,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			DownloadJobHandleImpl other = (DownloadJobHandleImpl) obj;
+			DownloadJobHandle other = (DownloadJobHandle) obj;
 			if (key == null) {
 				if (other.key != null)
 					return false;
@@ -69,12 +72,65 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
 	}
 
-	static class DownloadJobImpl implements DownloadJob, Serializable {
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -6228176038070877982L;
+
+	@Override
+	public DownloadJobHandle getHandle();
+
+	public DownloadJobProgress getProgress();
+
+	public String getOutputFilename();
+
+	public String getUrl();
+
+	public DownloadJobProgress run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry);
+
+	public static class DownloadJobProgress {
+
+		public static enum DownloadJobState {
+			WAITING, RUNNING, ERROR, FINISHED;
+		}
+
+		private DownloadJobState downloadJobState = DownloadJobState.WAITING;
+
+		private Optional<DownloadProgress> downloadProgress = Optional.empty();
+
+		private Optional<String> message = Optional.empty();
+
+		private Optional<Throwable> error = Optional.empty();
+
+		public DownloadJobState getState() {
+			return downloadJobState;
+		}
+
+		public void error(Exception e) {
+			downloadJobState = downloadJobState.ERROR;
+			message = Optional.of(e.getLocalizedMessage());
+		}
+	}
+
+	public abstract static class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {
+		DownloadJobProgress progressListener = new DownloadJobProgress();
+		String outputFilename;
+		String url;
+
+		public AbstractDownloadJobBuilder withProgressListener(DownloadJobProgress progressListener) {
+			this.progressListener = progressListener;
+			return this;
+		}
+
+		public AbstractDownloadJobBuilder withOutputFilename(String outputFilename) {
+			this.outputFilename = outputFilename;
+			return this;
+		}
+
+		public AbstractDownloadJobBuilder withUrl(String url) {
+			this.url = url;
+			return this;
+		}
+	}
+
+	public abstract class AbstractDownloadJob implements DownloadJob, Serializable {
 
 		@Override
 		public int hashCode() {
@@ -92,7 +148,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			DownloadJobImpl other = (DownloadJobImpl) obj;
+			AbstractDownloadJob other = (AbstractDownloadJob) obj;
 			if (handle == null) {
 				if (other.handle != null)
 					return false;
@@ -101,16 +157,37 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 			return true;
 		}
 
-		private final DownloadJobHandle handle = new DownloadJobHandleImpl();
-		private final DownloadProgressListener progressListener;
+		@JsonProperty("handle")
+		private final DownloadJobHandle handle;
+		@JsonProperty("progressListener")
+		private final DownloadJobProgress progressListener;
+		@JsonProperty("outputFilename")
 		private final String outputFilename;
+		@JsonProperty("url")
 		private final String url;
 
-		DownloadJobImpl(String url, String outputFilename, DownloadProgressListener progressListener) {
+		@JsonCreator
+		private AbstractDownloadJob(
+				@JsonProperty("url") String url,
+				@JsonProperty("outputFilename") String outputFilename,
+				@JsonProperty("progressListener") DownloadJobProgress progressListener,
+				@JsonProperty("handle") DownloadJobHandle handle) {
 			super();
 			this.progressListener = progressListener;
 			this.outputFilename = outputFilename;
 			this.url = url;
+			this.handle = handle;
+		}
+
+		public AbstractDownloadJob(
+				String url,
+				String outputFilename,
+				DownloadJobProgress progressListener) {
+			super();
+			this.progressListener = progressListener;
+			this.outputFilename = outputFilename;
+			this.url = url;
+			this.handle = new DownloadJobHandle();
 		}
 
 		@Override
@@ -119,7 +196,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 		}
 
 		@Override
-		public DownloadProgressListener getProgressListener() {
+		public DownloadJobProgress getProgress() {
 			return progressListener;
 		}
 
@@ -134,40 +211,5 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 		}
 
 	}
-
-	public static class DownloadJobBuilder implements ObjectBuilder<DownloadJob> {
-		private DownloadProgressListener progressListener=new DownloadProgressListener();
-		private String outputFilename;
-		private String url;
-
-		public DownloadJobBuilder withProgressListener(DownloadProgressListener progressListener) {
-			this.progressListener = progressListener;
-			return this;
-		}
-
-		public DownloadJobBuilder withOutputFilename(String outputFilename) {
-			this.outputFilename = outputFilename;
-			return this;
-		}
-
-		public DownloadJobBuilder withUrl(String url) {
-			this.url = url;
-			return this;
-		}
-
-		@Override
-		public DownloadJob build() {
-			return new DownloadJobImpl(url, outputFilename, progressListener);
-		}
-	}
-
-	@Override
-	DownloadJobHandle getHandle();
-
-	DownloadProgressListener getProgressListener();
-
-	String getOutputFilename();
-
-	String getUrl();
 
 }

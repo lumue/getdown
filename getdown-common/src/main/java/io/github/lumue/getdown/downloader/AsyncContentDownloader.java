@@ -26,7 +26,7 @@ public class AsyncContentDownloader implements ContentDownloader {
 	}
 
 	@Override
-	public void downloadContent(URI url, final OutputStream targetStream, final DownloadProgressListener progress) {
+	public void downloadContent(URI url, final OutputStream targetStream, final DownloadProgress progress) {
 
 		this.executor.execute(new Runnable() {
 

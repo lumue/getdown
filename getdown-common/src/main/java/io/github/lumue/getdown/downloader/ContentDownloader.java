@@ -7,7 +7,7 @@ import java.net.URI;
 public interface ContentDownloader {
 
 	public enum DownloadState {
-		PENDING, RESOLVING, DOWNLOADING, PAUSED, CANCELLED, ERROR, FINISHED;
+		DOWNLOADING, WAITING, CANCELLED, ERROR, FINISHED;
 	}
 
 	
@@ -20,10 +20,10 @@ public interface ContentDownloader {
 	 *            propagate state to
 	 * @param downloadProgressListener
 	 * 
-	 *            if a {@link DownloadProgressListener} is provided, it should
+	 *            if a {@link DownloadProgress} is provided, it should
 	 *            be updated accordingly during downloads
 	 * 
 	 * @throws IOException
 	 */
-	public void downloadContent(URI url, OutputStream targetStream, DownloadProgressListener downloadProgressListener) throws IOException;
+	public void downloadContent(URI url, OutputStream targetStream, DownloadProgress downloadProgressListener) throws IOException;
 }

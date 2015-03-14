@@ -10,13 +10,13 @@ import java.util.UUID;
  * @author lm
  *
  */
-public class DownloadProgressListener {
+public class DownloadProgress {
 
-	public DownloadProgressListener() {
+	public DownloadProgress() {
 		super();
 	}
 
-	private DownloadState state = DownloadState.PENDING;
+	private DownloadState state = DownloadState.WAITING;
 	private Long size = 1L; // null = unknown
 	private long downloadedSize = 0;
 	private Throwable error;
@@ -71,8 +71,5 @@ public class DownloadProgressListener {
 		this.size = size;
 	}
 
-	public void resolveContentLocation() {
-		this.state = DownloadState.RESOLVING;
-	}
 
 }

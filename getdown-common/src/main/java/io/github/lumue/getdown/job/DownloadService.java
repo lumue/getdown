@@ -1,7 +1,8 @@
 package io.github.lumue.getdown.job;
 
-import io.github.lumue.getdown.job.DownloadJob.DownloadJobBuilder;
 import io.github.lumue.getdown.job.DownloadJob.DownloadJobHandle;
+import io.github.lumue.getdown.job.HttpDownloadJob.HttpDownloadJobBuilder;
+import io.github.lumue.getdown.persistence.ObjectBuilder;
 
 import java.net.URI;
 
@@ -27,7 +28,7 @@ public class DownloadService {
 
 	public DownloadJob addDownload(final String url) {
 		String filename = resolveFilename(url);
-		DownloadJobBuilder jobBuilder = new DownloadJobBuilder().withUrl(url).withOutputFilename(filename);
+		ObjectBuilder<DownloadJob> jobBuilder = new HttpDownloadJobBuilder().withUrl(url).withOutputFilename(filename);
 		return jobRepository.create(jobBuilder);
 	}
 
