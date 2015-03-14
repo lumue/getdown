@@ -110,14 +110,8 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 	}
 
 	public abstract static class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {
-		DownloadJobProgress progressListener = new DownloadJobProgress();
 		String outputFilename;
 		String url;
-
-		public AbstractDownloadJobBuilder withProgressListener(DownloadJobProgress progressListener) {
-			this.progressListener = progressListener;
-			return this;
-		}
 
 		public AbstractDownloadJobBuilder withOutputFilename(String outputFilename) {
 			this.outputFilename = outputFilename;
@@ -160,7 +154,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 		@JsonProperty("handle")
 		private final DownloadJobHandle handle;
 		@JsonProperty("progressListener")
-		private final DownloadJobProgress progressListener;
+		private final DownloadJobProgress progress;
 		@JsonProperty("outputFilename")
 		private final String outputFilename;
 		@JsonProperty("url")
@@ -170,10 +164,10 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 		private AbstractDownloadJob(
 				@JsonProperty("url") String url,
 				@JsonProperty("outputFilename") String outputFilename,
-				@JsonProperty("progressListener") DownloadJobProgress progressListener,
+				@JsonProperty("progress") DownloadJobProgress progress,
 				@JsonProperty("handle") DownloadJobHandle handle) {
 			super();
-			this.progressListener = progressListener;
+			this.progress = progress;
 			this.outputFilename = outputFilename;
 			this.url = url;
 			this.handle = handle;
@@ -181,10 +175,9 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
 		public AbstractDownloadJob(
 				String url,
-				String outputFilename,
-				DownloadJobProgress progressListener) {
+				String outputFilename) {
 			super();
-			this.progressListener = progressListener;
+			this.progress = new DownloadJobProgress();
 			this.outputFilename = outputFilename;
 			this.url = url;
 			this.handle = new DownloadJobHandle();
@@ -197,7 +190,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
 		@Override
 		public DownloadJobProgress getProgress() {
-			return progressListener;
+			return progress;
 		}
 
 		@Override

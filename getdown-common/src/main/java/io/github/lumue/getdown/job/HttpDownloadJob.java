@@ -1,7 +1,6 @@
 package io.github.lumue.getdown.job;
 
 import io.github.lumue.getdown.downloader.ContentDownloader;
-import io.github.lumue.getdown.downloader.ContentDownloader.DownloadState;
 import io.github.lumue.getdown.downloader.HttpContentDownloader;
 import io.github.lumue.getdown.job.DownloadJob.AbstractDownloadJob;
 import io.github.lumue.getdown.resolver.ContentLocation;
@@ -23,8 +22,8 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 	private ContentDownloader downloader = new HttpContentDownloader();
 
-	private HttpDownloadJob(String url, String outputFilename, DownloadJobProgress progressListener) {
-		super(url, outputFilename, progressListener);
+	private HttpDownloadJob(String url, String outputFilename) {
+		super(url, outputFilename);
 	}
 
 	@Override
@@ -37,16 +36,11 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 			OutputStream outStream = new FileOutputStream(downloadPath + File.separator
 					+ contentLocation.getFilename());
 			downloader.downloadContent(URI.create(contentLocation.getUrl()), outStream, null);
-
-			while (!DownloadState.FINISHED.equals(getProgress().getState())) {
-				Thread.sleep(500);
-			}
-
 			outStream.flush();
 			outStream.close();
 			LOGGER.debug("finished download for url " + getUrl());
 
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e) {
 			getProgress().error(e);
 			LOGGER.error("Error running Job " + this + " :", e);
 		}
@@ -79,7 +73,7 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 		@Override
 		public DownloadJob build() {
-			return new HttpDownloadJob(this.url, this.outputFilename, this.progressListener);
+			return new HttpDownloadJob(this.url, this.outputFilename);
 		}
 
 	}
