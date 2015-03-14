@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,8 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 	}
 
 	@Override
-	public DownloadJobProgress run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry) {
+	public DownloadJobProgress run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry,
+			DownloadJobProgressListener downloadJobProgressListener) {
 		try {
 			LOGGER.debug("start download for url " + getUrl());
 
@@ -35,7 +37,15 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 			OutputStream outStream = new FileOutputStream(downloadPath + File.separator
 					+ contentLocation.getFilename());
-			downloader.downloadContent(URI.create(contentLocation.getUrl()), outStream, null);
+
+			downloader.downloadContent(URI.create(contentLocation.getUrl()), outStream,
+					downloadProgress -> {
+						this.getProgress().getDownloadProgress().orElseGet(() -> {
+							this.getProgress().setDownloadProgress(Optional.of(downloadProgress));
+							return downloadProgress;
+						});
+					});
+
 			outStream.flush();
 			outStream.close();
 			LOGGER.debug("finished download for url " + getUrl());

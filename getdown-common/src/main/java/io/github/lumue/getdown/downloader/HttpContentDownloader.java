@@ -19,36 +19,49 @@ public class HttpContentDownloader implements ContentDownloader {
 	private static final HttpRequestFactory REQUEST_FACTORY = HTTP_TRANSPORT.createRequestFactory();
 	
 
-	@Override
-	public void downloadContent(URI url, OutputStream targetStream, DownloadProgress progress) throws IOException {
 
+	@Override
+	public void downloadContent(URI url, OutputStream targetStream, DownloadProgressListener progressListener)
+			throws IOException {
+
+		final DownloadProgress progress = new DownloadProgress();
 
 		try {
 			HttpRequest request = REQUEST_FACTORY.buildGetRequest(new GenericUrl(url));
 			HttpResponse response = request.execute();
 			Long size = response.getHeaders().getContentLength();
-			if (progress != null){
-				progress.setSize(size);
-				progress.start();
+			progress.setSize(size);
+			progress.start();
+			if (progressListener != null) {
+				progressListener.onChange(progress);
 			}
 			InputStream inputStream = response.getContent();
 			int count;
 			byte[] buffer = new byte[1024 * 512];
 			while ((count = inputStream.read(buffer)) > 0) {
 				targetStream.write(buffer, 0, count);
-				if (progress != null)
-					progress.increaseDownloadedSize(count);
+				progress.increaseDownloadedSize(count);
+				if (progressListener != null) {
+					progressListener.onChange(progress);
+				}
 			}
 		} catch (IOException e) {
 			
-			if (progress != null)
+
 				progress.error(e);
 			
+			if (progressListener != null) {
+				progressListener.onChange(progress);
+			}
+
 			throw e;
 		}
 
-		if (progress != null)
 			progress.finish();
+
+		if (progressListener != null) {
+			progressListener.onChange(progress);
+		}
 
 	}
 

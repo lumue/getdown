@@ -1,8 +1,8 @@
 package io.github.lumue.getdown.web;
 
 
+import io.github.lumue.getdown.application.DownloadService;
 import io.github.lumue.getdown.job.DownloadJob;
-import io.github.lumue.getdown.job.DownloadService;
 import io.github.lumue.getdown.util.StreamUtils;
 
 import java.util.stream.Collectors;

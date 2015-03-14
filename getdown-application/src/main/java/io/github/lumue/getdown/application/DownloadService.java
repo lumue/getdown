@@ -1,5 +1,8 @@
-package io.github.lumue.getdown.job;
+package io.github.lumue.getdown.application;
 
+import io.github.lumue.getdown.job.DownloadJob;
+import io.github.lumue.getdown.job.DownloadJobRepository;
+import io.github.lumue.getdown.job.HttpDownloadJob;
 import io.github.lumue.getdown.job.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.job.HttpDownloadJob.HttpDownloadJobBuilder;
 import io.github.lumue.getdown.persistence.ObjectBuilder;
@@ -17,10 +20,10 @@ public class DownloadService {
 
 	private final DownloadJobRepository jobRepository;
 
-	private final DownloadJobRunner downloadJobRunner;
+	private final AsyncDownloadJobRunner downloadJobRunner;
 
 	
-	public DownloadService(DownloadJobRepository jobRepository, DownloadJobRunner downloadJobRunner) {
+	public DownloadService(DownloadJobRepository jobRepository, AsyncDownloadJobRunner downloadJobRunner) {
 		super();
 		this.jobRepository = jobRepository;
 		this.downloadJobRunner = downloadJobRunner;

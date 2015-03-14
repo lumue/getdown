@@ -6,6 +6,11 @@ import java.net.URI;
 
 public interface ContentDownloader {
 
+	@FunctionalInterface
+	public interface DownloadProgressListener {
+		public void onChange(DownloadProgress downloadProgress);
+	}
+
 	public enum DownloadState {
 		DOWNLOADING, WAITING, CANCELLED, ERROR, FINISHED;
 	}
@@ -25,5 +30,6 @@ public interface ContentDownloader {
 	 * 
 	 * @throws IOException
 	 */
-	public void downloadContent(URI url, OutputStream targetStream, DownloadProgress downloadProgressListener) throws IOException;
+	public void downloadContent(URI url, OutputStream targetStream, DownloadProgressListener downloadProgressListener)
+			throws IOException;
 }

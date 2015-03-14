@@ -15,6 +15,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
+	@Override
+	public DownloadJobHandle getHandle();
+
+	public DownloadJobProgress getProgress();
+
+	public String getOutputFilename();
+
+	public String getUrl();
+
+	public DownloadJobProgress run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry,
+			DownloadJobProgressListener progressListener);
+
+	@FunctionalInterface
+	public interface DownloadJobProgressListener {
+		public void onChange(DownloadJobProgress downloadProgress);
+	}
 
 	static class DownloadJobHandle implements Serializable {
 
@@ -74,16 +90,6 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
 
 
-	@Override
-	public DownloadJobHandle getHandle();
-
-	public DownloadJobProgress getProgress();
-
-	public String getOutputFilename();
-
-	public String getUrl();
-
-	public DownloadJobProgress run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry);
 
 	public static class DownloadJobProgress {
 
@@ -107,6 +113,27 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 			downloadJobState = downloadJobState.ERROR;
 			message = Optional.of(e.getLocalizedMessage());
 		}
+
+		public DownloadJobState getDownloadJobState() {
+			return downloadJobState;
+		}
+
+		public Optional<DownloadProgress> getDownloadProgress() {
+			return downloadProgress;
+		}
+
+		public Optional<String> getMessage() {
+			return message;
+		}
+
+		public Optional<Throwable> getError() {
+			return error;
+		}
+
+		public void setDownloadProgress(Optional<DownloadProgress> of) {
+			this.downloadProgress = downloadProgress;
+		}
+
 	}
 
 	public abstract static class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {

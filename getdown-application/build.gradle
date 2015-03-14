@@ -31,7 +31,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-logging")
 	compile("org.springframework.boot:spring-boot-starter-actuator")
 
-	
+	compile("org.projectreactor.spring:reactor-spring-context")
   
 	
 	testCompile("org.springframework.boot:spring-boot-starter-test")

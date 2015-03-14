@@ -26,19 +26,21 @@ public class AsyncContentDownloader implements ContentDownloader {
 	}
 
 	@Override
-	public void downloadContent(URI url, final OutputStream targetStream, final DownloadProgress progress) {
+	public void downloadContent(URI url, final OutputStream targetStream, final DownloadProgressListener progress) {
 
 		this.executor.execute(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					AsyncContentDownloader.this.delegate.downloadContent(url, targetStream, progress);
+					AsyncContentDownloader.this.delegate.downloadContent(url, targetStream,
+							progress);
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
 			}
 		});
+		
 		
 	}
 

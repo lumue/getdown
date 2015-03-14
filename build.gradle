@@ -8,6 +8,7 @@ allprojects {
 	ext {
 		jdk_version='1.8'
 		spring_version='4.1.1.RELEASE'
+		findbugs_version = '3.0.1'
 	}
 
 	repositories {
@@ -43,7 +44,7 @@ allprojects {
 		reportLevel = "high"
 		visitors = ["SwitchFallthrough"]
 		omitVisitors = ["FindNonShortCircuit"]
-		toolVersion = "3.0.1"
+		toolVersion = findbugs_version
 	}
 }
 
