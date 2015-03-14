@@ -33,6 +33,18 @@ allprojects {
 		compile 'org.slf4j:slf4j-api:1.7.7'
 		testCompile 'junit:junit:4.11'
 	}
+	
+	apply plugin: 'findbugs'
+	
+	findbugs {
+		ignoreFailures = true
+		reportsDir = file("$project.buildDir/findbugsReports")
+		effort = "max"
+		reportLevel = "high"
+		visitors = ["SwitchFallthrough"]
+		omitVisitors = ["FindNonShortCircuit"]
+		toolVersion = "3.0.1"
+	}
 }
 
 
