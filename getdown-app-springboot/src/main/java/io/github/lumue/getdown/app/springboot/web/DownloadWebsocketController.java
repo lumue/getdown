@@ -4,7 +4,7 @@ import static reactor.event.selector.Selectors.$;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import reactor.core.Reactor;
@@ -14,13 +14,15 @@ import reactor.event.Event;
 public class DownloadWebsocketController {
 
 	@Autowired
+	private SimpMessagingTemplate template;
+
+	@Autowired
 	public DownloadWebsocketController(final Reactor reactor) {
 		super();
 		reactor.on($("downloads"), this::broadcastJobStateChange);
 	}
 
-	@MessageMapping("/downloads")
-	public DownloadJobView broadcastJobStateChange(Event<DownloadJob> event) {
-		return DownloadJobView.wrap(event.getData());
+	public void broadcastJobStateChange(Event<DownloadJob> event) {
+		template.convertAndSend("/downloads/jobStateChange", DownloadJobView.wrap(event.getData()));
 	}
 }

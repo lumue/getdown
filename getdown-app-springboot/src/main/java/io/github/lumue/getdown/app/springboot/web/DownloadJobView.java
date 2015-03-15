@@ -1,8 +1,10 @@
 package io.github.lumue.getdown.app.springboot.web;
 
+import io.github.lumue.getdown.core.download.downloader.DownloadProgress;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 public interface DownloadJobView extends Serializable {
 	
@@ -32,14 +34,22 @@ public interface DownloadJobView extends Serializable {
 
 			@Override
 			public Long getSize() {
-				// TODO implement
-				return 1L;
+
+				Optional<DownloadProgress> downloadProgress = download.getProgress().getDownloadProgress();
+				if (!downloadProgress.isPresent())
+					return 1L;
+
+				return downloadProgress.get().getSize();
+
 			}
 
 			@Override
 			public Long getProgress() {
-				// TODO implement
-				return 0L;
+				Optional<DownloadProgress> downloadProgress = download.getProgress().getDownloadProgress();
+				if (!downloadProgress.isPresent())
+					return 1L;
+
+				return downloadProgress.get().getDownloadedSize();
 			}
 
 			@Override

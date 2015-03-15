@@ -36,6 +36,19 @@ var Getdown={
 Polymer('getdown-webconsole-application', {
 	
 	ready : function() {	
+		
+		var socket = new SockJS('/ws');
+		stompClient = Stomp.over(socket);
+		
+		stompClient.connect({}, function(frame) {
+			
+			console.log('Connected: ' + frame);
+			
+			stompClient.subscribe('/downloads/jobStateChange', function(message){
+				console.log(message.body);
+			});
+			
+		});
 	},
 
 	onAddDownloadButtonClicked : function(e){

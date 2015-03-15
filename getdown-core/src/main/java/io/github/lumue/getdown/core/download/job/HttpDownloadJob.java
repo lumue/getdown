@@ -48,6 +48,8 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 						});
 
+						downloadJobProgressListener.onChange(getProgress());
+
 					});
 
 			outStream.flush();

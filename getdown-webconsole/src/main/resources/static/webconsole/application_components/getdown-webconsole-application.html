@@ -9,6 +9,9 @@
 <link rel="import" href="../bower_components/core-icons/core-icons.html">
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
 
+<script src="../bower_components/sockjs/sockjs.min.js"></script>
+<script src="../bower_components/stomp-websocket/lib/stomp.min.js"></script>
+
 <!-- project imports -->
 <link rel="import" href="add-download-dialog.html" />
 <link rel="import" href="download-list-view.html" />
@@ -88,7 +91,7 @@
 			</core-toolbar>
 			
 			<!--  application views -->
-			<download-list-view></download-list-view>
+			<download-list-view id="download_list_view"></download-list-view>
 		
 			<!--  dialogs -->
 			<add-download-dialog id="add_download_dialog"></add-download-dialog>
