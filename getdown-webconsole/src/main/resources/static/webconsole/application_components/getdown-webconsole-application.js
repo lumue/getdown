@@ -1,32 +1,53 @@
 var Getdown={
 		
+		downloadWsClient:{
+			
+			connect: function(){
+				
+				var socket = new SockJS('/ws');
+				stompClient = Stomp.over(socket);
+				
+				stompClient.connect({}, function(frame) {
+					
+					stompClient.subscribe('/downloads/jobStateChange', function(message){
+						var parsedMessage=JSON.parse(message.body);
+						var event = new CustomEvent("wsevent-downloads-job-state-change", { "detail": parsedMessage });
+						document.dispatchEvent(event);
+					});
+					
+				});
+			}
+		},
+		
 		downloadHttpClient:{
 			
-			list : function(caller,ondata){
+			list : function(ondata){
 				var xmlhttp = new XMLHttpRequest();
 				var url = "../download/list";
 
 				xmlhttp.onreadystatechange = function() {
 				    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				       ondata(caller,JSON.parse(xmlhttp.responseText));
+				       ondata(JSON.parse(xmlhttp.responseText));
 				    }
 				}
 				xmlhttp.open("GET", url, true);
 				xmlhttp.send();
 			},
 
-			add : function(caller,url,ondata){
+			add : function(url,ondata){
 				var xmlhttp = new XMLHttpRequest();
 				var url = "../download/add?url="+encodeURIComponent(url);
 
 				xmlhttp.onreadystatechange = function() {
 				    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				       ondata(caller,JSON.parse(xmlhttp.responseText));
+				       ondata(JSON.parse(xmlhttp.responseText));
 				    }
 				}
 				xmlhttp.open("PUT", url, true);
 				xmlhttp.send();
-			}
+			},
+			
+			
 
 		}
 }
@@ -36,19 +57,7 @@ var Getdown={
 Polymer('getdown-webconsole-application', {
 	
 	ready : function() {	
-		
-		var socket = new SockJS('/ws');
-		stompClient = Stomp.over(socket);
-		
-		stompClient.connect({}, function(frame) {
-			
-			console.log('Connected: ' + frame);
-			
-			stompClient.subscribe('/downloads/jobStateChange', function(message){
-				console.log(message.body);
-			});
-			
-		});
+		Getdown.downloadWsClient.connect();
 	},
 
 	onAddDownloadButtonClicked : function(e){

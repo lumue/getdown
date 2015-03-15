@@ -19,7 +19,7 @@ public class DownloadWebsocketController {
 	@Autowired
 	public DownloadWebsocketController(final Reactor reactor) {
 		super();
-		reactor.on($("downloads"), this::broadcastJobStateChange);
+		reactor.on($("ws-downloads"), this::broadcastJobStateChange);
 	}
 
 	public void broadcastJobStateChange(Event<DownloadJob> event) {

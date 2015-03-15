@@ -14,11 +14,10 @@ Polymer('add-download-dialog', {
 
 	onAcceptClicked : function(e){
 		this.toggle();
-		Getdown.downloadHttpClient.add(this,this.input,this.onDownloadAdded);
-	},
-	
-	onDownloadAdded : function(caller,data){
-		caller.fire('core-signal',  {name: 'download-added', data: data});
+		var thisView=this;
+		Getdown.downloadHttpClient.add(this.input,function(data){
+			thisView.fire('core-signal',  {name: 'download-added', data: data});
+		});
 	}
 
 });
