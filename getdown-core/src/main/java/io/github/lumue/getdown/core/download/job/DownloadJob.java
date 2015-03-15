@@ -110,7 +110,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 		}
 
 		public void error(Exception e) {
-			downloadJobState = downloadJobState.ERROR;
+			downloadJobState = DownloadJobState.ERROR;
 			message = Optional.of(e.getLocalizedMessage());
 		}
 
@@ -130,8 +130,8 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 			return error;
 		}
 
-		public void setDownloadProgress(Optional<DownloadProgress> of) {
-			this.downloadProgress = downloadProgress;
+		public void setDownloadProgress(DownloadProgress downloadProgress) {
+			this.downloadProgress = Optional.of(downloadProgress);
 		}
 
 	}

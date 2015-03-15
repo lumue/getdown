@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +38,16 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 					+ contentLocation.getFilename());
 
 			downloader.downloadContent(URI.create(contentLocation.getUrl()), outStream,
+
 					downloadProgress -> {
+
 						this.getProgress().getDownloadProgress().orElseGet(() -> {
-							this.getProgress().setDownloadProgress(Optional.of(downloadProgress));
+
+							this.getProgress().setDownloadProgress(downloadProgress);
 							return downloadProgress;
+
 						});
+
 					});
 
 			outStream.flush();
