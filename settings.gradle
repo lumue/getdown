@@ -4,6 +4,5 @@ include (
 	  'getdown-app-springboot',
 	  'getdown-core',
 	  'getdown-webconsole',
-	  'getdown-hosts-common',
-	  'getdown-hosts-xxx'
+	  'getdown-hosts-common'
 )

@@ -24,7 +24,6 @@ dependencies {
 	compile project(':getdown-core')	
 	compile project(':getdown-webconsole')
 	compile project(':getdown-hosts-common')
-	compile project(':getdown-hosts-xxx')
 	
 	
 	compile("org.springframework.boot:spring-boot-starter-web")
