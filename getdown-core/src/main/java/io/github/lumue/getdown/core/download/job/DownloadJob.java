@@ -134,6 +134,24 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 			this.downloadProgress = Optional.of(downloadProgress);
 		}
 
+		public void start() {
+			downloadJobState = DownloadJobState.RUNNING;
+			message = Optional.of("initializing...");
+		}
+
+		public void resolve(String url) {
+			message = Optional.of("resolving " + url);
+		}
+
+		public void download(String url) {
+			message = Optional.of("downloading from " + url);
+		}
+
+		public void finish() {
+			downloadJobState = DownloadJobState.FINISHED;
+			message = Optional.of("");
+		}
+
 	}
 
 	public abstract static class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {

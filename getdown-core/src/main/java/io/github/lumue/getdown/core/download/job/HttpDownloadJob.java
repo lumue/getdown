@@ -31,11 +31,17 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 			DownloadJobProgressListener downloadJobProgressListener) {
 		try {
 			LOGGER.debug("start download for url " + getUrl());
+			getProgress().start();
+			downloadJobProgressListener.onChange(getProgress());
 
+			getProgress().start();
+			downloadJobProgressListener.onChange(getProgress());
 			ContentLocation contentLocation = createContentLocation(contentLocationResolverRegistry);
 
 			OutputStream outStream = new FileOutputStream(downloadPath + File.separator
 					+ contentLocation.getFilename());
+			getProgress().download(contentLocation.getUrl());
+			downloadJobProgressListener.onChange(getProgress());
 
 			downloader.downloadContent(URI.create(contentLocation.getUrl()), outStream,
 
@@ -54,6 +60,10 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 			outStream.flush();
 			outStream.close();
+			
+			getProgress().finish();
+			downloadJobProgressListener.onChange(getProgress());
+			
 			LOGGER.debug("finished download for url " + getUrl());
 
 		} catch (IOException e) {

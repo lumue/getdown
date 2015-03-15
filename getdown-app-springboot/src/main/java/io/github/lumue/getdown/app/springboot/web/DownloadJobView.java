@@ -59,7 +59,14 @@ public interface DownloadJobView extends Serializable {
 
 			@Override
 			public String getState() {
-				return download.getProgress().getState().name();
+
+				Optional<DownloadProgress> downloadProgress = download.getProgress().getDownloadProgress();
+				if (!downloadProgress.isPresent())
+					return "unknown";
+
+				return download.getProgress().getState().name()
+						+ " "
+						+ download.getProgress().getMessage().orElse("");
 			}
 			
 		};
