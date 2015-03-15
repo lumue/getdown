@@ -1,6 +1,7 @@
 package io.github.lumue.getdown.util;
 
 import static org.junit.Assert.assertEquals;
+import io.github.lumue.getdown.core.common.util.JsonUtil;
 
 import java.io.IOException;
 import java.util.Arrays;

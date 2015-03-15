@@ -3,8 +3,8 @@ package io.github.lumue.getdown.hosts;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import io.github.lumue.getdown.resolver.ContentLocation;
-import io.github.lumue.getdown.resolver.ContentLocationResolver;
+import io.github.lumue.getdown.core.download.resolver.ContentLocation;
+import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
 
 import java.io.IOException;
 import java.net.CookieHandler;

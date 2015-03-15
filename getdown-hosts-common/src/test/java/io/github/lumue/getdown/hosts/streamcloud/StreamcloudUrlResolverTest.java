@@ -1,7 +1,7 @@
 package io.github.lumue.getdown.hosts.streamcloud;
 
+import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
 import io.github.lumue.getdown.hosts.AbstractUrlResolverTest;
-import io.github.lumue.getdown.resolver.ContentLocationResolver;
 
 public class StreamcloudUrlResolverTest extends AbstractUrlResolverTest {
 

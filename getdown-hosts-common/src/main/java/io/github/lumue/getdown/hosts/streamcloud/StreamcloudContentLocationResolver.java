@@ -1,8 +1,8 @@
 package io.github.lumue.getdown.hosts.streamcloud;
 
-import io.github.lumue.getdown.resolver.ContentLocation;
-import io.github.lumue.getdown.resolver.ContentLocationResolver;
-import io.github.lumue.getdown.util.JsonUtil;
+import io.github.lumue.getdown.core.common.util.JsonUtil;
+import io.github.lumue.getdown.core.download.resolver.ContentLocation;
+import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
