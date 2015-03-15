@@ -1,8 +1,5 @@
-package io.github.lumue.getdown.application;
+package io.github.lumue.getdown.job;
 
-import io.github.lumue.getdown.job.DownloadJob;
-import io.github.lumue.getdown.job.DownloadJobRepository;
-import io.github.lumue.getdown.job.HttpDownloadJob;
 import io.github.lumue.getdown.job.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.job.HttpDownloadJob.HttpDownloadJobBuilder;
 import io.github.lumue.getdown.persistence.ObjectBuilder;

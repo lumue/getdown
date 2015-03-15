@@ -2,7 +2,7 @@
 
 
 dependencies {
-    	compile project(':getdown-common')
+    	compile project(':getdown-core')
 
 		compile 'javax.inject:javax.inject:1'
 		compile 'org.jsoup:jsoup:1.7.2'

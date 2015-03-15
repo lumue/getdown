@@ -21,18 +21,20 @@ apply plugin: 'spring-boot'
 mainClassName = 'io.github.lumue.getdown.application.Application'
 
 dependencies {
-	compile project(':getdown-common')	
+	compile project(':getdown-core')	
 	compile project(':getdown-webconsole')
-	compile project(':getdown-hosts-sc')
-	compile project(':getdown-hosts-xh')
+	compile project(':getdown-hosts-common')
+	compile project(':getdown-hosts-xxx')
 	
 	
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
 	compile("org.springframework.boot:spring-boot-starter-actuator")
-
+	compile("org.springframework.boot:spring-boot-starter-websocket")
+	
+	compile("org.springframework:spring-messaging")
 	compile("org.projectreactor.spring:reactor-spring-context")
-  
+	compile('io.projectreactor:reactor-core:2.0.0.RC1')
 	
 	testCompile("org.springframework.boot:spring-boot-starter-test")
 }

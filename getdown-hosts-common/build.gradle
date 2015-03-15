@@ -2,12 +2,12 @@
 
 dependencies {
 		
-		compile project(':getdown-common')
+		compile project(':getdown-core')
 
 		compile 'javax.inject:javax.inject:1'
 		compile 'com.google.http-client:google-http-client:1.19.0'
 		compile 'org.jsoup:jsoup:1.7.2'
 		
-		testCompile project(':getdown-common')
+		testCompile project(':getdown-core')
 }
 

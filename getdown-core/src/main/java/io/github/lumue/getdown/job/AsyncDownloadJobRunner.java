@@ -1,6 +1,5 @@
-package io.github.lumue.getdown.application;
+package io.github.lumue.getdown.job;
 
-import io.github.lumue.getdown.job.DownloadJob;
 import io.github.lumue.getdown.resolver.ContentLocationResolverRegistry;
 
 import java.util.concurrent.ExecutorService;

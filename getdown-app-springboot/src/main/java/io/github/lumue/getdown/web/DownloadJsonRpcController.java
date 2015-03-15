@@ -1,8 +1,7 @@
 package io.github.lumue.getdown.web;
 
-
-import io.github.lumue.getdown.application.DownloadService;
 import io.github.lumue.getdown.job.DownloadJob;
+import io.github.lumue.getdown.job.DownloadService;
 import io.github.lumue.getdown.util.StreamUtils;
 
 import java.util.stream.Collectors;
@@ -11,19 +10,27 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import reactor.core.Reactor;
 @RestController
-public class DownloadController {
+public class DownloadJsonRpcController {
+
+	private final DownloadService downloadService;
+
 
 	@Autowired
-	DownloadService downloadService;
+	public DownloadJsonRpcController(DownloadService downloadService, SimpMessagingTemplate messagingTemplate,Reactor reactor) {
+		super();
+		this.downloadService = downloadService;
+	}
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(DownloadController.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(DownloadJsonRpcController.class);
 
 	@RequestMapping(value = "/download/add", method = RequestMethod.PUT)
 	public DownloadJobView addDownload(@RequestParam(value = "url", required = true) String url) {
@@ -45,5 +52,7 @@ public class DownloadController {
 		Stream<DownloadJob> stream = StreamUtils.stream(downloadService.listDownloads());
 		return stream.map(downloadJob -> DownloadJobView.wrap(downloadJob)).collect(Collectors.toList());
 	}
+
+
 
 }

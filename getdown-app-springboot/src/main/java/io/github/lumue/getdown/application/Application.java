@@ -1,6 +1,8 @@
 package io.github.lumue.getdown.application;
 
+import io.github.lumue.getdown.job.AsyncDownloadJobRunner;
 import io.github.lumue.getdown.job.DownloadJobRepository;
+import io.github.lumue.getdown.job.DownloadService;
 import io.github.lumue.getdown.job.SingleJsonFileDownloadJobRepository;
 import io.github.lumue.getdown.resolver.ContentLocationResolverRegistry;
 
