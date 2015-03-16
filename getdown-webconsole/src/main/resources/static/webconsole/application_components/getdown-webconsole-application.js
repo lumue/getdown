@@ -5,7 +5,7 @@ var Getdown={
 			connect: function(){
 				
 				var socket = new SockJS('/ws');
-				stompClient = Stomp.over(socket);
+				var stompClient = Stomp.over(socket);
 				
 				stompClient.connect({}, function(frame) {
 					
