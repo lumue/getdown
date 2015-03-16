@@ -4,6 +4,8 @@ build/
 .project
 .directory
 .gradle/
+null/
+p2/
 bin/
 dartbuild/
 src/main/dart/packages/
