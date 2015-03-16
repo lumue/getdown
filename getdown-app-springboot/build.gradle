@@ -1,11 +1,9 @@
 buildscript {
 	repositories {
-		maven { url "http://repo.spring.io/libs-release" }
-		mavenLocal()
-		mavenCentral()
+		maven { url "http://repo.spring.io/plugins-release" }
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.2.RELEASE")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version")
 	}
 }
 
@@ -14,11 +12,11 @@ buildscript {
 apply plugin: 'application'
 apply plugin: 'spring-boot'
 
-
-
-
-
 mainClassName = 'io.github.lumue.getdown.application.Application'
+
+repositories {
+	maven { url 'http://repo.spring.io/libs-release' }
+  }
 
 dependencies {
 	compile project(':getdown-core')	
@@ -32,8 +30,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-websocket")
 	
 	compile("org.springframework:spring-messaging")
-	compile("org.projectreactor.spring:reactor-spring-context")
-	
+	compile("io.projectreactor.spring:reactor-spring-context:$reactor_version")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 

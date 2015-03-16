@@ -7,8 +7,8 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import reactor.core.Reactor;
-import reactor.event.Event;
+import reactor.bus.Event;
+import reactor.bus.EventBus;
 
 public class AsyncDownloadJobRunner {
 
@@ -18,19 +18,19 @@ public class AsyncDownloadJobRunner {
 
 	private final String downloadPath;
 
-	private final Reactor reactor;
+	private final EventBus eventbus;
 
 
 	private static Logger LOGGER = LoggerFactory.getLogger(AsyncDownloadJobRunner.class);
 
 
 	public AsyncDownloadJobRunner(ExecutorService executorService, ContentLocationResolverRegistry contentLocationResolverRegistry,
-			String downloadPath, Reactor reactor) {
+			String downloadPath, EventBus eventbus) {
 		super();
 		this.executorService = executorService;
 		this.contentLocationResolverRegistry = contentLocationResolverRegistry;
 		this.downloadPath = downloadPath;
-		this.reactor = reactor;
+		this.eventbus = eventbus;
 	}
 
 
@@ -42,7 +42,7 @@ public class AsyncDownloadJobRunner {
 			public void run() {
 				AsyncDownloadJobRunner.LOGGER.debug("starting download for url " + job.getUrl());
 				job.run(downloadPath, contentLocationResolverRegistry, progress -> {
-					reactor.notify("downloads", Event.wrap(job));
+					eventbus.notify("downloads", Event.wrap(job));
 				});
 
 			}

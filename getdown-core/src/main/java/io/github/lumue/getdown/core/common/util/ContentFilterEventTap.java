@@ -2,10 +2,10 @@ package io.github.lumue.getdown.core.common.util;
 
 import java.util.function.Predicate;
 
-import reactor.core.Reactor;
-import reactor.event.Event;
-import reactor.event.selector.Selector;
-import reactor.function.Consumer;
+import reactor.bus.Event;
+import reactor.bus.EventBus;
+import reactor.bus.selector.Selector;
+import reactor.fn.Consumer;
 
 /**
  * 
@@ -20,18 +20,18 @@ import reactor.function.Consumer;
  */
 public class ContentFilterEventTap<T> implements Consumer<Event<T>> {
 
-	private final Reactor reactor;
+	private final EventBus eventbus;
 
 	private final String forwardSelectorKey;
 
 	private final Predicate<T> predicate;
 
-	public ContentFilterEventTap(Reactor reactor, String forwardSelectorKey, Selector selector, Predicate<T> predicate) {
+	public ContentFilterEventTap(EventBus eventbus, String forwardSelectorKey, Selector<?> selector, Predicate<T> predicate) {
 		super();
-		this.reactor = reactor;
+		this.eventbus = eventbus;
 		this.forwardSelectorKey = forwardSelectorKey;
 		this.predicate = predicate;
-		reactor.on(selector, this);
+		eventbus.on(selector, this);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ContentFilterEventTap<T> implements Consumer<Event<T>> {
 		if (!predicate.test(t.getData()))
 			return;
 
-		reactor.notify(forwardSelectorKey, Event.wrap(t.getData()));
+		eventbus.notify(forwardSelectorKey, Event.wrap(t.getData()));
 	}
 
 

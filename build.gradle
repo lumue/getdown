@@ -7,14 +7,14 @@ allprojects {
 
 	ext {
 		jdk_version='1.8'
-		spring_version='4.1.1.RELEASE'
+		spring_boot_version='1.2.2.RELEASE'
 		findbugs_version = '3.0.1'
+		reactor_version = '2.0.0.RC1'
 	}
 
 	repositories {
-		mavenCentral()
 		mavenLocal()
-		maven { url "http://repo.spring.io/libs-release" }
+		mavenCentral()
 	}
 
 

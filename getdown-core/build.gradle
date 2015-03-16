@@ -2,7 +2,7 @@
 
 dependencies {
 	
-	compile 'org.projectreactor:reactor-core:1.1.5.RELEASE'
+	compile "io.projectreactor:reactor-core:$reactor_version"
 	
 	compile 'com.google.http-client:google-http-client:1.19.0'
 	

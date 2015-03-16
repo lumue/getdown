@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import reactor.core.Reactor;
 @RestController
 public class DownloadJsonRpcController {
 
@@ -25,7 +24,7 @@ public class DownloadJsonRpcController {
 
 
 	@Autowired
-	public DownloadJsonRpcController(DownloadService downloadService, SimpMessagingTemplate messagingTemplate,Reactor reactor) {
+	public DownloadJsonRpcController(DownloadService downloadService, SimpMessagingTemplate messagingTemplate) {
 		super();
 		this.downloadService = downloadService;
 	}

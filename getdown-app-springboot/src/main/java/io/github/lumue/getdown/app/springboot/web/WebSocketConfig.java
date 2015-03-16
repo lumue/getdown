@@ -10,7 +10,7 @@ import org.springframework.web.socket.config.annotation.AbstractWebSocketMessage
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
-import reactor.core.Reactor;
+import reactor.bus.EventBus;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -27,9 +27,9 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 	}
 
 	@Bean
-	public ThrottelingDownloadJobEventTap throttelingDownloadJobEventTap(Reactor reactor,
+	public ThrottelingDownloadJobEventTap throttelingDownloadJobEventTap(EventBus eventbus,
 			@Value("${getdown.websocket.broadcastinterval.downloads}") long throttleinterval) {
-		return new ThrottelingDownloadJobEventTap(reactor, "ws-downloads", throttleinterval);
+		return new ThrottelingDownloadJobEventTap(eventbus, "ws-downloads", throttleinterval);
 	}
 
 

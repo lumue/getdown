@@ -17,7 +17,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import reactor.core.Reactor;
+import reactor.Environment;
+import reactor.bus.EventBus;
 import reactor.spring.context.config.EnableReactor;
 
 @ComponentScan(basePackages = "io.github.lumue.getdown")
@@ -39,8 +40,13 @@ public class Application {
 	@Bean
 	public AsyncDownloadJobRunner downloadJobRunner(ExecutorService executorService,
 			ContentLocationResolverRegistry contentLocationResolverRegistry, @Value("${getdown.path.download}") String downloadPath,
-			Reactor reactor) {
-		return new AsyncDownloadJobRunner(executorService, contentLocationResolverRegistry, downloadPath, reactor);
+			EventBus eventbus) {
+		return new AsyncDownloadJobRunner(executorService, contentLocationResolverRegistry, downloadPath, eventbus);
+	}
+
+	@Bean
+	public EventBus reactor(Environment env) {
+		return EventBus.create(env);
 	}
 
 	@Bean

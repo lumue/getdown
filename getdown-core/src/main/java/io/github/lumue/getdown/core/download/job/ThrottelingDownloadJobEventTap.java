@@ -1,6 +1,6 @@
 package io.github.lumue.getdown.core.download.job;
 
-import static reactor.event.selector.Selectors.$;
+import static reactor.bus.selector.Selectors.$;
 import io.github.lumue.getdown.core.common.util.ContentFilterEventTap;
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
 
@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-import reactor.core.Reactor;
+import reactor.bus.EventBus;
+
 
 /**
  * Forwarded nur alle X millisekunden einen neuen Zustand zu einer {@link DownloadJob} instanz
@@ -58,8 +59,8 @@ public class ThrottelingDownloadJobEventTap extends ContentFilterEventTap<Downlo
 
 	}
 
-	public ThrottelingDownloadJobEventTap(Reactor reactor, String forwardSelectorKey, long millisecondsBetweenEventsPerDownloadJob) {
-		super(reactor, forwardSelectorKey, $("downloads"), new DownloadJobThrottle(millisecondsBetweenEventsPerDownloadJob));
+	public ThrottelingDownloadJobEventTap(EventBus eventbus, String forwardSelectorKey, long millisecondsBetweenEventsPerDownloadJob) {
+		super(eventbus, forwardSelectorKey, $("downloads"), new DownloadJobThrottle(millisecondsBetweenEventsPerDownloadJob));
 
 	}
 
