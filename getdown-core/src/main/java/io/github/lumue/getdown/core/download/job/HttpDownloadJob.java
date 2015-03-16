@@ -18,6 +18,11 @@ import org.slf4j.LoggerFactory;
 
 public class HttpDownloadJob extends AbstractDownloadJob {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3487833171703064174L;
+
 	private static Logger LOGGER = LoggerFactory.getLogger(HttpDownloadJob.class);
 
 	private ContentDownloader downloader = new HttpContentDownloader();

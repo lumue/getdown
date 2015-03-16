@@ -12,6 +12,11 @@ import java.io.Serializable;
  */
 public class ContentLocation implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9093477092824536538L;
+
 	private final String url;
 
 	private final String filename;

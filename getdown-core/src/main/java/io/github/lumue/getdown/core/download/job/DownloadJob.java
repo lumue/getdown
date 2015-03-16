@@ -171,6 +171,11 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
 	public abstract class AbstractDownloadJob implements DownloadJob, Serializable {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3831495614060514606L;
+
 		@Override
 		public int hashCode() {
 			final int prime = 31;
