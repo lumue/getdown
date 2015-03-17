@@ -13,3 +13,4 @@ src/main/dart/.pub
 src/main/resources/static/web
 /.nb-gradle/private/
 .directory
+*.jfr
