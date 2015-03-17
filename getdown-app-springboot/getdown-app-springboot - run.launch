@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.springframework.ide.eclipse.boot.launch">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/getdown-app-springboot/src/main/java/io/github/lumue/getdown/app/springboot/application/Application.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="io.github.lumue.getdown.app.springboot.application.Application"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="getdown-app-springboot"/>
+<booleanAttribute key="spring.boot.debug.enable" value="false"/>
+<booleanAttribute key="spring.boot.livebean.enable" value="false"/>
+<stringAttribute key="spring.boot.livebean.port" value="31422"/>
+<stringAttribute key="spring.boot.profile" value=""/>
+</launchConfiguration>
