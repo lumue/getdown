@@ -14,6 +14,7 @@ public interface DownloadJobView extends Serializable {
 	public String getState();
 	public Long getSize();
 	public Long getProgress();
+	public String getMessage();
 	
 	public static DownloadJobView wrap(final DownloadJob download)
 	{
@@ -35,7 +36,7 @@ public interface DownloadJobView extends Serializable {
 			@Override
 			public Long getSize() {
 
-				Optional<DownloadProgress> downloadProgress = download.getProgress().getDownloadProgress();
+				Optional<DownloadProgress> downloadProgress = download.getDownloadProgress();
 				if (!downloadProgress.isPresent())
 					return 1L;
 
@@ -45,7 +46,7 @@ public interface DownloadJobView extends Serializable {
 
 			@Override
 			public Long getProgress() {
-				Optional<DownloadProgress> downloadProgress = download.getProgress().getDownloadProgress();
+				Optional<DownloadProgress> downloadProgress = download.getDownloadProgress();
 				if (!downloadProgress.isPresent())
 					return 1L;
 
@@ -60,13 +61,16 @@ public interface DownloadJobView extends Serializable {
 			@Override
 			public String getState() {
 
-				Optional<DownloadProgress> downloadProgress = download.getProgress().getDownloadProgress();
+				Optional<DownloadProgress> downloadProgress = download.getDownloadProgress();
 				if (!downloadProgress.isPresent())
 					return "unknown";
 
-				return download.getProgress().getState().name()
-						+ " "
-						+ download.getProgress().getMessage().orElse("");
+				return download.getState().name();
+			}
+
+			@Override
+			public String getMessage() {
+				return download.getMessage().orElse("");
 			}
 			
 		};

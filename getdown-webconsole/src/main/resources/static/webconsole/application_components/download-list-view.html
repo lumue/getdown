@@ -30,16 +30,22 @@
 			#list-item-action {
 				padding: 10px;
 				width: 10%;
+				display: flex;
+				flex-direction: column;
 			}
 			
 			#list-item-status {
 				padding: 10px;
 				width: 80%;
+				display: flex;
+				flex-direction: column;
 			}
 			
 			#list-item-actions {
 				padding: 10px;
 				width: 10%;
+				display: flex;
+				flex-direction: column;
 			}
 			
 			#paper_shadow {
@@ -72,9 +78,10 @@
 						</section>
 						
 						<section id="list-item-status">
-							<h1 id="h1">{{download.name}}</h1>
+							<h1 id="h1">{{download.name}}&nbsp;{{download.size}}</h1>
 							<p id="p">{{download.state}}</p>
-							<paper-progress step="1" value="{{(download.progress / download.size)*100}}" id="paper_progress"></paper-progress>
+							<p id="p">{{download.message}}</p>
+							<paper-progress step="1" value="{{(download.progress / download.size)*100}}" id="paper_progress">{{download.progress}}</paper-progress>
 						</section>
 						
 						<section id="list-item-actions">

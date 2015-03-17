@@ -3,7 +3,9 @@ package io.github.lumue.getdown.core.download.job;
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.downloader.DownloadProgress;
+import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob.DownloadJobState;
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
+import io.github.lumue.getdown.core.download.resolver.ContentLocation;
 import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
 
 import java.io.Serializable;
@@ -18,18 +20,26 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 	@Override
 	public DownloadJobHandle getHandle();
 
-	public DownloadJobProgress getProgress();
+	Optional<Throwable> getError();
+
+	Optional<String> getMessage();
+
+	Optional<DownloadProgress> getDownloadProgress();
+
+	public DownloadJobState getState();
 
 	public String getOutputFilename();
 
 	public String getUrl();
+	
+	public Optional<ContentLocation> getContentLocation();
 
-	public DownloadJobProgress run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry,
+	public void run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry,
 			DownloadJobProgressListener progressListener);
 
 	@FunctionalInterface
 	public interface DownloadJobProgressListener {
-		public void onChange(DownloadJobProgress downloadProgress);
+		public void onChange(DownloadJob downloadJob);
 	}
 
 	static class DownloadJobHandle implements Serializable {
@@ -91,68 +101,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
 
 
-	public static class DownloadJobProgress {
-
-		public static enum DownloadJobState {
-			WAITING, RUNNING, ERROR, FINISHED;
-		}
-
-		private DownloadJobState downloadJobState = DownloadJobState.WAITING;
-
-		private Optional<DownloadProgress> downloadProgress = Optional.empty();
-
-		private Optional<String> message = Optional.empty();
-
-		private Optional<Throwable> error = Optional.empty();
-
-		public DownloadJobState getState() {
-			return downloadJobState;
-		}
-
-		public void error(Exception e) {
-			downloadJobState = DownloadJobState.ERROR;
-			message = Optional.of(e.getLocalizedMessage());
-		}
-
-		public DownloadJobState getDownloadJobState() {
-			return downloadJobState;
-		}
-
-		public Optional<DownloadProgress> getDownloadProgress() {
-			return downloadProgress;
-		}
-
-		public Optional<String> getMessage() {
-			return message;
-		}
-
-		public Optional<Throwable> getError() {
-			return error;
-		}
-
-		public void setDownloadProgress(DownloadProgress downloadProgress) {
-			this.downloadProgress = Optional.of(downloadProgress);
-		}
-
-		public void start() {
-			downloadJobState = DownloadJobState.RUNNING;
-			message = Optional.of("initializing...");
-		}
-
-		public void resolve(String url) {
-			message = Optional.of("resolving " + url);
-		}
-
-		public void download(String url) {
-			message = Optional.of("downloading from " + url);
-		}
-
-		public void finish() {
-			downloadJobState = DownloadJobState.FINISHED;
-			message = Optional.of("");
-		}
-
-	}
+	
 
 	public abstract static class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {
 		String outputFilename;
@@ -171,16 +120,12 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 
 	public abstract class AbstractDownloadJob implements DownloadJob, Serializable {
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 3831495614060514606L;
-
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((handle == null) ? 0 : handle.hashCode());
+			result = prime * result
+					+ ((handle == null) ? 0 : handle.hashCode());
 			return result;
 		}
 
@@ -201,46 +146,60 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 			return true;
 		}
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1836164199304618485L;
+
+		public static enum DownloadJobState {
+			WAITING, RUNNING, ERROR, FINISHED;
+		}
+
+		@JsonProperty("state")
+		private DownloadJobState downloadJobState = DownloadJobState.WAITING;
+
+		@JsonProperty("downloadProgress")
+		private Optional<DownloadProgress> downloadProgress = Optional.empty();
+
+		private Optional<String> message = Optional.empty();
+
+		private Optional<Throwable> error = Optional.empty();
+		
+		@JsonProperty("contentLocation")
+		private Optional<ContentLocation> contentLocation=Optional.empty();
+		
 		@JsonProperty("handle")
 		private final DownloadJobHandle handle;
-		@JsonProperty("progressListener")
-		private final DownloadJobProgress progress;
 		@JsonProperty("outputFilename")
 		private final String outputFilename;
 		@JsonProperty("url")
 		private final String url;
 
-		@JsonCreator
-		private AbstractDownloadJob(
-				@JsonProperty("url") String url,
-				@JsonProperty("outputFilename") String outputFilename,
-				@JsonProperty("progress") DownloadJobProgress progress,
-				@JsonProperty("handle") DownloadJobHandle handle) {
-			super();
-			this.progress = progress;
-			this.outputFilename = outputFilename;
-			this.url = url;
-			this.handle = handle;
+		@Override
+		public DownloadJobState getState() {
+			return downloadJobState;
 		}
 
-		public AbstractDownloadJob(
-				String url,
-				String outputFilename) {
-			super();
-			this.progress = new DownloadJobProgress();
-			this.outputFilename = outputFilename;
-			this.url = url;
-			this.handle = new DownloadJobHandle();
+
+		@Override
+		public Optional<DownloadProgress> getDownloadProgress() {
+			return downloadProgress;
 		}
+
+		@Override
+		public Optional<String> getMessage() {
+			return message;
+		}
+
+		@Override
+		public Optional<Throwable> getError() {
+			return error;
+		}
+		
 
 		@Override
 		public DownloadJobHandle getHandle() {
 			return handle;
-		}
-
-		@Override
-		public DownloadJobProgress getProgress() {
-			return progress;
 		}
 
 		@Override
@@ -253,6 +212,87 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 			return url;
 		}
 
+		
+		
+		public Optional<ContentLocation> getContentLocation() {
+			return contentLocation;
+		}
+
+		@JsonCreator
+		private AbstractDownloadJob(
+				@JsonProperty("url") String url,
+				@JsonProperty("outputFilename") String outputFilename,
+				@JsonProperty("handle") DownloadJobHandle handle,
+				@JsonProperty("state") DownloadJobState downloadJobState,
+				@JsonProperty("contentLocation") ContentLocation contentLocation,
+				@JsonProperty("downloadProgress") DownloadProgress downloadProgress) {
+			super();
+			this.outputFilename = outputFilename;
+			this.url = url;
+			this.handle = handle;
+			this.downloadJobState=downloadJobState;
+			this.contentLocation=Optional.of(contentLocation);
+			this.downloadProgress=Optional.of(downloadProgress);
+		}
+
+		public AbstractDownloadJob(
+				String url,
+				String outputFilename) {
+			super();
+			this.outputFilename = outputFilename;
+			this.url = url;
+			this.handle = new DownloadJobHandle();
+		}
+
+
+		
+		protected void progress(DownloadJobProgressListener downloadJobProgressListener,DownloadProgress downloadProgress) {
+			this.downloadProgress = Optional.of(downloadProgress);
+			if(downloadJobProgressListener!=null)
+				downloadJobProgressListener.onChange(this);
+		}
+
+		
+		protected void start(DownloadJobProgressListener downloadJobProgressListener) {
+			downloadJobState = DownloadJobState.RUNNING;
+			message = Optional.of("initializing...");
+			if(downloadJobProgressListener!=null)
+				downloadJobProgressListener.onChange(this);
+		}
+
+		protected void resolve(DownloadJobProgressListener downloadJobProgressListener) {
+			message = Optional.of("resolving " + this.url);
+			if(downloadJobProgressListener!=null)
+				downloadJobProgressListener.onChange(this);
+		}
+
+		protected void download(DownloadJobProgressListener downloadJobProgressListener) {
+			ContentLocation contentLocation = this.getContentLocation().get();
+			message = Optional.of("downloading from " +contentLocation.getUrl()+" to "+contentLocation.getFilename());
+			if(downloadJobProgressListener!=null)
+				downloadJobProgressListener.onChange(this);
+		}
+
+		protected void finish(DownloadJobProgressListener downloadJobProgressListener) {
+			downloadJobState = DownloadJobState.FINISHED;
+			if(downloadJobProgressListener!=null)
+				downloadJobProgressListener.onChange(this);
+		}
+		
+		protected void error(DownloadJobProgressListener downloadJobProgressListener,Throwable e) {
+			downloadJobState=DownloadJobState.ERROR;
+			message=Optional.of("error: "+e.getLocalizedMessage());
+			if(downloadJobProgressListener!=null)
+				downloadJobProgressListener.onChange(this);
+		}
+		
+		protected void setContentLocation(ContentLocation contentLocation) {
+			this.contentLocation=Optional.of(contentLocation);
+		}
+		
+	
+
+		
 	}
 
 }

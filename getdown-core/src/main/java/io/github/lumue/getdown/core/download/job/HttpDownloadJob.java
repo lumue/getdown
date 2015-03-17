@@ -15,7 +15,7 @@ import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+ 
 public class HttpDownloadJob extends AbstractDownloadJob {
 
 	/**
@@ -25,59 +25,56 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(HttpDownloadJob.class);
 
-	private ContentDownloader downloader = new HttpContentDownloader();
+	private final static ContentDownloader DOWNLOADER = new HttpContentDownloader();
 
 	private HttpDownloadJob(String url, String outputFilename) {
 		super(url, outputFilename);
 	}
 
 	@Override
-	public DownloadJobProgress run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry,
+	public void run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry,
 			DownloadJobProgressListener downloadJobProgressListener) {
 		try {
 			LOGGER.debug("start download for url " + getUrl());
-			getProgress().start();
-			downloadJobProgressListener.onChange(getProgress());
+			start(downloadJobProgressListener);
 
-			getProgress().start();
-			downloadJobProgressListener.onChange(getProgress());
-			ContentLocation contentLocation = createContentLocation(contentLocationResolverRegistry);
-
+			resolve(downloadJobProgressListener);
+			this.setContentLocation(createContentLocation(contentLocationResolverRegistry));
+			ContentLocation contentLocation = this.getContentLocation().get();
+			
+			download(downloadJobProgressListener);
 			OutputStream outStream = new FileOutputStream(downloadPath + File.separator
 					+ contentLocation.getFilename());
-			getProgress().download(contentLocation.getUrl());
-			downloadJobProgressListener.onChange(getProgress());
-
-			downloader.downloadContent(URI.create(contentLocation.getUrl()), outStream,
+			DOWNLOADER.downloadContent(URI.create(contentLocation.getUrl()), outStream,
 
 					downloadProgress -> {
 
-						this.getProgress().getDownloadProgress().orElseGet(() -> {
+						getDownloadProgress().orElseGet(() -> {
 
-							this.getProgress().setDownloadProgress(downloadProgress);
+							progress(downloadJobProgressListener,downloadProgress);
 							return downloadProgress;
 
 						});
 
-						downloadJobProgressListener.onChange(getProgress());
+						progress(downloadJobProgressListener,downloadProgress);
 
 					});
 
 			outStream.flush();
 			outStream.close();
 			
-			getProgress().finish();
-			downloadJobProgressListener.onChange(getProgress());
+			finish(downloadJobProgressListener);
 			
 			LOGGER.debug("finished download for url " + getUrl());
 
-		} catch (IOException e) {
-			getProgress().error(e);
+		} catch (Throwable e) {
+			error(downloadJobProgressListener,e);
 			LOGGER.error("Error running Job " + this + " :", e);
 		}
-
-		return this.getProgress();
 	}
+
+	
+
 
 	private ContentLocation createContentLocation(ContentLocationResolverRegistry contentLocationResolverRegistry) throws IOException {
 
@@ -108,5 +105,9 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 		}
 
 	}
+
+	
+
+	
 
 }

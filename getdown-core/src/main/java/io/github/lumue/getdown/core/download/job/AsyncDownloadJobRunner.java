@@ -40,6 +40,7 @@ public class AsyncDownloadJobRunner {
 
 			@Override
 			public void run() {
+				
 				AsyncDownloadJobRunner.LOGGER.debug("starting download for url " + job.getUrl());
 				job.run(downloadPath, contentLocationResolverRegistry, progress -> {
 					eventbus.notify("downloads", Event.wrap(job));
