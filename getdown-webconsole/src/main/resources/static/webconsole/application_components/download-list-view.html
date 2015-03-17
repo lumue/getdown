@@ -7,7 +7,6 @@
 <link rel="import" href="../bower_components/core-icon/core-icon.html">
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
-<link rel="import" href="../bower_components/core-signals/core-signals.html">
 
 <script src="download-list-view.js"></script>
 
@@ -24,9 +23,23 @@
 				font-size: 18px;
 			}
 			
+			#list-item {
+				display: flex;
+			}
+			
+			#list-item-action {
+				padding: 10px;
+				width: 10%;
+			}
+			
 			#list-item-status {
 				padding: 10px;
-				width: 100%;
+				width: 80%;
+			}
+			
+			#list-item-actions {
+				padding: 10px;
+				width: 10%;
 			}
 			
 			#paper_shadow {
@@ -46,14 +59,13 @@
 			} 
 		</style>
 	
-		<core-signals on-core-signal-download-added="{{reload}}"></core-signals>	
 			
 		<section id="section" class="content">
 		
 			<template repeat="{{download in downloads}}">
 			
 				<paper-shadow id="paper_shadow">
-					<div id="list-item" start one flex horizontal layout start-justified>
+					<div id="list-item">
 					
 						<section id="list-item-action">
 							<paper-fab icon="av:pause" id="paper_fab" start></paper-fab>
