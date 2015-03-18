@@ -19,11 +19,17 @@ public class JsonUtil {
 
 	static {
 		JSON_FACTORY.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES);
+		JSON_FACTORY.enable(JsonParser.Feature.ALLOW_COMMENTS);
 	}
 
-	public static Map<String, Object> parseJson(String input) throws JsonProcessingException, IOException {
+	public static Map<String, Object> parseJson(String input) throws JsonProcessingException{
 		ObjectReader reader = OBJECT_MAPPER.reader(Map.class);
-		return reader.readValue(JSON_FACTORY.createParser(input));
+		try {
+			return reader.readValue(JSON_FACTORY.createParser(input));
+		} catch (IOException e) {
+			// not expected here, rethrowing rte
+			throw new RuntimeException("error creating json parser for "+input);
+		}
 	}
 
 	public static <T> String serializeBeans(Iterable<T> beanIterable) {
