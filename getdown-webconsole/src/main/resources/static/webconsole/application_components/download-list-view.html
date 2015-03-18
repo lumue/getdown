@@ -30,21 +30,25 @@
 			
 			#list-item-action {
 				padding: 10px;
-				width: 10%;
+				width: 5%;
 				display: flex;
 				flex-direction: column;
 			}
 			
 			#list-item-status {
 				padding: 10px;
-				width: 80%;
+				width: 90%;
 				display: flex;
 				flex-direction: column;
 			}
 			
+			#list-item-status div {
+				padding: 3px;
+			}
+			
 			#list-item-actions {
 				padding: 10px;
-				width: 10%;
+				width: 5%;
 				display: flex;
 				flex-direction: column;
 			}
@@ -71,23 +75,25 @@
 		
 			<template repeat="{{download in downloads}}">
 			
-				<paper-shadow id="paper_shadow">
+				<paper-shadow id="paper_shadow" z="0">
 					<div id="list-item">
 					
-						<section id="list-item-action">
+						<div id="list-item-action">
 							<paper-fab icon="av:pause" id="paper_fab" start></paper-fab>
-						</section>
+						</div>
 						
-						<section id="list-item-status">
-							<h1 id="h1">{{download.name}}&nbsp;{{download.size}}</h1>
-							<p id="p">{{download.state}}</p>
-							<p id="p">{{download.message}}</p>
-							<paper-progress step="1" value="{{(download.progress / download.size)*100}}" id="paper_progress">{{download.progress}}</paper-progress>
-						</section>
+						<div id="list-item-status">
+							<div >{{download.name}}</div>
+							<div>{{download.state}} {{download.progress}} of {{download.size}} bytes received</div>
+							<div>{{download.message}}</div>
+							<div>
+								<paper-progress style="width: 100%" value="{{(download.progress / download.size)*100}}" id="paper_progress">{{download.progress}}</paper-progress>
+							</div>
+						</div>
 						
-						<section id="list-item-actions">
+						<div id="list-item-actions">
 							<core-icon icon="reorder" id="core_icon"></core-icon>
-						</section>
+						</div>
 						
 					</div>
 				</paper-shadow>
