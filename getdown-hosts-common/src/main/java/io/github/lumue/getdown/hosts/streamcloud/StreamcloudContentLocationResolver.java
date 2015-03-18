@@ -3,6 +3,7 @@ package io.github.lumue.getdown.hosts.streamcloud;
 import io.github.lumue.getdown.core.common.util.JsonUtil;
 import io.github.lumue.getdown.core.download.resolver.ContentLocation;
 import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
+import io.github.lumue.getdown.core.download.resolver.ResolverException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.inject.Named;
 
@@ -37,6 +40,39 @@ public class StreamcloudContentLocationResolver implements ContentLocationResolv
 	private HttpClient client = new DefaultHttpClient();
 
 
+	static class StreamcloudPageScraper{
+		
+		static String scrapePageContentForDownloadUrl(String pageContent) throws JsonProcessingException {
+
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("scraping streamcloud mediaplayer page for content url");
+				LOGGER.debug("\n"+pageContent+"\n");
+			}
+			
+			Document viewerPageDocument = Jsoup.parse(pageContent);
+
+			Elements mediaPlayerScriptElements = viewerPageDocument.getElementsByTag("script");
+
+			Element mediaPlayerScriptElement = mediaPlayerScriptElements.stream()
+					.filter(scriptElement -> scriptElement.toString().contains("jwplayer(\"mediaplayer\").setup"))
+					.findFirst().get();
+
+			String mediaPlayerScript = mediaPlayerScriptElement.childNode(0).toString();
+
+			int mediaplayerJsonStart = mediaPlayerScript.indexOf("{");
+			int mediaplayerJsonEnd = mediaPlayerScript.indexOf(",//	skin");
+			String mediaPlayerJsonString = mediaPlayerScript.substring(mediaplayerJsonStart, mediaplayerJsonEnd )+"}";
+			Map<String, Object> mediaPlayerAttributes = JsonUtil.parseJson(mediaPlayerJsonString);
+
+			String contentUrl = (String) mediaPlayerAttributes.get("file");
+			
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("parsed content url" + contentUrl + " from streamcloud mediaplayer page");
+			
+			return contentUrl;
+
+		}
+	}
 
 	@Override
 	public ContentLocation resolve(String url) throws IOException {
@@ -48,38 +84,12 @@ public class StreamcloudContentLocationResolver implements ContentLocationResolv
 
 		String mediaPlayerPageContent = loadMediaPlayerPage(sessionId, url);
 
-		String contentUrl = scrapePageForContentUrl(mediaPlayerPageContent);
+		String contentUrl = StreamcloudPageScraper.scrapePageContentForDownloadUrl(mediaPlayerPageContent);
 
 		return new ContentLocation(contentUrl, StreamcloudUrlParser.fromUrl(url).getFilename());
 	}
 
 
-
-	private String scrapePageForContentUrl(String viewerPageContent) throws JsonProcessingException, IOException {
-
-		LOGGER.debug("parse streamcloud mediaplayer page for content url");
-
-		Document viewerPageDocument = Jsoup.parse(viewerPageContent);
-
-		Elements mediaPlayerScriptElements = viewerPageDocument.getElementsByTag("script");
-
-		Element mediaPlayerScriptElement = mediaPlayerScriptElements.stream()
-				.filter(scriptElement -> scriptElement.toString().contains("jwplayer(\"mediaplayer\").setup"))
-				.findFirst().get();
-
-		String mediaPlayerScript = mediaPlayerScriptElement.childNode(0).toString();
-
-		int mediaplayerJsonStart = mediaPlayerScript.indexOf("{");
-		int mediaplayerJsonEnd = mediaPlayerScript.indexOf("}");
-		String mediaPlayerJsonString = mediaPlayerScript.substring(mediaplayerJsonStart, mediaplayerJsonEnd + 1);
-		int indexOfTrailingComma = mediaPlayerJsonString.lastIndexOf(",");
-		mediaPlayerJsonString = mediaPlayerScript.substring(mediaplayerJsonStart, indexOfTrailingComma) + "\"}";
-		Map<String, Object> mediaPlayerAttributes = JsonUtil.parseJson(mediaPlayerJsonString);
-
-		String contentUrl = (String) mediaPlayerAttributes.get("file");
-		LOGGER.debug("parsed content url" + contentUrl + " from streamcloud mediaplayer page");
-		return contentUrl;
-	}
 
 
 
@@ -87,19 +97,23 @@ public class StreamcloudContentLocationResolver implements ContentLocationResolv
 
 	private String createStreamcloudSessionId(String url) throws IOException {
 
+		
 		LOGGER.debug("load page at " + url + " to retrieve session cookie");
 
 		HttpGet request = new StreamcloudPageGetRequest(url);
+		try {
+			LOGGER.debug("\nSending 'GET' request to URL : " + url);
+			HttpResponse response = client.execute(request);
+	
+			String sessionCookie =Objects.requireNonNull(response.getFirstHeader("Set-Cookie"),"no session cookie found in response headers").toString();
+	
+			return sessionCookie;
+		}
+		finally {
+			request.abort();
+		}
 
-		LOGGER.debug("\nSending 'GET' request to URL : " + url);
-		HttpResponse response = client.execute(request);
-
-		String sessionCookie = response.getFirstHeader("Set-Cookie").toString();
-
-		request.abort();
-
-
-		return sessionCookie;
+		
 
 	}
 

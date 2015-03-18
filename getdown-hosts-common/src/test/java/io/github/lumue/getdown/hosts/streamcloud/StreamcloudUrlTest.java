@@ -13,7 +13,7 @@ public class StreamcloudUrlTest {
 				.fromUrl("http://streamcloud.eu/w7l5g5enduu9/The.Big.Bang.Theory.S08E10.720p.HDTV.X264-DIMENSION.mkv.html");
 		assertEquals("wrong host", "streamcloud.eu", streamcloudUrl.getHost());
 		assertEquals("wrong id", "w7l5g5enduu9", streamcloudUrl.getId());
-		assertEquals("wrong filename", "streamcloud.eu", streamcloudUrl.getHost());
+		assertEquals("wrong filename", "The.Big.Bang.Theory.S08E10.720p.HDTV.X264-DIMENSION.mkv", streamcloudUrl.getFilename());
 	}
 
 }

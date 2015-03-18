@@ -37,7 +37,7 @@ public abstract class AbstractUrlResolverTest {
 	{
 		CookieHandler.setDefault(new CookieManager());
 	}
-
+	
 	@Test
 	public void testResolve() throws IOException {
 	
@@ -54,6 +54,7 @@ public abstract class AbstractUrlResolverTest {
 		long size = getContentSize(location);
 		assertEquals("content at scraped url has wrong size", getExpectedContentSize(), size);
 	}
+	
 
 	private long getContentSize(String result) throws IOException {
 		HttpRequest request = REQUEST_FACTORY.buildGetRequest(new GenericUrl(result));
