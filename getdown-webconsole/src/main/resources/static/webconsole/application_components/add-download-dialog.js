@@ -5,7 +5,7 @@ Polymer('add-download-dialog', {
 	},
 	
 	toggle : function(){
-		this.$.adddownloaddialog.toggle();
+		this.$.dialog.toggle();
 	},
 	
 	onCancelClicked : function(e) {

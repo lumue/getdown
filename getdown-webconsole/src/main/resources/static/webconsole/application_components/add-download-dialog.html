@@ -13,21 +13,35 @@
 	<template>
 	
 		<style>
-			html /deep/ paper-dialog {
-				color: green;
+			html /deep/ paper-dialog::shadow #dialog {
+				
+				display: flex;
+				flex-direction: column;
+				
+				width: 600px;
 			}
 			
 			html /deep/ paper-dialog::shadow #scroller {
 				height: 300px;
-				width: 300px;
+				width: 600px;
 			}
+			
+			
+			html /deep/ #buttons{
+				display: flex;
+			}
+			
 		</style>
 	
-		 <paper-dialog heading="Add Download" id="adddownloaddialog">
-			 <p>enter download location</p>
-			 <p><paper-input label="url" id="add-download-input" value="{{input}}" start one flex></paper-input></p>
-			<paper-button dismissive on-click="{{onCancelClicked}}">Cancel</paper-button>
-			<paper-button affirmative autofocus on-click="{{onAcceptClicked}}">Accept</paper-button>
+		 <paper-dialog heading="Add Download" id="dialog" style="width: 640px">
+			 <div>
+			 	<paper-input label="url" id="add-download-input" value="{{input}}" style="width: 100%;">
+			 	</paper-input>
+			 </div>
+			 <div id="buttons">
+				<paper-button dismissive on-click="{{onCancelClicked}}">Cancel</paper-button>
+				<paper-button affirmative autofocus on-click="{{onAcceptClicked}}">Accept</paper-button>
+			</div>
 		</paper-dialog>
 	
 	</template>
