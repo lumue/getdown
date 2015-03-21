@@ -3,7 +3,6 @@ package io.github.lumue.getdown.hosts.streamcloud;
 import io.github.lumue.getdown.core.common.util.JsonUtil;
 import io.github.lumue.getdown.core.download.resolver.ContentLocation;
 import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
-import io.github.lumue.getdown.core.download.resolver.ResolverException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,8 +11,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-
 import javax.inject.Named;
 
 import org.apache.http.HttpResponse;
