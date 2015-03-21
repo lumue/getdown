@@ -118,7 +118,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
 		}
 	}
 
-	public abstract class AbstractDownloadJob implements DownloadJob, Serializable {
+	public abstract class AbstractDownloadJob implements DownloadJob, java.io.Serializable {
 
 		@Override
 		public int hashCode() {
