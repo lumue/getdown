@@ -1,0 +1,9 @@
+{"extName": {
+   "message": "getdown",
+   "description": "Extension name"},
+ "extDesc": {
+   "message": "getdown chrome extension",
+   "description": "Extension description"},
+ "openContextMenuTitle": {
+   "message": "download with getdown",
+   "description": "context menu button text"}}
