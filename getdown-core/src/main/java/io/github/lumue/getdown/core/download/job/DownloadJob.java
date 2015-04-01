@@ -15,7 +15,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public interface DownloadJob extends HasIdentity<DownloadJobHandle> {
+public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable {
 
 	@Override
 	public DownloadJobHandle getHandle();

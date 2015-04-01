@@ -1,16 +1,13 @@
 package io.github.lumue.getdown.core.common.persistence;
-
-import io.github.lumue.getdown.core.common.util.JsonUtil;
-
-import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -19,24 +16,21 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.api.client.util.Strings;
 
 
-
-public abstract class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>, K, V extends HasIdentity<K>> implements
+public abstract class FileObjectRepository<B extends ObjectBuilder<V>, K, V extends HasIdentity<K>> implements
 		ObjectRepository<B, K, V> {
 
 	private final String filename;
 
-	private final Map<K, V> objectMap;
+	private Map<K, V> objectMap;
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(SingleJsonFileObjectRepository.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(FileObjectRepository.class);
 
 	ExecutorService flushExecutorService = Executors.newSingleThreadExecutor();
 
 
-	public SingleJsonFileObjectRepository(String filename) {
+	public FileObjectRepository(String filename) {
 		this.filename = filename + ".json";
 		this.objectMap = new ConcurrentHashMap<K, V>();
 		restore();
@@ -74,23 +68,21 @@ public abstract class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>,
 		return objectMap;
 	}
 
+	@SuppressWarnings("unchecked")
 	private synchronized void restore() {
 		
 		if(!(new File(filename).exists()))
 			return;
 		
-		String filecontent = loadContent();
+		byte[] contentSnapshot = loadContent();
 
-		if (Strings.isNullOrEmpty(filecontent))
+		if (contentSnapshot==null)
 			return;
 
 		try {
-
-			TypeReference<V[]> typeReference = newTypeReference();
-			List<V> objects = Arrays.asList(JsonUtil.deserializeBeans(typeReference, filecontent));
-			objectMap.clear();
-			objects.forEach(object -> objectMap.put(object.getHandle(), object));
-
+			ObjectInputStream inputStream=new ObjectInputStream(new ByteArrayInputStream(contentSnapshot));
+			objectMap=(ConcurrentHashMap<K, V>) inputStream.readObject();
+			inputStream.close();
 		} catch (Exception e)
 		{
 			LOGGER.error("Object deserialisation failed during restore", e);
@@ -101,24 +93,18 @@ public abstract class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>,
 
 
 
-	protected abstract TypeReference<V[]> newTypeReference();
-
-
-
-	private String loadContent() {
+	private byte[] loadContent() {
 		byte[] encoded;
 		try {
 			encoded = Files.readAllBytes(Paths.get(filename));
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		String filecontent=new String(encoded);
-		
-		return filecontent;
+		return encoded;
 	}
 
 	private synchronized void triggerFlush() {
-		final String contentSnapshot = JsonUtil.serializeBeans(objectMap.values());
+		final byte[] contentSnapshot = createContentSnapshot();
 		flushExecutorService.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -127,23 +113,29 @@ public abstract class SingleJsonFileObjectRepository<B extends ObjectBuilder<V>,
 		});
 	}
 
-	private synchronized void flush(final String contentSnapshot) {
-		BufferedWriter writer = null;
+	protected byte[] createContentSnapshot() {
+		try {
+			ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+			ObjectOutputStream objectOutputStream=new ObjectOutputStream(outputStream);
+			objectOutputStream.writeObject(objectMap);
+			objectOutputStream.close();
+			return outputStream.toByteArray();
+		}catch (IOException e)
+		{
+			LOGGER.error("Object serialisation failed during createContentSnapshot", e);
+			return null;
+		}
+	}
+
+
+
+	private synchronized void flush(final byte[] contentSnapshot) {
 		try
 		{
-			writer = new BufferedWriter(new FileWriter(filename));
-			writer.write(contentSnapshot);
+			Files.write(Paths.get(filename), contentSnapshot);
 		} catch (IOException e)
 		{
-		} finally
-		{
-			try
-			{
-				if (writer != null)
-					writer.close();
-			} catch (IOException e)
-			{
-			}
-		}
+			LOGGER.error("Object serialisation failed during flush", e);
+		} 
 	}
 }

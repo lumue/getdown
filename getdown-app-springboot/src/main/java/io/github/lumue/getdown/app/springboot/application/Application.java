@@ -3,7 +3,7 @@ package io.github.lumue.getdown.app.springboot.application;
 import io.github.lumue.getdown.core.download.job.AsyncDownloadJobRunner;
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
 import io.github.lumue.getdown.core.download.job.DownloadService;
-import io.github.lumue.getdown.core.download.job.SingleJsonFileDownloadJobRepository;
+import io.github.lumue.getdown.core.download.job.FilePersistentDownloadJobRepository;
 import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
 
 import java.util.concurrent.ExecutorService;
@@ -56,7 +56,7 @@ public class Application {
 
 	@Bean
 	DownloadJobRepository downloadJobRepository(@Value("${getdown.path.repository}") String repositoryPath) {
-		return new SingleJsonFileDownloadJobRepository(repositoryPath);
+		return new FilePersistentDownloadJobRepository(repositoryPath);
 	}
 
 	@Bean
