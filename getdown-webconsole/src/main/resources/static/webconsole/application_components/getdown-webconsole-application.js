@@ -58,11 +58,7 @@ Polymer('getdown-webconsole-application', {
 	
 	ready : function() {	
 		Getdown.downloadWsClient.connect();
-	},
-
-	onAddDownloadButtonClicked : function(e){
-		this.$.add_download_dialog.toggle();
-	},
+	}
 	
 	
 

@@ -8,7 +8,7 @@
 <link rel="import" href="../bower_components/core-menu/core-submenu.html">
 <link rel="import" href="../bower_components/core-icons/core-icons.html">
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
-
+<link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
 <script src="../bower_components/sockjs/sockjs.min.js"></script>
 <script src="../bower_components/stomp-websocket/lib/stomp.min.js"></script>
 
@@ -51,11 +51,7 @@
 			font-size: 16px;
 		}
 		
- 		#content-toolbar{ 
-			background-color: #526E9C;
-			width: 100%;
-			margin: 0px;
-   		} 
+
 		
 		#section {
 			position: absolute;
@@ -75,21 +71,18 @@
 			<core-header-panel mode="seamed" id="core_header_panel" navigation flex>
 			
 				<core-toolbar id="core_toolbar">
+					<span flex><img  align="bottom" src="../icons/icon-getdown.png" style="width:32px;height:32px;"/>&nbsp;getdown</span>
 				</core-toolbar>
-	
+				
+				
 				<core-menu selected="Downloads" valueattr="label" selectedindex="0" id="core_menu" theme="core-light-theme">
 					<core-item id="core_item" icon="file-download" label="Downloads" horizontal center layout active></core-item>
 					<core-item id="core_item1" icon="folder-open" label="Files" horizontal center layout></core-item>
 					<core-item id="core_item1" icon="settings" label="Settings" horizontal center layout></core-item>
-				</core-menu>
-				
+				</core-menu>	
 			</core-header-panel>
 			
-			<core-toolbar tool id="content-toolbar">
-				<img  src="../icons/icon-getdown.png" style="width:32px;height:32px;"/>
-				<span flex>getdown</span>
-				<core-icon-button icon="add" on-click="{{onAddDownloadButtonClicked}}"></core-icon-button>
-			</core-toolbar>
+			
 			
 			<!--  application views -->
 			<download-list-view id="download_list_view"></download-list-view>

@@ -36,7 +36,10 @@ Polymer('download-list-view', {
 			this.downloads.push(download);
 		}
 		
-	}
+	},
 		
+	onAddDownloadButtonClicked : function(e){
+		this.$.add_download_dialog.toggle();
+	},
 	
 });
