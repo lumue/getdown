@@ -4,6 +4,7 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version")
+		classpath('se.transmode.gradle:gradle-docker:1.2')
 	}
 }
 
@@ -11,11 +12,15 @@ buildscript {
 //plugins
 apply plugin: 'application'
 apply plugin: 'spring-boot'
+apply plugin: 'docker'
 
-mainClassName = 'io.github.lumue.getdown.application.Application'
+group = 'lumue'
+
+mainClassName = 'io.github.lumue.getdown.app.springboot.application.Application'
 
 repositories {
 	maven { url 'http://repo.spring.io/libs-release' }
+	maven { url 'http://repo.springsource.org/libs-milestone' }
   }
 
 dependencies {
@@ -40,5 +45,17 @@ eclipse {
 			buildCommand 'org.springframework.ide.eclipse.core.springbuilder'		
 		}
 }
+
+task buildDocker(type: Docker, dependsOn: build) {
+	push = false
+	applicationName = jar.baseName
+	dockerfile = file('src/main/docker/Dockerfile')
+	doFirst {
+	  copy {
+		from jar
+		into stageDir
+	  }
+	}
+  }
 
 
