@@ -68,6 +68,13 @@
 			margin: 0px;
    			}
    			 
+   			#fab_container{ 
+				display:flex;
+				justify-content:flex-end;
+				width: 100%;
+				margin: 0px;
+   			}
+   			 
    			
 		</style>
 			
@@ -75,7 +82,7 @@
 		
 			<template repeat="{{download in downloads}}">
 			
-				<paper-shadow id="paper_shadow" z="0">
+				<paper-shadow id="paper_shadow" z="1">
 					<div id="list-item">
 					
 						<div id="list-item-action">
@@ -83,7 +90,7 @@
 						</div>
 						
 						<div id="list-item-status">
-							<div >{{download.name}}</div>
+							<div>{{download.name}}</div>
 							<div>{{download.state}} {{download.progress}} of {{download.size}} bytes received</div>
 							<div>{{download.message}}</div>
 							<div>
@@ -100,13 +107,12 @@
 						
 			</template>
 		
-			<paper-fab icon="add" id="add_fab" on-tap="{{onAddDownloadButtonClicked}}"></paper-fab>
-			
-			<!--  dialogs -->
-			<add-download-dialog id="add_download_dialog"></add-download-dialog>
-		
-		
 		</section>
+		<div id="fab_container">
+				<paper-fab raised icon="add" id="add_fab" on-tap="{{onAddDownloadButtonClicked}}"></paper-fab>
+		</div>
+		<!--  dialogs -->
+		<add-download-dialog id="add_download_dialog"></add-download-dialog>
 	
 	</template>
 
