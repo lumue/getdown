@@ -105,6 +105,10 @@ public abstract class FileObjectRepository<B extends ObjectBuilder<V>, K, V exte
 
 	private synchronized void triggerFlush() {
 		final byte[] contentSnapshot = createContentSnapshot();
+
+		if (contentSnapshot == null)
+			return;
+
 		flushExecutorService.execute(new Runnable() {
 			@Override
 			public void run() {
