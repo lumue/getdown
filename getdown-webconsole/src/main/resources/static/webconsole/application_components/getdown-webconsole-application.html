@@ -13,7 +13,6 @@
 <script src="../bower_components/stomp-websocket/lib/stomp.min.js"></script>
 
 <!-- project imports -->
-<link rel="import" href="add-download-dialog.html" />
 <link rel="import" href="download-list-view.html" />
 
 <script src="getdown-webconsole-application.js"></script>
@@ -48,22 +47,8 @@
 		}
 		
 		#core_menu {
-			font-size: 16px;
+			font-size: 14pt;
 		}
-		
-
-		
-		#section {
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			width: 100%;
-			height: 100%;
-		}
-		
-		
-		
-		
 		</style>
 		
 		<core-scaffold id="core_scaffold">
@@ -80,16 +65,19 @@
 					<core-item id="core_item1" icon="folder-open" label="Files" horizontal center layout></core-item>
 					<core-item id="core_item1" icon="settings" label="Settings" horizontal center layout></core-item>
 				</core-menu>	
+				
+				
+				
 			</core-header-panel>
 			
 			
+			<section main>
 			
-			<!--  application views -->
-			<download-list-view id="download_list_view"></download-list-view>
-		
-			<!--  dialogs -->
-			<add-download-dialog id="add_download_dialog"></add-download-dialog>
-		
+				<!--  application views -->
+				<download-list-view id="download_list_view" main></download-list-view>
+						
+			</section>
+			
 		</core-scaffold>
 	
 	</template>

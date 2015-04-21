@@ -49,6 +49,18 @@
 				padding: 3px;
 			}
 			
+			#list-item-status-name {
+				font-size: 12pt;
+			}
+			
+			#list-item-status-state {
+				font-size: 10pt;
+			}
+			
+			#list-item-status-message {
+				font-size: 10pt;
+			}
+			
 			#list-item-actions {
 				padding: 10px;
 				width: 5%;
@@ -61,24 +73,23 @@
 			}
 			 
 			#content-toolbar{ 
-			background-color: #526E9C;
-			display:flex;
-			justify-content:flex-end;
-			width: 100%;
-			margin: 0px;
-   			}
-   			 
-   			#fab_container{ 
+				background-color: #526E9C;
 				display:flex;
 				justify-content:flex-end;
 				width: 100%;
 				margin: 0px;
    			}
+   			
+   			 #add_fab {
+            	position: absolute;
+            	bottom: 20px;
+            	right: 20px;
+            }
    			 
    			
 		</style>
 			
-		<section id="section" class="content">
+		<section id="section" class="content" main>
 		
 			<template repeat="{{download in downloads}}">
 			
@@ -86,13 +97,13 @@
 					<div id="list-item">
 					
 						<div id="list-item-action">
-							<img  align="bottom" src="../icons/icon-getdown.png" style="width:64px;height:64px;"/>
+							<img  align="bottom" src="../icons/icon-getdown.png" style="width:32px;height:32px;"/>
 						</div>
 						
 						<div id="list-item-status">
-							<div>{{download.name}}</div>
-							<div>{{download.state}} {{download.progress}} of {{download.size}} bytes received</div>
-							<div>{{download.message}}</div>
+							<div id="list-item-status-name">{{download.name}}</div>
+							<div id="list-item-status-state">{{download.state}} {{download.progress}} of {{download.size}} bytes received</div>
+							<div id="list-item-status-message">{{download.message}}</div>
 							<div>
 								<paper-progress style="width: 100%" value="{{(download.progress / download.size)*100}}" id="paper_progress">{{download.progress}}</paper-progress>
 							</div>
@@ -103,14 +114,14 @@
 						</div>
 						
 					</div>
-				</paper-shadow>
+				</paper-shadow>				
 						
 			</template>
 		
+			<paper-fab raised icon="add" id="add_fab" on-tap="{{onAddDownloadButtonClicked}}"></paper-fab>
+		
 		</section>
-		<div id="fab_container">
-				<paper-fab raised icon="add" id="add_fab" on-tap="{{onAddDownloadButtonClicked}}"></paper-fab>
-		</div>
+		
 		<!--  dialogs -->
 		<add-download-dialog id="add_download_dialog"></add-download-dialog>
 	

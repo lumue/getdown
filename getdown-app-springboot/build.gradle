@@ -14,7 +14,7 @@ apply plugin: 'application'
 apply plugin: 'spring-boot'
 apply plugin: 'docker'
 
-group = 'lumue'
+group = 'coreos.vm:5000'
 
 mainClassName = 'io.github.lumue.getdown.app.springboot.application.Application'
 
@@ -47,15 +47,18 @@ eclipse {
 }
 
 task buildDocker(type: Docker, dependsOn: build) {
-	push = false
+	
+	push = true
 	applicationName = jar.baseName
+	
 	dockerfile = file('src/main/docker/Dockerfile')
+	
 	doFirst {
 	  copy {
 		from jar
 		into stageDir
 	  }
 	}
+	
   }
-
 

@@ -33,22 +33,30 @@ public class DownloadJsonRpcController {
 
 	@RequestMapping(value = "/download/add", method = RequestMethod.PUT)
 	public DownloadJobView addDownload(@RequestParam(value = "url", required = true) String url) {
+
 		LOGGER.debug("adding and starting download job for " + url);
+
 		DownloadJob download = downloadService.addDownload(url);
 		downloadService.startDownload(download.getHandle());
+
 		LOGGER.debug("download job for " + url + " added and started");
+
 		return DownloadJobView.wrap(download);
 	}
 	
 	@RequestMapping(value = "/download/list", method = RequestMethod.GET)
 	public Iterable<DownloadJobView> listDownloads() {
+
 		Stream<DownloadJob> stream = StreamUtils.stream(downloadService.listDownloads());
+
 		return stream.map(downloadJob -> DownloadJobView.wrap(downloadJob)).collect(Collectors.toList());
 	}
 	
 	@RequestMapping(value = "/download/{handle}", method = RequestMethod.GET)
 	public Iterable<DownloadJobView> getDownload(@PathVariable String handle) {
+
 		Stream<DownloadJob> stream = StreamUtils.stream(downloadService.listDownloads());
+
 		return stream.map(downloadJob -> DownloadJobView.wrap(downloadJob)).collect(Collectors.toList());
 	}
 
