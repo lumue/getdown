@@ -1,5 +1,7 @@
 package io.github.lumue.getdown.app.springboot.application;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ApplicationEnvironmentInitializer implements InitializingBean{
+
+	private final static Logger LOGGER = LoggerFactory
+			.getLogger(ApplicationEnvironmentInitializer.class);
 
 	@Value("${getdown.path.home}")
 	private FileSystemResource homePath;
@@ -39,7 +44,10 @@ public class ApplicationEnvironmentInitializer implements InitializingBean{
 	}
 
 	private void createIfNotExists(FileSystemResource fileSystemResource) {
-		if (!fileSystemResource.exists())
+		if (!fileSystemResource.exists()) {
 			fileSystemResource.getFile().mkdir();
+			LOGGER.warn(fileSystemResource + " did not exist. created "
+					+ fileSystemResource);
+		}
 	}
 }
