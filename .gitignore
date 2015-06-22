@@ -14,3 +14,4 @@ src/main/resources/static/web
 /.nb-gradle/private/
 .directory
 *.jfr
+Downloads/

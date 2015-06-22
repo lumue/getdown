@@ -14,3 +14,4 @@ src/main/dart/web/icons/packages
 src/main/dart/.pub
 src/main/resources/static/web
 .springBeans
+log/
