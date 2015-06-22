@@ -16,26 +16,29 @@ public class HttpContentDownloader implements ContentDownloader {
 
 	private static final HttpTransport HTTP_TRANSPORT = new ApacheHttpTransport();
 
-	private static final HttpRequestFactory REQUEST_FACTORY = HTTP_TRANSPORT.createRequestFactory();
-	
-
+	private static final HttpRequestFactory REQUEST_FACTORY = HTTP_TRANSPORT
+			.createRequestFactory();
 
 	@Override
-	public void downloadContent(URI url, OutputStream targetStream, DownloadProgressListener progressListener)
-			throws IOException {
+	public void downloadContent(URI url, OutputStream targetStream,
+			DownloadProgressListener progressListener)
+					throws IOException {
 
 		final DownloadProgress progress = new DownloadProgress();
-
+		InputStream inputStream = null;
 		try {
-			HttpRequest request = REQUEST_FACTORY.buildGetRequest(new GenericUrl(url));
+			HttpRequest request = REQUEST_FACTORY
+					.buildGetRequest(new GenericUrl(url));
 			HttpResponse response = request.execute();
+
 			Long size = response.getHeaders().getContentLength();
 			progress.setSize(size);
 			progress.start();
 			if (progressListener != null) {
 				progressListener.onChange(progress);
 			}
-			InputStream inputStream = response.getContent();
+
+			inputStream = response.getContent();
 			int count;
 			byte[] buffer = new byte[1024 * 512];
 			while ((count = inputStream.read(buffer)) > 0) {
@@ -45,19 +48,26 @@ public class HttpContentDownloader implements ContentDownloader {
 					progressListener.onChange(progress);
 				}
 			}
-		} catch (IOException e) {
-			
 
-				progress.error(e);
-			
+		} catch (IOException e) {
+
+			progress.error(e);
+
 			if (progressListener != null) {
 				progressListener.onChange(progress);
 			}
 
 			throw e;
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {}
+				;
+			}
 		}
 
-			progress.finish();
+		progress.finish();
 
 		if (progressListener != null) {
 			progressListener.onChange(progress);
@@ -65,6 +75,4 @@ public class HttpContentDownloader implements ContentDownloader {
 
 	}
 
-
 }
-
