@@ -6,12 +6,12 @@
  "icons": {"16": "icon16.png", "128": "icon128.png"},
  "background": {"persistent": false, "scripts": ["background.js"]},
  "default_locale": "en",
- "permissions": ["contextMenus", "downloads", "downloads.open","http://localhost:8001/"]
+ "permissions": ["contextMenus", "downloads", "downloads.open","http://192.168.1.105:8001/"],
  
  "options_ui": {
     // Required.
     "page": "options.html",
     // Recommended.
-    "chrome_style": true,
+    "chrome_style": true
   }
 }
