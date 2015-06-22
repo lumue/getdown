@@ -1,9 +1,19 @@
 package io.github.lumue.getdown.hosts.streamcloud;
 
+import java.io.IOException;
+
+import org.junit.Test;
+
 import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
 import io.github.lumue.getdown.hosts.AbstractUrlResolverTest;
 
-public class StreamcloudUrlResolverTest extends AbstractUrlResolverTest {
+/**
+ * Integration test connecting to an actual streamcloud url
+ *
+ * @author lm
+ *
+ */
+public class StreamcloudUrlResolverIT extends AbstractUrlResolverTest {
 
 	private static final long EXPECTED_CONTENT_SIZE = 73240803L;
 
@@ -38,4 +48,15 @@ public class StreamcloudUrlResolverTest extends AbstractUrlResolverTest {
 		return new StreamcloudContentLocationResolver();
 	}
 
+	/**
+	 * test for an error occuring when trying to resolve two streamcloud
+	 * locations after another
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void testBackToBackResolve() throws IOException {
+		testResolve();
+		testResolve();
+	}
 }
