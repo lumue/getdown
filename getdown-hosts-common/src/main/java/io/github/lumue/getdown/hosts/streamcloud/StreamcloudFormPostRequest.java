@@ -41,7 +41,7 @@ class StreamcloudFormPostRequest extends HttpPost {
 
 	private final static String USER_AGENT = "Mozilla/5.0";
 
-	StreamcloudFormPostRequest(String uri, String sessionCookie) throws UnsupportedEncodingException {
+	StreamcloudFormPostRequest(String uri) throws UnsupportedEncodingException {
 		super(uri);
 		// add header
 		this.setHeader("Host", "streamcloud.eu");
@@ -49,7 +49,7 @@ class StreamcloudFormPostRequest extends HttpPost {
 		this.setHeader("Accept",
 				" text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
 		this.setHeader("Accept-Language", "en-US,en;q=0.8");
-		this.setHeader("Cookie", sessionCookie);
+		// this.setHeader("Cookie", sessionCookie);
 		this.setHeader("Connection", "keep-alive");
 		this.setHeader("Referer", uri);
 		this.setHeader("Content-Type", "application/x-www-form-urlencoded");

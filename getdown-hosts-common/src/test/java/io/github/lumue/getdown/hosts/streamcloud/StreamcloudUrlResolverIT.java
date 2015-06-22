@@ -15,13 +15,13 @@ import io.github.lumue.getdown.hosts.AbstractUrlResolverTest;
  */
 public class StreamcloudUrlResolverIT extends AbstractUrlResolverTest {
 
-	private static final long EXPECTED_CONTENT_SIZE = 73240803L;
+	private static final long EXPECTED_CONTENT_SIZE = 456183886L;
 
 	private static final String EXPECTED_TARGET_URL_SUFFIX = "video.mp4";
 
-	private static final String START_URL = "http://streamcloud.eu/w7l5g5enduu9/The.Big.Bang.Theory.S08E10.720p.HDTV.X264-DIMENSION.mkv.html";
+	private static final String START_URL = "http://streamcloud.eu/jot4frw4qfm5/S02E03_-_Wer_mit_dem_Feuer_spielt.avi.html";
 
-	private static final String EXPECTED_FILENAME = "The.Big.Bang.Theory.S08E10.720p.HDTV.X264-DIMENSION.mkv";
+	private static final String EXPECTED_FILENAME = "S02E03_-_Wer_mit_dem_Feuer_spielt.avi";
 
 	@Override
 	public long getExpectedContentSize() {

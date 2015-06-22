@@ -1,7 +1,6 @@
 package io.github.lumue.getdown.hosts.streamcloud;
 
 import static org.junit.Assert.*;
-import io.github.lumue.getdown.hosts.streamcloud.StreamcloudContentLocationResolver.StreamcloudPageScraper;
 
 import org.junit.Test;
 
