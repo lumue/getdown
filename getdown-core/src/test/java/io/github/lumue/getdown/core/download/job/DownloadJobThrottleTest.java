@@ -16,8 +16,8 @@ public class DownloadJobThrottleTest {
 		DownloadJobThrottle throttle=new DownloadJobThrottle(MIN_DELAY_BETWEEN_EVENTS);
 		DownloadJob downloadJob=new MockDownloadJob();
 		
-		assertTrue(throttle.test(downloadJob));
-		assertFalse(throttle.test(downloadJob));
+		assertTrue("first call should always return true",throttle.test(downloadJob));
+		assertFalse("should fail for immediate second call",throttle.test(downloadJob));
 	}
 
 	@Test
@@ -26,9 +26,21 @@ public class DownloadJobThrottleTest {
 		DownloadJobThrottle throttle=new DownloadJobThrottle(MIN_DELAY_BETWEEN_EVENTS);
 		DownloadJob downloadJob=new MockDownloadJob();
 		
-		assertTrue(throttle.test(downloadJob));
+		assertTrue("first call should always return true",throttle.test(downloadJob));
 		sleep(MIN_DELAY_BETWEEN_EVENTS+1);
-		assertTrue(throttle.test(downloadJob));
+		assertTrue("should succeed for delayed second call",throttle.test(downloadJob));
+	}
+	
+	@Test
+	public void testSuccessForImmediateSecondEventAndJobStateChange() throws InterruptedException {
+		
+		DownloadJobThrottle throttle=new DownloadJobThrottle(MIN_DELAY_BETWEEN_EVENTS);
+		MockDownloadJob downloadJob=new MockDownloadJob();
+		
+		downloadJob.doStart();
+		assertTrue("first call should always return true",throttle.test(downloadJob));
+		downloadJob.doFinish();
+		assertTrue("should succeed because the jobs state has changed",throttle.test(downloadJob));
 	}
 
 }

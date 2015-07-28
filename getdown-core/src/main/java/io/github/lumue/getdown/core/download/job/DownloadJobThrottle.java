@@ -4,44 +4,74 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob.DownloadJobState;
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
 
 /**
- * Akzeptiert nur alle X millisekunden einen DownloadJob
+ * return true for a given {@link DownloadJob} only if
+ * any of this is true:
  * 
+ * - there was no prior test for this job
+ * - the last test for this job happened more than X milliseconds (set by constructor) ago
+ * - the job had a different state on last test
  * @author lm
  *
  */
 class DownloadJobThrottle implements Predicate<DownloadJob> {
 
-	private final long millisecondsBetweenEventsPerDownloadJob;
+	/**
+	 * used for remembering the last call for a job
+	 * @author lm
+	 *
+	 */
+	private static class TestSample{
+		
+		private final long time;
+		
+		private final DownloadJobState state;
+		
+		public TestSample(long time, DownloadJobState state) {
+			super();
+			this.time = time;
+			this.state = state;
+		}	
+	}
 	
-	private final Map<DownloadJobHandle, Long> jobHandleTimestampMap = new ConcurrentHashMap<DownloadJob.DownloadJobHandle, Long>();
-
+	private final Map<DownloadJobHandle, TestSample> jobHandleTestSampleMap = new ConcurrentHashMap<DownloadJob.DownloadJobHandle, TestSample>();
+	
+	
+	private final long millisecondsBetweenEventsPerDownloadJob;
+		
+	
 	DownloadJobThrottle(long millisecondsBetweenDownloadJobEvents) {
 		this.millisecondsBetweenEventsPerDownloadJob=millisecondsBetweenDownloadJobEvents;
 	}
 
 	@Override
-	public boolean test(DownloadJob t) {
+	public boolean test(DownloadJob downloadJob) {
 
+		TestSample newSample = new TestSample(System.currentTimeMillis(),downloadJob.getState());
+		TestSample lastSample = jobHandleTestSampleMap.get(downloadJob.getHandle());
 		
-		Long lastUpdate = jobHandleTimestampMap.get(t.getHandle());
-		long now = System.currentTimeMillis();
-
-		if (lastUpdate == null)
-			return putValueAndReturnTrue(t.getHandle(), now);
+		if (lastSample == null)
+			return putValueAndReturnTrue(downloadJob.getHandle(), newSample);
+		
+		Long lastUpdate = lastSample.time;
+		DownloadJobState lastJobState=lastSample.state;
 
 		long nextPossibleUpdateAt = lastUpdate + millisecondsBetweenEventsPerDownloadJob;
 
-		if (now > nextPossibleUpdateAt)
-			return putValueAndReturnTrue(t.getHandle(), now);
+		if (System.currentTimeMillis() > nextPossibleUpdateAt)
+			return putValueAndReturnTrue(downloadJob.getHandle(),  newSample);
 
+		if(!lastJobState.equals(downloadJob.getState()))
+			return putValueAndReturnTrue(downloadJob.getHandle(),  newSample);
+		
 		return false;
 	}
 
-	private boolean putValueAndReturnTrue(DownloadJobHandle downloadJobHandle, long now) {
-		jobHandleTimestampMap.put(downloadJobHandle, now);
+	private boolean putValueAndReturnTrue(DownloadJobHandle downloadJobHandle, TestSample testSample) {
+		jobHandleTestSampleMap.put(downloadJobHandle, testSample);
 		return true;
 	}
 
