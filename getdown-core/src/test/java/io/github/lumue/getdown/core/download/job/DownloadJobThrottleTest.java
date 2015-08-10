@@ -37,9 +37,9 @@ public class DownloadJobThrottleTest {
 		DownloadJobThrottle throttle=new DownloadJobThrottle(MIN_DELAY_BETWEEN_EVENTS);
 		MockDownloadJob downloadJob=new MockDownloadJob();
 		
-		downloadJob.doStart();
+		downloadJob.start();
 		assertTrue("first call should always return true",throttle.test(downloadJob));
-		downloadJob.doFinish();
+		downloadJob.finish();
 		assertTrue("should succeed because the jobs state has changed",throttle.test(downloadJob));
 	}
 

@@ -1,21 +1,28 @@
 package io.github.lumue.getdown.core.download.job;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
+import io.github.lumue.getdown.core.common.util.Observable;
+import io.github.lumue.getdown.core.common.util.ObservableTemplate;
 import io.github.lumue.getdown.core.download.downloader.DownloadProgress;
 import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob.DownloadJobState;
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.core.download.resolver.ContentLocation;
+import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
 import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
 
-public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable {
+public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable,Observable,Runnable {
 
 	@Override
 	public DownloadJobHandle getHandle();
@@ -33,14 +40,12 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 	public String getUrl();
 
 	public Optional<ContentLocation> getContentLocation();
+	
+	public void setDownloadPath(String downloadPath);
+	
+	public void setContentLocationResolverRegistry(ContentLocationResolverRegistry contentLocationResolverRegistry);
 
-	public void run(String downloadPath, ContentLocationResolverRegistry contentLocationResolverRegistry,
-			DownloadJobProgressListener progressListener);
-
-	@FunctionalInterface
-	public interface DownloadJobProgressListener {
-		public void onChange(DownloadJob downloadJob);
-	}
+	public void run();
 
 	static class DownloadJobHandle implements Serializable {
 
@@ -123,8 +128,10 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		}
 	}
 
-	public abstract class AbstractDownloadJob implements DownloadJob, java.io.Serializable {
+	public abstract class AbstractDownloadJob extends ObservableTemplate implements DownloadJob, java.io.Serializable {
 
+		private static final Logger LOGGER=LoggerFactory.getLogger(AbstractDownloadJob.class);
+		
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -184,6 +191,10 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		private final String outputFilename;
 		@JsonProperty("url")
 		private final String url;
+		@JsonProperty("downloadPath")
+		private String downloadPath;
+
+		private ContentLocationResolverRegistry contentLocationResolverRegistry;
 
 		@Override
 		public DownloadJobState getState() {
@@ -257,59 +268,100 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 
 
-		protected void progress(DownloadJobProgressListener downloadJobProgressListener,DownloadProgress downloadProgress) {
+		protected void progress(DownloadProgress downloadProgress) {
+			doObserved(() -> {
 			this.downloadProgress = Optional.of(downloadProgress);
-			if(downloadJobProgressListener!=null) {
-				downloadJobProgressListener.onChange(this);
-			}
+			});
 		}
 
 
-		protected void start(DownloadJobProgressListener downloadJobProgressListener) {
-			downloadJobState = DownloadJobState.RUNNING;
-			message = Optional.of("initializing...");
-			if(downloadJobProgressListener!=null) {
-				downloadJobProgressListener.onChange(this);
-			}
+		protected void start() {
+			doObserved(() -> {
+				downloadJobState = DownloadJobState.RUNNING;
+				message = Optional.of("initializing...");
+			});
 		}
 
-		protected void resolve(DownloadJobProgressListener downloadJobProgressListener) {
-			message = Optional.of("resolving " + this.url);
-			if(downloadJobProgressListener!=null) {
-				downloadJobProgressListener.onChange(this);
-			}
+		protected void resolve() {
+			doObserved(() -> {
+				message = Optional.of("resolving " + this.url);
+				URI startUrl = URI.create(getUrl());
+				LOGGER.debug("creating ContentLocation for " + startUrl.toString());
+
+				String host = startUrl.getHost();
+				ContentLocationResolver locationResolver = getContentLocationResolverRegistry()
+						.lookup(host);
+				ContentLocation contentLocation = null;
+
+				if (locationResolver != null) {
+					try {
+						contentLocation = locationResolver.resolve(startUrl.toString());
+					} catch (Exception e) {
+						this.error(e);
+					}
+				} else {
+					LOGGER.warn(
+							"no suitable resolver for host. creating generic ContentLocation from url");
+					contentLocation = new ContentLocation(getUrl(),
+							getOutputFilename());
+				}
+
+				LOGGER.debug(
+						"created " + contentLocation + " for " + startUrl.toString());
+
+				this.setContentLocation(contentLocation);
+			});
 		}
 
-		protected void download(DownloadJobProgressListener downloadJobProgressListener) {
-			ContentLocation contentLocation = this.getContentLocation().get();
+		protected void download() {
+			doObserved(() -> {
+				ContentLocation contentLocation = this.getContentLocation().get();
 			message = Optional.of("downloading from " +contentLocation.getUrl()+" to "+contentLocation.getFilename());
-			if(downloadJobProgressListener!=null) {
-				downloadJobProgressListener.onChange(this);
-			}
+			});
 		}
 
-		protected void finish(DownloadJobProgressListener downloadJobProgressListener) {
-			downloadJobState = DownloadJobState.FINISHED;
-			if(downloadJobProgressListener!=null) {
-				downloadJobProgressListener.onChange(this);
-			}
+		protected void finish() {
+			doObserved(() -> {
+				downloadJobState = DownloadJobState.FINISHED;
+			});
 		}
 
-		protected void error(DownloadJobProgressListener downloadJobProgressListener,Throwable e) {
-			downloadJobState=DownloadJobState.ERROR;
+		protected void error(Throwable e) {
+			doObserved(() -> {
+				downloadJobState=DownloadJobState.ERROR;
 			message=Optional.of("error: "+e.getLocalizedMessage());
-			if(downloadJobProgressListener!=null) {
-				downloadJobProgressListener.onChange(this);
-			}
+			});
 		}
 
 		protected void setContentLocation(ContentLocation contentLocation) {
 			this.contentLocation=Optional.of(contentLocation);
 		}
 
+		public void setDownloadPath(String downloadPath){
+			this.downloadPath=downloadPath;
+		}
 
+		@Override
+		public void setContentLocationResolverRegistry(
+				ContentLocationResolverRegistry contentLocationResolverRegistry) {
+			this.contentLocationResolverRegistry=contentLocationResolverRegistry;
+		}
 
+		public ContentLocationResolverRegistry getContentLocationResolverRegistry() {
+			return contentLocationResolverRegistry;
+		}
 
+		public String getDownloadPath() {
+			return downloadPath;
+		}
+		
+		
+		
 	}
+
+	
+	
+
+	
 
 }

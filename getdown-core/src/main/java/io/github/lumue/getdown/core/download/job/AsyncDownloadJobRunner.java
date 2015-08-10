@@ -1,12 +1,11 @@
 package io.github.lumue.getdown.core.download.job;
 
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
-
 import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 
@@ -36,21 +35,14 @@ public class AsyncDownloadJobRunner {
 
 
 	public void runJob(final DownloadJob job) {
-		this.executorService.execute(new Runnable() {
-
-			@Override
-			public void run() {
-				
-				AsyncDownloadJobRunner.LOGGER.debug("starting download for url " + job.getUrl());
-				job.run(downloadPath, contentLocationResolverRegistry, progress -> {
-					eventbus.notify("downloads", Event.wrap(job));
-				});
-
-			}
-
-
-		});
-
+		job.addObserver( o ->
+			{
+				eventbus.notify("downloads", Event.wrap(o));
+			});
+		job.setDownloadPath(this.downloadPath);
+		job.setContentLocationResolverRegistry(this.contentLocationResolverRegistry);
+		AsyncDownloadJobRunner.LOGGER.debug("starting download for url " + job.getUrl());
+		this.executorService.submit(job);
 	}
 
 }

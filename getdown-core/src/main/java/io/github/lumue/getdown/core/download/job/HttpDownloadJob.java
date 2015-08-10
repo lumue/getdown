@@ -13,15 +13,14 @@ import io.github.lumue.getdown.core.download.downloader.ContentDownloader;
 import io.github.lumue.getdown.core.download.downloader.HttpContentDownloader;
 import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob;
 import io.github.lumue.getdown.core.download.resolver.ContentLocation;
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
 
 public class HttpDownloadJob extends AbstractDownloadJob {
 
+
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 3487833171703064174L;
+	private static final long serialVersionUID = -7225589581609982485L;
 
 	private static Logger LOGGER = LoggerFactory
 			.getLogger(HttpDownloadJob.class);
@@ -33,21 +32,22 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 	}
 
 	@Override
-	public void run(String downloadPath,
-			ContentLocationResolverRegistry contentLocationResolverRegistry,
-			DownloadJobProgressListener downloadJobProgressListener) {
+	public void run() {
 		OutputStream outStream = null;
 		try {
 			LOGGER.debug("start download for url " + getUrl());
-			start(downloadJobProgressListener);
+			start();
 
-			resolve(downloadJobProgressListener);
-			this.setContentLocation(
-					createContentLocation(contentLocationResolverRegistry));
-			ContentLocation contentLocation = this.getContentLocation().get();
+			resolve();
 
-			download(downloadJobProgressListener);
-			outStream = new FileOutputStream(downloadPath + File.separator
+			if(DownloadJobState.ERROR.equals(getState()))
+				return;
+			
+			download();
+			
+			ContentLocation contentLocation=getContentLocation().get();
+			
+			outStream = new FileOutputStream(getDownloadPath()+ File.separator
 					+ contentLocation.getFilename());
 			DOWNLOADER.downloadContent(URI.create(contentLocation.getUrl()),
 					outStream,
@@ -56,23 +56,23 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 				getDownloadProgress().orElseGet(() -> {
 
-					progress(downloadJobProgressListener, downloadProgress);
+					progress(downloadProgress);
 					return downloadProgress;
 
 				} );
 
-				progress(downloadJobProgressListener, downloadProgress);
+				progress( downloadProgress);
 
 			} );
 
 			outStream.flush();
 
-			finish(downloadJobProgressListener);
+			finish();
 
 			LOGGER.debug("finished download for url " + getUrl());
 
 		} catch (Throwable e) {
-			error(downloadJobProgressListener, e);
+			error( e);
 			LOGGER.error("Error running Job " + this + " :", e);
 		} finally {
 			if (outStream != null) {
@@ -85,32 +85,6 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 		}
 	}
 
-	private ContentLocation createContentLocation(
-			ContentLocationResolverRegistry contentLocationResolverRegistry)
-					throws IOException {
-
-		URI startUrl = URI.create(getUrl());
-		LOGGER.debug("creating ContentLocation for " + startUrl.toString());
-
-		String host = startUrl.getHost();
-		ContentLocationResolver locationResolver = contentLocationResolverRegistry
-				.lookup(host);
-		ContentLocation contentLocation = null;
-
-		if (locationResolver != null) {
-			contentLocation = locationResolver.resolve(startUrl.toString());
-		} else {
-			LOGGER.warn(
-					"no suitable resolver for host. creating generic ContentLocation from url");
-			contentLocation = new ContentLocation(getUrl(),
-					getOutputFilename());
-		}
-
-		LOGGER.debug(
-				"created " + contentLocation + " for " + startUrl.toString());
-
-		return contentLocation;
-	}
 
 	public static class HttpDownloadJobBuilder
 			extends AbstractDownloadJobBuilder {
