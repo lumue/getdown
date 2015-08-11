@@ -28,8 +28,8 @@ public class StreamcloudContentLocationResolver implements ContentLocationResolv
 
 		StreamcloudSiteAdapter.acquireCookie(url);
 
-		LOGGER.debug("waiting 11 seconds");
-		wait(11);
+		
+		wait(15);
 
 		String mediaPlayerPageContent = StreamcloudSiteAdapter
 				.loadPageContent(url);
@@ -49,6 +49,7 @@ public class StreamcloudContentLocationResolver implements ContentLocationResolv
 
 	private void wait(int seconds) {
 		try {
+			LOGGER.debug("waiting "+seconds+" seconds");
 			Thread.sleep(seconds * 1000);
 		} catch (InterruptedException e) {
 			LOGGER.error(e.getLocalizedMessage());
