@@ -1,10 +1,10 @@
 package io.github.lumue.getdown.app.springboot.web;
 
-import io.github.lumue.getdown.core.download.downloader.DownloadProgress;
-import io.github.lumue.getdown.core.download.job.DownloadJob;
-
 import java.io.Serializable;
 import java.util.Optional;
+
+import io.github.lumue.getdown.core.download.downloader.DownloadProgress;
+import io.github.lumue.getdown.core.download.job.DownloadJob;
 
 public interface DownloadJobView extends Serializable {
 	
@@ -60,11 +60,6 @@ public interface DownloadJobView extends Serializable {
 
 			@Override
 			public String getState() {
-
-				Optional<DownloadProgress> downloadProgress = download.getDownloadProgress();
-				if (!downloadProgress.isPresent())
-					return "unknown";
-
 				return download.getState().name();
 			}
 
