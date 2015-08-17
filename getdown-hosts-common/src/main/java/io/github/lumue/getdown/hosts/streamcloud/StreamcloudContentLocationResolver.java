@@ -25,6 +25,8 @@ public class StreamcloudContentLocationResolver implements ContentLocationResolv
 
 	@Override
 	public ContentLocation resolve(String url) throws IOException {
+		
+		LOGGER.debug("resolving download location for "+url);
 
 		StreamcloudSiteAdapter.acquireCookie(url);
 
@@ -38,13 +40,6 @@ public class StreamcloudContentLocationResolver implements ContentLocationResolv
 
 		return new ContentLocation(contentUrl, StreamcloudUrlParser.fromUrl(url).getFilename());
 	}
-
-
-
-
-
-
-
 
 
 	private void wait(int seconds) {

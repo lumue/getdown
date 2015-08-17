@@ -42,6 +42,10 @@ class StreamcloudPageScraper{
 		Map<String, Object> mediaPlayerAttributes = JsonUtil.parseJson(mediaPlayerJsonString);
 
 		String contentUrl = (String) mediaPlayerAttributes.get("file");
+		
+		if(contentUrl==null){
+			throw new RuntimeException("could not find file download location in page content. pageContent was :"+pageContent);
+		}
 
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("parsed content url" + contentUrl
