@@ -12,6 +12,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="io.github.lumue.getdown.app.springboot.application.Application"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="getdown-app-springboot"/>
 <booleanAttribute key="spring.boot.debug.enable" value="false"/>
+<booleanAttribute key="spring.boot.lifecycle.enable" value="true"/>
 <booleanAttribute key="spring.boot.livebean.enable" value="false"/>
 <stringAttribute key="spring.boot.livebean.port" value="31422"/>
 <stringAttribute key="spring.boot.profile" value=""/>
