@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence-diagram version="1.1.8" icons="true">  
+  <object id="1" language="java" name="io.github.lumue.getdown.app.springboot.web.DownloadJsonRpcController" 
+    project="getdown-app-springboot" 
+    file="/getdown-app-springboot/src/main/java/io/github/lumue/getdown/app/springboot/web/DownloadJsonRpcController.java" 
+    binary="false" label="downloadJsonRpcController" type="class" autoSize="true">    
+    <position height="-1" width="-1" x="355" y="0"/>    
+    <execution id="2">      
+      <position height="560" width="190" x="5" y="163"/>    
+    </execution>  
+  </object>  
+  <object id="7" language="java" name="io.github.lumue.getdown.core.download.job.DownloadService" project="getdown-core" 
+    file="/getdown-core/src/main/java/io/github/lumue/getdown/core/download/job/DownloadService.java" binary="false" 
+    label="downloadService" type="class" autoSize="true">    
+    <position height="-1" width="-1" x="508" y="0"/>    
+    <execution id="6">      
+      <position height="285" width="184" x="199" y="419"/>    
+    </execution>    
+    <execution id="4">      
+      <position height="218" width="184" x="199" y="182"/>    
+    </execution>    
+    <execution id="13">      
+      <position height="19" width="0" x="0" y="220"/>    
+    </execution>  
+  </object>  
+  <object id="22" language="java" 
+    name="io.github.lumue.getdown.core.download.job.HttpDownloadJob.HttpDownloadJobBuilder" project="getdown-core" 
+    file="/getdown-core/src/main/java/io/github/lumue/getdown/core/download/job/HttpDownloadJob.java" binary="false" 
+    type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="15">      
+      <position height="19" width="0" x="0" y="248"/>    
+    </execution>    
+    <execution id="17">      
+      <position height="19" width="0" x="0" y="286"/>    
+    </execution>    
+    <execution id="19">      
+      <position height="19" width="0" x="0" y="324"/>    
+    </execution>  
+  </object>  
+  <object id="23" language="java" name="io.github.lumue.getdown.core.common.persistence.ObjectRepository" 
+    project="getdown-core" 
+    file="/getdown-core/src/main/java/io/github/lumue/getdown/core/common/persistence/ObjectRepository.java" 
+    binary="false" label="jobRepository" type="interface" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="9">      
+      <position height="19" width="0" x="0" y="438"/>    
+    </execution>    
+    <execution id="21">      
+      <position height="19" width="0" x="0" y="362"/>    
+    </execution>  
+  </object>  
+  <object id="24" language="java" name="io.github.lumue.getdown.core.download.job.AsyncDownloadJobRunner" 
+    project="getdown-core" 
+    file="/getdown-core/src/main/java/io/github/lumue/getdown/core/download/job/AsyncDownloadJobRunner.java" 
+    binary="false" label="downloadJobRunner" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="11">      
+      <position height="209" width="0" x="0" y="476"/>    
+    </execution>  
+  </object>  
+  <object id="35" language="java" name="io.github.lumue.getdown.core.common.util.Observable" project="getdown-core" 
+    file="/getdown-core/src/main/java/io/github/lumue/getdown/core/common/util/Observable.java" binary="false" 
+    label="job" type="interface" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="26">      
+      <position height="19" width="0" x="0" y="495"/>    
+    </execution>    
+    <execution id="28">      
+      <position height="19" width="0" x="0" y="533"/>    
+    </execution>    
+    <execution id="30">      
+      <position height="19" width="0" x="0" y="571"/>    
+    </execution>    
+    <execution id="32">      
+      <position height="19" width="0" x="0" y="609"/>    
+    </execution>  
+  </object>  
+  <object id="36" language="java" name="java.util.concurrent.Executor" project="getdown-core" 
+    file="/usr/lib/jvm/java-8-oracle/jre/lib/rt.jar" binary="true" label="executorService" type="interface" 
+    autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="34">      
+      <position height="19" width="0" x="0" y="647"/>    
+    </execution>  
+  </object>  
+  <message id="3" operation="addDownload(java.lang.String):io.github.lumue.getdown.core.download.job.DownloadJob">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
+  </message>  
+  <message id="5" 
+    operation="startDownload(io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle):void">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="6"/>  
+  </message>  
+  <message id="8" operation="get(K)">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="9"/>  
+  </message>  
+  <message id="10" operation="runJob(io.github.lumue.getdown.core.download.job.DownloadJob):void">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="11"/>  
+  </message>  
+  <message id="12" operation="resolveFilename(java.lang.String):java.lang.String">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="13"/>  
+  </message>  
+  <message id="14" operation="HttpDownloadJobBuilder()">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="15"/>  
+  </message>  
+  <message id="16" 
+    operation="withUrl(java.lang.String):io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJobBuilder">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="17"/>  
+  </message>  
+  <message id="18" 
+    operation="withOutputFilename(java.lang.String):io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJobBuilder">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="19"/>  
+  </message>  
+  <message id="20" operation="create(B)">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="21"/>  
+  </message>  
+  <message id="25" 
+    operation="addObserver(io.github.lumue.getdown.core.common.util.Observer&lt;?&gt;):io.github.lumue.getdown.core.common.util.Observable">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="26"/>  
+  </message>  
+  <message id="27" operation="setDownloadPath(java.lang.String):void">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="28"/>  
+  </message>  
+  <message id="29" 
+    operation="setContentLocationResolverRegistry(io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry):void">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="30"/>  
+  </message>  
+  <message id="31" operation="getUrl():java.lang.String">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="32"/>  
+  </message>  
+  <message id="33" operation="execute(java.lang.Runnable):void">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="34"/>  
+  </message>
+</sequence-diagram>
