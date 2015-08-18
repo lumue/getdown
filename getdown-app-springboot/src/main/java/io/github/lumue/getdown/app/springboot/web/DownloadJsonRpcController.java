@@ -1,9 +1,5 @@
 package io.github.lumue.getdown.app.springboot.web;
 
-import io.github.lumue.getdown.core.common.util.StreamUtils;
-import io.github.lumue.getdown.core.download.job.DownloadJob;
-import io.github.lumue.getdown.core.download.job.DownloadService;
-
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.github.lumue.getdown.core.common.util.StreamUtils;
+import io.github.lumue.getdown.core.download.job.DownloadJob;
+import io.github.lumue.getdown.core.download.job.DownloadService;
 
 @RestController
 public class DownloadJsonRpcController {
@@ -53,12 +53,17 @@ public class DownloadJsonRpcController {
 	}
 	
 	@RequestMapping(value = "/download/{handle}", method = RequestMethod.GET)
-	public Iterable<DownloadJobView> getDownload(@PathVariable String handle) {
-
-		Stream<DownloadJob> stream = StreamUtils.stream(downloadService.listDownloads());
-
-		return stream.map(downloadJob -> DownloadJobView.wrap(downloadJob)).collect(Collectors.toList());
+	public DownloadJobView getDownload(@PathVariable String handle) {
+		DownloadJob downloadJob=downloadService.getDownload(new DownloadJob.DownloadJobHandle(handle));
+		return DownloadJobView.wrap(downloadJob);
 	}
+	
+	@RequestMapping(value = "/download/{handle}/cancel", method = RequestMethod.GET)
+	public void cancelDownload(@PathVariable String handle) {
+		LOGGER.debug("canceling download job with handle " + handle);
+		downloadService.cancelDownload(new DownloadJob.DownloadJobHandle(handle));
+	}
+	
 
 
 

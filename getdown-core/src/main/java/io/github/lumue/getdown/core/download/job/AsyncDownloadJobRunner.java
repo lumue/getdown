@@ -45,4 +45,10 @@ public class AsyncDownloadJobRunner {
 		this.executorService.submit(job);
 	}
 
+
+
+	public void cancelJob(DownloadJob job) {
+		job.cancel();
+	}
+
 }

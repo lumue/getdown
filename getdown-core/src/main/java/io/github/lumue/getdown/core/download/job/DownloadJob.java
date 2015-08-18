@@ -169,11 +169,11 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		private static final long serialVersionUID = -1836164199304618485L;
 
 		public static enum DownloadJobState {
-			WAITING, RUNNING, ERROR, FINISHED;
+			WAITING, RUNNING, ERROR, FINISHED, CANCELLED;
 		}
 
 		@JsonProperty("state")
-		private DownloadJobState downloadJobState = DownloadJobState.WAITING;
+		protected DownloadJobState downloadJobState = DownloadJobState.WAITING;
 
 		@JsonProperty("downloadProgress")
 		private Optional<DownloadProgress> downloadProgress = Optional.empty();
@@ -358,6 +358,8 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		
 		
 	}
+
+	public void cancel();
 
 	
 	

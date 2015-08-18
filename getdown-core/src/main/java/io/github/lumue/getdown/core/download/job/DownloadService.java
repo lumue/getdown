@@ -1,10 +1,10 @@
 package io.github.lumue.getdown.core.download.job;
 
+import java.net.URI;
+
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.core.download.job.HttpDownloadJob.HttpDownloadJobBuilder;
-
-import java.net.URI;
 
 /**
  * manage the execution of downloads
@@ -37,6 +37,11 @@ public class DownloadService {
 		downloadJobRunner.runJob(job);
 	}
 	
+	public void cancelDownload(final DownloadJobHandle handle){
+		DownloadJob job = jobRepository.get(handle);
+		downloadJobRunner.cancelJob(job);
+	}
+	
 	public Iterable<DownloadJob> listDownloads(){
 		return this.jobRepository.list();
 	}
@@ -44,6 +49,10 @@ public class DownloadService {
 	private String resolveFilename(final String url) {
 		String path = URI.create(url).getPath();
 		return path.substring(path.lastIndexOf('/') + 1).toString();
+	}
+
+	public DownloadJob getDownload(DownloadJobHandle downloadJobHandle) {
+		return this.jobRepository.get(downloadJobHandle);
 	}
 
 }

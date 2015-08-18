@@ -16,7 +16,6 @@ import io.github.lumue.getdown.core.download.resolver.ContentLocation;
 
 public class HttpDownloadJob extends AbstractDownloadJob {
 
-
 	/**
 	 * 
 	 */
@@ -53,16 +52,7 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 					outStream,
 
 			downloadProgress -> {
-
-				getDownloadProgress().orElseGet(() -> {
-
-					progress(downloadProgress);
-					return downloadProgress;
-
-				} );
-
 				progress( downloadProgress);
-
 			} );
 
 			outStream.flush();
@@ -94,6 +84,16 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 			return new HttpDownloadJob(this.url, this.outputFilename);
 		}
 
+	}
+
+
+	@Override
+	public void cancel() {
+		doObserved(()->
+		{
+			getDownloadProgress().ifPresent(progress -> {progress.cancel();});
+			downloadJobState = DownloadJobState.CANCELLED;
+		}); 
 	}
 
 }

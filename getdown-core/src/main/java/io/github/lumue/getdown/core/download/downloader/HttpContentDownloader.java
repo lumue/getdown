@@ -41,7 +41,9 @@ public class HttpContentDownloader implements ContentDownloader {
 			inputStream = response.getContent();
 			int count;
 			byte[] buffer = new byte[1024 * 512];
-			while ((count = inputStream.read(buffer)) > 0) {
+			while (
+					!DownloadState.CANCELLED.equals(progress.getState())
+					&& ((count = inputStream.read(buffer)) > 0)) {
 				targetStream.write(buffer, 0, count);
 				progress.increaseDownloadedSize(count);
 				if (progressListener != null) {

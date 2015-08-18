@@ -15,6 +15,11 @@ public class MockDownloadJob extends AbstractDownloadJob{
 
 	@Override
 	public void run() {
+	}
+
+	@Override
+	public void cancel() {
+		downloadJobState=DownloadJobState.CANCELLED;
 	} 
 	
 }

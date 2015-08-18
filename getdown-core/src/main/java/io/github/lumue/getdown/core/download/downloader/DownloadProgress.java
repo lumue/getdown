@@ -1,8 +1,8 @@
 package io.github.lumue.getdown.core.download.downloader;
 
-import io.github.lumue.getdown.core.download.downloader.ContentDownloader.DownloadState;
-
 import java.util.UUID;
+
+import io.github.lumue.getdown.core.download.downloader.ContentDownloader.DownloadState;
 
 /**
  * handle to an active download
@@ -44,6 +44,10 @@ public class DownloadProgress {
 
 	void finish() {
 		this.state = DownloadState.FINISHED;
+	}
+	
+	public void cancel() {
+		this.state = DownloadState.CANCELLED;
 	}
 
 	void increaseDownloadedSize(long value) {
