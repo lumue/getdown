@@ -5,14 +5,9 @@
 
 	<style>
 
-	:host {
-			width: 100%;
-			height: 100%;
-	}
-
-	iron-list {
-      padding-bottom: 16px;
-      height: 100%;
+    :host {
+        width: 100%;
+        height: 100%;
     }
 
     .item {
@@ -49,47 +44,43 @@
       font-size: 14px;
     }
 
-    .dim {
-      color: gray;
+
+
+    .add_fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      -webkit-transform: translateZ(0);
     }
-
-  .list-item-actions {
-    padding: 10px;
-    width: 5%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .add_fab {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    -webkit-transform: translateZ(0);
-  }
 	</style>
 
 	<template>
 
-		<iron-list id="list" items="[[data]]" as="download">
-        <template>
-          <div>
-            <div class="item">
-              <img class="avatar" src="../../images/icon-getdown.png">
-              <div class="pad">
-                  <div class="primary">{{download.name}}</div>
-                  <div class="secondary">
-                    <span>{{download.state}}</span>
-                    <span>{{download.progress}}</span>&nbsp;/
-                    <span>{{download.size}}</span>
-                    <paper-progress style="width: 100%" value="{{(download.progress / download.size)*100}}" id="paper_progress">{{download.progress}}</paper-progress>
-                  </div>
+    <iron-list id="list" items="[[data]]" as="download">
+      <template>
+
+        <div class="item">
+
+            <img class="avatar" src="../../images/icon-getdown.png">
+
+            <div class="pad">
+              <div class="primary">{{download.name}}</div>
+              <div class="secondary">
+                <span>{{download.state}}</span>
+                <span>{{download.progress}}</span>&nbsp;/
+                <span>{{download.size}}</span>
+                <paper-progress style="width: 100%" value="{{(download.progress / download.size)*100}}"
+                                id="paper_progress">{{download.progress}}
+                </paper-progress>
               </div>
-              <iron-icon  icon="reorder" ></iron-icon>
             </div>
-            <div class="border"></div>
+
+            <iron-icon icon="reorder"></iron-icon>
+
           </div>
-        </template>
-      </iron-list>
+
+      </template>
+    </iron-list>
 
     <paper-fab raised icon="add" class="add_fab" on-tap="{{onAddDownloadButtonClicked}}"></paper-fab>
 
