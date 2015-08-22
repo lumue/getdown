@@ -24,7 +24,7 @@ eclipse {
 
 apply plugin: 'com.moowork.gulp'
 
-build.dependsOn gulp_default
+compileJava.dependsOn gulp_default
 
 def srcDir = new File(projectDir, "src/main/web")
 def targetDir = new File(project.buildDir, "resources/main/static/web")
