@@ -44,13 +44,13 @@ var styleTask = function (stylesPath, srcs) {
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
     .pipe(gulp.dest('.tmp/' + stylesPath))
     .pipe($.if('*.css', $.cssmin()))
-    .pipe(gulp.dest('dist/' + stylesPath))
+    .pipe(gulp.dest('build/resources/main/static/web/' + stylesPath))
     .pipe($.size({title: stylesPath}));
 };
 
 // Compile and Automatically Prefix Stylesheets
 gulp.task('styles', function () {
-  return styleTask('styles', ['**/*.css']);
+  return styleTask('src/main/web/app/styles', ['**/*.css']);
 });
 
 gulp.task('elements', function () {
@@ -60,9 +60,9 @@ gulp.task('elements', function () {
 // Lint JavaScript
 gulp.task('jshint', function () {
   return gulp.src([
-      'app/scripts/**/*.js',
-      'app/elements/**/*.js',
-      'app/elements/**/*.html'
+      'src/main/web/app/scripts/**/*.js',
+      'src/main/web/app/elements/**/*.js',
+      'src/main/web/app/elements/**/*.html'
     ])
     .pipe(reload({stream: true, once: true}))
     .pipe($.jshint.extract()) // Extract JS from .html files
@@ -73,41 +73,41 @@ gulp.task('jshint', function () {
 
 // Optimize Images
 gulp.task('images', function () {
-  return gulp.src('app/images/**/*')
+  return gulp.src('src/main/web/app/images/**/*')
     .pipe($.cache($.imagemin({
       progressive: true,
       interlaced: true
     })))
-    .pipe(gulp.dest('dist/images'))
+    .pipe(gulp.dest('build/resources/main/static/web/images/'))
     .pipe($.size({title: 'images'}));
 });
 
 // Copy All Files At The Root Level (app)
 gulp.task('copy', function () {
   var app = gulp.src([
-    'app/*',
-    '!app/test',
-    '!app/cache-config.json'
+    'src/main/web/app/*',
+    '!src/main/web/app/test',
+    '!src/main/web/app/cache-config.json'
   ], {
     dot: true
-  }).pipe(gulp.dest('dist'));
+  }).pipe(gulp.dest('build/resources/main/static/web/'));
 
   var bower = gulp.src([
-    'bower_components/**/*'
-  ]).pipe(gulp.dest('dist/bower_components'));
+    'src/main/web/bower_components/**/*'
+  ]).pipe(gulp.dest('build/resources/main/static/web/bower_components'));
 
-  var elements = gulp.src(['app/elements/**/*.html','app/elements/**/*.js','app/elements/**/*.json'])
-    .pipe(gulp.dest('dist/elements'));
+  var elements = gulp.src(['src/main/web/app/elements/**/*.html','src/main/web/app/elements/**/*.js','src/main/web/app/elements/**/*.json'])
+    .pipe(gulp.dest('build/resources/main/static/web/elements'));
 
   var swBootstrap = gulp.src(['bower_components/platinum-sw/bootstrap/*.js'])
-    .pipe(gulp.dest('dist/elements/bootstrap'));
+    .pipe(gulp.dest('build/resources/main/static/web/elements/bootstrap'));
 
   var swToolbox = gulp.src(['bower_components/sw-toolbox/*.js'])
-    .pipe(gulp.dest('dist/sw-toolbox'));
+    .pipe(gulp.dest('build/resources/main/static/web/sw-toolbox'));
 
-  var vulcanized = gulp.src(['app/elements/elements.html'])
+  var vulcanized = gulp.src(['src/main/web/app/elements/elements.html'])
     .pipe($.rename('elements.vulcanized.html'))
-    .pipe(gulp.dest('dist/elements'));
+    .pipe(gulp.dest('build/resources/main/static/web/elements'));
 
   return merge(app, bower, elements, vulcanized, swBootstrap, swToolbox)
     .pipe($.size({title: 'copy'}));
@@ -115,16 +115,16 @@ gulp.task('copy', function () {
 
 // Copy Web Fonts To Dist
 gulp.task('fonts', function () {
-  return gulp.src(['app/fonts/**'])
-    .pipe(gulp.dest('dist/fonts'))
+  return gulp.src(['src/main/web/app/fonts/**'])
+    .pipe(gulp.dest('build/resources/main/static/web/fonts'))
     .pipe($.size({title: 'fonts'}));
 });
 
 // Scan Your HTML For Assets & Optimize Them
 gulp.task('html', function () {
-  var assets = $.useref.assets({searchPath: ['.tmp', 'app', 'dist']});
+  var assets = $.useref.assets({searchPath: ['.tmp', 'src/main/web/app', 'build/resources/main/static/web']});
 
-  return gulp.src(['app/**/*.html', '!app/{elements,test}/**/*.html'])
+  return gulp.src(['src/main/web/app/**/*.html', '!src/main/web/app/{elements,test}/**/*.html'])
     // Replace path for vulcanized assets
     .pipe($.if('*.html', $.replace('elements/elements.html', 'elements/elements.vulcanized.html')))
     .pipe(assets)
@@ -142,15 +142,15 @@ gulp.task('html', function () {
       spare: true
     })))
     // Output Files
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('build/resources/main/static/web'))
     .pipe($.size({title: 'html'}));
 });
 
 // Vulcanize imports
 gulp.task('vulcanize', function () {
-  var DEST_DIR = 'dist/elements';
+  var DEST_DIR = 'build/resources/main/static/web/elements';
 
-  return gulp.src('dist/elements/elements.vulcanized.html')
+  return gulp.src('build/resources/main/static/web/elements/elements.vulcanized.html')
     .pipe($.vulcanize({
       stripComments: true,
       inlineCss: true,
@@ -168,7 +168,7 @@ gulp.task('vulcanize', function () {
 // See https://github.com/PolymerElements/polymer-starter-kit#enable-service-worker-support
 // for more context.
 gulp.task('cache-config', function (callback) {
-  var dir = 'dist';
+  var dir = 'build/resources/main/static/web';
   var config = {
     cacheId: packageJson.name || path.basename(__dirname),
     disabled: false
@@ -193,7 +193,7 @@ gulp.task('cache-config', function (callback) {
 
 // Clean Output Directory
 gulp.task('clean', function (cb) {
-  del(['.tmp', 'dist'], cb);
+  del(['.tmp', 'build/resources/main/static/web'], cb);
 });
 
 // Watch Files For Changes & Reload
@@ -215,19 +215,19 @@ gulp.task('serve', ['styles', 'elements', 'images'], function () {
     //       will present a certificate warning in the browser.
     // https: true,
     server: {
-      baseDir: ['.tmp', 'app'],
+      baseDir: ['.tmp', 'src/main/web/app'],
       middleware: [ historyApiFallback() ],
       routes: {
-        '/bower_components': 'bower_components'
+        '/bower_components': 'src/main/web/bower_components'
       }
     }
   });
 
-  gulp.watch(['app/**/*.html'], reload);
-  gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
-  gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
-  gulp.watch(['app/{scripts,elements}/**/{*.js,*.html}'], ['jshint']);
-  gulp.watch(['app/images/**/*'], reload);
+  gulp.watch(['src/main/web/app/**/*.html'], reload);
+  gulp.watch(['src/main/web/app/styles/**/*.css'], ['styles', reload]);
+  gulp.watch(['src/main/web/app/elements/**/*.css'], ['elements', reload]);
+  gulp.watch(['src/main/web/app/{scripts,elements}/**/{*.js,*.html}'], ['jshint']);
+  gulp.watch(['src/main/web/app/images/**/*'], reload);
 });
 
 // Build and serve the output from the dist build

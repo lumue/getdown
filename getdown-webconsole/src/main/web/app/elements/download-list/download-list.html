@@ -1,6 +1,4 @@
-<link rel="import" href="../../../bower_components/iron-list/iron-list.html" xmlns="http://www.w3.org/1999/html">
-<link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../../../bower_components/paper-progress/paper-progress.html">
+
 <dom-module id="download-list">
 
   <style>
@@ -12,7 +10,7 @@
 
 
 
-	iron-list {
+	  .list {
       padding-bottom: 16px;
       height: 100%;
     }
@@ -60,7 +58,7 @@
   </style>
   <template>
 
-    <iron-list id="list" items="[[data]]" as="download">
+    <iron-list id="list" class="list" items="[[data]]" as="download">
       <template>
 
         <div class="item">
@@ -91,5 +89,5 @@
 
   </template>
 
-  <script src="./download-list.js"></script>
+  <script src="download-list.js"></script>
 </dom-module>
