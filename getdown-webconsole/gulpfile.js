@@ -74,12 +74,7 @@ gulp.task('jshint', function () {
 // Optimize Images
 gulp.task('images', function () {
   return gulp.src('src/main/web/app/images/**/*')
-    .pipe($.cache($.imagemin({
-      progressive: true,
-      interlaced: true
-    })))
-    .pipe(gulp.dest('build/resources/main/static/web/images/'))
-    .pipe($.size({title: 'images'}));
+    .pipe(gulp.dest('build/resources/main/static/web/images/'));
 });
 
 // Copy All Files At The Root Level (app)
