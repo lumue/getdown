@@ -6,13 +6,8 @@ build/
 */.directory
 .gradle/
 bin/
-dartbuild/
-src/main/dart/packages/
-src/main/dart/web/packages/
-src/main/dart/.pub
-src/main/resources/static/web
-/.nb-gradle/private/
 .directory
 *.jfr
 Downloads/
 log/
+*.iml

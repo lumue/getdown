@@ -6,4 +6,4 @@
 /.gradle/
 /bin/
 node_modules
-**/*.iml
+getdown-webconsole.iml
