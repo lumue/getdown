@@ -36,9 +36,6 @@ var AUTOPREFIXER_BROWSERS = [
   'bb >= 10'
 ];
 
-var srcPath='src/main/web/';
-var targetPath='build/resources/main/static/web/';
-
 var styleTask = function (stylesPath, srcs) {
   return gulp.src(srcs.map(function(src) {
       return path.join('app', stylesPath, src);
@@ -47,13 +44,13 @@ var styleTask = function (stylesPath, srcs) {
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
     .pipe(gulp.dest('.tmp/' + stylesPath))
     .pipe($.if('*.css', $.cssmin()))
-    .pipe(gulp.dest(targetPath + stylesPath))
+    .pipe(gulp.dest('build/resources/main/static/web/' + stylesPath))
     .pipe($.size({title: stylesPath}));
 };
 
 // Compile and Automatically Prefix Stylesheets
 gulp.task('styles', function () {
-  return styleTask(srcPath+'app/styles', ['**/*.css']);
+  return styleTask('src/main/web/app/styles', ['**/*.css']);
 });
 
 gulp.task('elements', function () {
@@ -63,9 +60,9 @@ gulp.task('elements', function () {
 // Lint JavaScript
 gulp.task('jshint', function () {
   return gulp.src([
-      srcPath+'app/scripts/**/*.js',
-      srcPath+'app/elements/**/*.js',
-      srcPath+'app/elements/**/*.html'
+      'src/main/web/app/scripts/**/*.js',
+      'src/main/web/app/elements/**/*.js',
+      'src/main/web/app/elements/**/*.html'
     ])
     .pipe(reload({stream: true, once: true}))
     .pipe($.jshint.extract()) // Extract JS from .html files
@@ -76,36 +73,36 @@ gulp.task('jshint', function () {
 
 // Optimize Images
 gulp.task('images', function () {
-  return gulp.src(srcPath+'app/images/**/*')
-    .pipe(gulp.dest(targetPath+'images/'));
+  return gulp.src('src/main/web/app/images/**/*')
+    .pipe(gulp.dest('build/resources/main/static/web/images/'));
 });
 
 // Copy All Files At The Root Level (app)
 gulp.task('copy', function () {
   var app = gulp.src([
-    srcPath+'app/*',
+    'src/main/web/app/*',
     '!src/main/web/app/test',
     '!src/main/web/app/cache-config.json'
   ], {
     dot: true
-  }).pipe(gulp.dest(targetPath));
+  }).pipe(gulp.dest('build/resources/main/static/web/'));
 
   var bower = gulp.src([
-    srcPath+'bower_components/**/*'
-  ]).pipe(gulp.dest(targetPath+'bower_components'));
+    'src/main/web/bower_components/**/*'
+  ]).pipe(gulp.dest('build/resources/main/static/web/bower_components'));
 
-  var elements = gulp.src([srcPath+'app/elements/**/*.html',srcPath+'app/elements/**/*.js',srcPath+'app/elements/**/*.json'])
-    .pipe(gulp.dest(targetPath+'elements'));
+  var elements = gulp.src(['src/main/web/app/elements/**/*.html','src/main/web/app/elements/**/*.js','src/main/web/app/elements/**/*.json'])
+    .pipe(gulp.dest('build/resources/main/static/web/elements'));
 
   var swBootstrap = gulp.src(['bower_components/platinum-sw/bootstrap/*.js'])
-    .pipe(gulp.dest(targetPath+'elements/bootstrap'));
+    .pipe(gulp.dest('build/resources/main/static/web/elements/bootstrap'));
 
   var swToolbox = gulp.src(['bower_components/sw-toolbox/*.js'])
-    .pipe(gulp.dest(targetPath+'sw-toolbox'));
+    .pipe(gulp.dest('build/resources/main/static/web/sw-toolbox'));
 
-  var vulcanized = gulp.src([srcPath+'app/elements/elements.html'])
+  var vulcanized = gulp.src(['src/main/web/app/elements/elements.html'])
     .pipe($.rename('elements.vulcanized.html'))
-    .pipe(gulp.dest(targetPath+'elements'));
+    .pipe(gulp.dest('build/resources/main/static/web/elements'));
 
   return merge(app, bower, elements, vulcanized, swBootstrap, swToolbox)
     .pipe($.size({title: 'copy'}));
@@ -113,16 +110,16 @@ gulp.task('copy', function () {
 
 // Copy Web Fonts To Dist
 gulp.task('fonts', function () {
-  return gulp.src([srcPath+'app/fonts/**'])
-    .pipe(gulp.dest(targetPath+'fonts'))
+  return gulp.src(['src/main/web/app/fonts/**'])
+    .pipe(gulp.dest('build/resources/main/static/web/fonts'))
     .pipe($.size({title: 'fonts'}));
 });
 
 // Scan Your HTML For Assets & Optimize Them
 gulp.task('html', function () {
-  var assets = $.useref.assets({searchPath: ['.tmp', srcPath+'app', 'build/resources/main/static/web']});
+  var assets = $.useref.assets({searchPath: ['.tmp', 'src/main/web/app', 'build/resources/main/static/web']});
 
-  return gulp.src([srcPath+'app/**/*.html', '!src/main/web/app/{elements,test}/**/*.html'])
+  return gulp.src(['src/main/web/app/**/*.html', '!src/main/web/app/{elements,test}/**/*.html'])
     // Replace path for vulcanized assets
     .pipe($.if('*.html', $.replace('elements/elements.html', 'elements/elements.vulcanized.html')))
     .pipe(assets)
@@ -146,9 +143,9 @@ gulp.task('html', function () {
 
 // Vulcanize imports
 gulp.task('vulcanize', function () {
-  var DEST_DIR = targetPath+'elements';
+  var DEST_DIR = 'build/resources/main/static/web/elements';
 
-  return gulp.src(targetPath+'elements/elements.vulcanized.html')
+  return gulp.src('build/resources/main/static/web/elements/elements.vulcanized.html')
     .pipe($.vulcanize({
       stripComments: true,
       inlineCss: true,
@@ -213,19 +210,19 @@ gulp.task('serve', ['styles', 'elements', 'images'], function () {
     //       will present a certificate warning in the browser.
     // https: true,
     server: {
-      baseDir: ['.tmp', srcPath+'app'],
+      baseDir: ['.tmp', 'src/main/web/app'],
       middleware: [ historyApiFallback() ],
       routes: {
-        '/bower_components': srcPath+'bower_components'
+        '/bower_components': 'src/main/web/bower_components'
       }
     }
   });
 
-  gulp.watch([srcPath+'app/**/*.html'], reload);
-  gulp.watch([srcPath+'app/styles/**/*.css'], ['styles', reload]);
-  gulp.watch([srcPath+'app/elements/**/*.css'], ['elements', reload]);
-  gulp.watch([srcPath+'app/{scripts,elements}/**/{*.js,*.html}'], ['jshint']);
-  gulp.watch([srcPath+'app/images/**/*'], reload);
+  gulp.watch(['src/main/web/app/**/*.html'], reload);
+  gulp.watch(['src/main/web/app/styles/**/*.css'], ['styles', reload]);
+  gulp.watch(['src/main/web/app/elements/**/*.css'], ['elements', reload]);
+  gulp.watch(['src/main/web/app/{scripts,elements}/**/{*.js,*.html}'], ['jshint']);
+  gulp.watch(['src/main/web/app/images/**/*'], reload);
 });
 
 // Build and serve the output from the dist build
