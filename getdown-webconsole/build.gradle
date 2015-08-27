@@ -1,3 +1,15 @@
+buildscript {
+	repositories {
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath "com.moowork.gradle:gradle-gulp-plugin:0.10"
+	}
+}
+
+
 apply plugin: 'eclipse-wtp'
 
 eclipse {
@@ -9,3 +21,30 @@ eclipse {
 		buildCommand 'org.eclipse.wst.common.project.facet.core.builder'
 	}
 }
+
+apply plugin: 'com.moowork.gulp'
+
+compileJava.dependsOn gulp_default
+
+def srcDir = new File(projectDir, "src/main/web")
+def targetDir = new File(project.buildDir, "resources/main/static/web")
+gulp_dist.inputs.dir srcDir
+gulp_dist.outputs.dir targetDir
+
+// makes sure on each build that gulp is installed
+gulp_build.dependsOn 'installGulp'
+
+// processes your package.json before running gulp build
+gulp_build.dependsOn 'npmInstall'
+
+gulp {
+	// Set the directory where gulpfile.js should be found
+	workDir = file("${project.projectDir}")
+
+	// Whether colors should output on the terminal
+	colors = true
+
+	// Whether output from Gulp should be buffered - useful when running tasks in parallel
+	bufferOutput = false
+}
+

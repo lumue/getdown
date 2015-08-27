@@ -5,3 +5,5 @@
 /.direcotry
 /.gradle/
 /bin/
+node_modules
+getdown-webconsole.iml
