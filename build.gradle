@@ -25,6 +25,7 @@ allprojects {
 				downloadSources = true;}
 	}
 	
+	apply plugin: 'idea'
 	apply plugin:'java'
 	//java configuration
 	sourceCompatibility = jdk_version

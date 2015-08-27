@@ -16,3 +16,4 @@ src/main/resources/static/web
 *.jfr
 Downloads/
 log/
+*.iml

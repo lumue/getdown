@@ -15,3 +15,4 @@ src/main/dart/.pub
 src/main/resources/static/web
 .springBeans
 log/
+*.iml
