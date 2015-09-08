@@ -30,6 +30,7 @@ class StreamcloudPageScraper{
 
 		Elements mediaPlayerScriptElements = viewerPageDocument.getElementsByTag("script");
 
+
 		Element mediaPlayerScriptElement = mediaPlayerScriptElements.stream()
 				.filter(scriptElement -> scriptElement.toString().contains("jwplayer(\"mediaplayer\").setup"))
 				.findFirst().get();

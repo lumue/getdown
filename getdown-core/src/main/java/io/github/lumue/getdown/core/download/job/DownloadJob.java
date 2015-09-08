@@ -298,6 +298,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 						contentLocation = locationResolver.resolve(startUrl.toString());
 					} catch (Exception e) {
 						this.error(e);
+						LOGGER.error(e.getLocalizedMessage(),e);
 					}
 				} else {
 					LOGGER.warn(
@@ -309,7 +310,8 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 				LOGGER.debug(
 						"created " + contentLocation + " for " + startUrl.toString());
 
-				this.setContentLocation(contentLocation);
+				if(contentLocation!=null)
+					this.setContentLocation(contentLocation);
 			});
 		}
 

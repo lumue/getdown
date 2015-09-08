@@ -27,10 +27,10 @@ public class ApplicationConfiguration {
 
 	@Bean
 	public AsyncDownloadJobRunner downloadJobRunner(
-			ExecutorService executorService,
 			ContentLocationResolverRegistry contentLocationResolverRegistry,
 			@Value("${getdown.path.download}") String downloadPath,
 			EventBus eventbus) {
+		ExecutorService executorService=Executors.newScheduledThreadPool(3);
 		return new AsyncDownloadJobRunner(executorService,
 				contentLocationResolverRegistry, downloadPath, eventbus);
 	}
