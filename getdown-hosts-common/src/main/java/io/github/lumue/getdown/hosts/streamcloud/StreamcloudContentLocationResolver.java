@@ -4,13 +4,17 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.github.lumue.getdown.core.download.conversation.JobConversations;
+import io.github.lumue.getdown.core.download.job.DownloadJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.lumue.getdown.core.download.resolver.ContentLocation;
 import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
+import sun.plugin2.message.Conversation;
 
 @Named
 public class StreamcloudContentLocationResolver implements ContentLocationResolver {
@@ -20,20 +24,26 @@ public class StreamcloudContentLocationResolver implements ContentLocationResolv
 	static Logger LOGGER = LoggerFactory
 			.getLogger(StreamcloudContentLocationResolver.class);
 
+	private final JobConversations conversations;
 
-
+	@Inject
+	public StreamcloudContentLocationResolver(JobConversations conversations) {
+		this.conversations = conversations;
+	}
 
 	@Override
-	public ContentLocation resolve(String url) throws IOException {
-		
+	public ContentLocation resolve(DownloadJob job) throws IOException {
+
+		final String url=job.getUrl();
 		LOGGER.debug("resolving download location for "+url);
 
-		StreamcloudSiteAdapter.acquireCookie(url);
+
+		Conversation conversations.get(job);
 
 		
 		wait(15);
 
-		String mediaPlayerPageContent = StreamcloudSiteAdapter
+		String mediaPlayerPageContent = conversations
 				.loadPageContent(url);
 
 		String contentUrl = StreamcloudPageScraper.scrapePageContentForDownloadUrl(mediaPlayerPageContent);

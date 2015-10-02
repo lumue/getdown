@@ -26,8 +26,8 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 	private final static ContentDownloader DOWNLOADER = new HttpContentDownloader();
 
-	private HttpDownloadJob(String url, String outputFilename) {
-		super(url, outputFilename);
+	private HttpDownloadJob(String url, String outputFilename,String host) {
+		super(url, outputFilename,host);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 		@Override
 		public DownloadJob build() {
-			return new HttpDownloadJob(this.url, this.outputFilename);
+			return new HttpDownloadJob(this.url, this.outputFilename,this.host);
 		}
 
 	}

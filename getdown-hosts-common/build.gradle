@@ -7,5 +7,6 @@ dependencies {
 		compile 'javax.inject:javax.inject:1'
 		compile 'org.apache.httpcomponents:httpclient:4.5'
 		compile 'org.jsoup:jsoup:1.7.2'
+
 }
 

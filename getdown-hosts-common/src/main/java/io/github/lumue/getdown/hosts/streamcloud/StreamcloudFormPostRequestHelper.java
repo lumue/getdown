@@ -10,7 +10,27 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
-class StreamcloudFormPostRequest extends HttpPost {
+class StreamcloudFormPostRequestHelper extends HttpPost {
+
+	public static HttpPost setHeaders(HttpPost httpPost,String uri) throws UnsupportedEncodingException {
+		// add header
+		httpPost.setHeader("Host", "streamcloud.eu");
+		httpPost.setHeader("User-Agent", USER_AGENT);
+		httpPost.setHeader("Accept",
+				" text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+		httpPost.setHeader("Accept-Language", "en-US,en;q=0.8");
+		// httpPost.setHeader("Cookie", sessionCookie);
+		httpPost.setHeader("Connection", "keep-alive");
+		httpPost.setHeader("Referer", uri);
+		httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		httpPost.setHeader("Cache-Control", "max-age=0");
+		httpPost.setHeader("Origin", "http://streamcloud.eu");
+		httpPost.setHeader("Accept-Encoding", "gzip, deflate");
+
+		StreamcloudPostParameter postParams = new StreamcloudPostParameter(uri);
+		httpPost.setEntity(new UrlEncodedFormEntity(postParams.asList()));
+		return httpPost;
+	}
 
 	static class StreamcloudPostParameter {
 
@@ -41,24 +61,9 @@ class StreamcloudFormPostRequest extends HttpPost {
 
 	private final static String USER_AGENT = "Mozilla/5.0";
 
-	StreamcloudFormPostRequest(String uri) throws UnsupportedEncodingException {
+	StreamcloudFormPostRequestHelper(String uri) throws UnsupportedEncodingException {
 		super(uri);
-		// add header
-		this.setHeader("Host", "streamcloud.eu");
-		this.setHeader("User-Agent", USER_AGENT);
-		this.setHeader("Accept",
-				" text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-		this.setHeader("Accept-Language", "en-US,en;q=0.8");
-		// this.setHeader("Cookie", sessionCookie);
-		this.setHeader("Connection", "keep-alive");
-		this.setHeader("Referer", uri);
-		this.setHeader("Content-Type", "application/x-www-form-urlencoded");
-		this.setHeader("Cache-Control", "max-age=0");
-		this.setHeader("Origin", "http://streamcloud.eu");
-		this.setHeader("Accept-Encoding", "gzip, deflate");
 
-		StreamcloudPostParameter postParams = new StreamcloudPostParameter(uri);
-		this.setEntity(new UrlEncodedFormEntity(postParams.asList()));
 	}
 
 }

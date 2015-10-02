@@ -1,5 +1,7 @@
 package io.github.lumue.getdown.core.download.resolver;
 
+import io.github.lumue.getdown.core.download.job.DownloadJob;
+
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -12,13 +14,13 @@ import java.util.Iterator;
 public interface ContentLocationResolver {
 
 	/**
-	 * resolve location(s) for an url
+	 * resolve location(s) for a DownloadJob
 	 * 
 	 * @param url
 	 * @return content url
 	 * @throws IOException
 	 */
-	public ContentLocation resolve(String url) throws IOException;
+	public ContentLocation resolve(DownloadJob job) throws IOException;
 
 	/**
 	 * host(s) handled by this resolver
