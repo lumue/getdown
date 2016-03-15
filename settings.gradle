@@ -3,6 +3,5 @@ rootProject.name = 'getdown'
 include (
 	  'getdown-app-springboot',
 	  'getdown-core',
-	  'getdown-webconsole',
-	  'getdown-hosts-common'
+	  'getdown-webconsole'
 )
