@@ -118,9 +118,9 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 
 	public abstract static class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {
-		String outputFilename;
-		String url;
-		String host;
+		protected String outputFilename;
+		protected String url;
+		protected String host;
 
 		public AbstractDownloadJobBuilder withOutputFilename(String outputFilename) {
 			this.outputFilename = outputFilename;

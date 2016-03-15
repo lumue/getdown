@@ -1,76 +1,31 @@
 package io.github.lumue.getdown.core.download.youtubedl;
 
-import io.github.lumue.getdown.core.common.util.Observable;
-import io.github.lumue.getdown.core.common.util.Observer;
-import io.github.lumue.getdown.core.download.downloader.DownloadProgress;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
-import io.github.lumue.getdown.core.download.resolver.ContentLocation;
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
-
-import java.util.Optional;
+import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
+import io.github.lumue.ydlwrapper.download.YdlFileDownload;
 
 /**
  * Created by lm on 15.03.16.
  */
-public class YoutubedlDownloadJob implements DownloadJob{
-	@Override
-	public DownloadJobHandle getHandle() {
-		return null;
-	}
+public class YoutubedlDownloadJob extends DownloadJob.AbstractDownloadJob implements DownloadJob {
 
-	@Override
-	public Optional<Throwable> getError() {
-		return null;
-	}
+	private YdlDownloadTask downloadTask;
 
-	@Override
-	public Optional<String> getMessage() {
-		return null;
-	}
-
-	@Override
-	public Optional<DownloadProgress> getDownloadProgress() {
-		return null;
-	}
-
-	@Override
-	public AbstractDownloadJob.DownloadJobState getState() {
-		return null;
-	}
-
-	@Override
-	public String getOutputFilename() {
-		return null;
-	}
-
-	@Override
-	public String getUrl() {
-		return null;
-	}
-
-	@Override
-	public String getHost() {
-		return null;
-	}
-
-	@Override
-	public Optional<ContentLocation> getContentLocation() {
-		return null;
-	}
-
-	@Override
-	public void setDownloadPath(String downloadPath) {
-
-	}
-
-	@Override
-	public void setContentLocationResolverRegistry(ContentLocationResolverRegistry contentLocationResolverRegistry) {
-
+	public YoutubedlDownloadJob(String url, String outputFilename, String host) {
+		super(url, outputFilename, host);
 	}
 
 	@Override
 	public void run() {
+		downloadTask = YdlDownloadTask.builder()
+				.setUrl("https://www.youtube.com/watch?v=BiG6_1LS_AI")
+				.setOutputFolder(getOutputFilename())
+				.setWriteInfoJson(true)
+				.onNewOutputFile((ydlDownloadTask,ydlFileDownload)-> publishProgress(ydlDownloadTask,ydlFileDownload))
+				.build();
+	}
 
+	private void publishProgress(YdlDownloadTask ydlDownloadTask, YdlFileDownload ydlFileDownload) {
 	}
 
 	@Override
@@ -78,13 +33,13 @@ public class YoutubedlDownloadJob implements DownloadJob{
 
 	}
 
-	@Override
-	public Observable addObserver(Observer<?> observer) {
-		return null;
-	}
+	public static class YoutubedlDownloadJobBuilder
+			extends AbstractDownloadJobBuilder {
 
-	@Override
-	public Observable removeObserver(Observer<?> observer) {
-		return null;
+		@Override
+		public DownloadJob build() {
+			return new YoutubedlDownloadJob(this.url, this.outputFilename,this.host);
+		}
+
 	}
 }
