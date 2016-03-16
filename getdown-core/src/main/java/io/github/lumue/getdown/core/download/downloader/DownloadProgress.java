@@ -38,11 +38,11 @@ public class DownloadProgress {
 		return state;
 	}
 
-	void start() {
+	public void start() {
 		this.state = DownloadState.DOWNLOADING;
 	}
 
-	void finish() {
+	public void finish() {
 		this.state = DownloadState.FINISHED;
 	}
 	
@@ -50,8 +50,12 @@ public class DownloadProgress {
 		this.state = DownloadState.CANCELLED;
 	}
 
-	void increaseDownloadedSize(long value) {
+	public void increaseDownloadedSize(long value) {
 		this.downloadedSize += value;
+	}
+
+	public void updateDownloadedSize(long value) {
+		this.downloadedSize = value;
 	}
 
 

@@ -1,5 +1,6 @@
 package io.github.lumue.getdown.core.download.youtubedl;
 
+import io.github.lumue.getdown.core.download.downloader.DownloadProgress;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.download.YdlFileDownload;
@@ -21,11 +22,23 @@ public class YoutubedlDownloadJob extends DownloadJob.AbstractDownloadJob implem
 				.setUrl("https://www.youtube.com/watch?v=BiG6_1LS_AI")
 				.setOutputFolder(getOutputFilename())
 				.setWriteInfoJson(true)
-				.onNewOutputFile((ydlDownloadTask,ydlFileDownload)-> publishProgress(ydlDownloadTask,ydlFileDownload))
+				.onNewOutputFile(this::publishProgress)
+				.onOutputFileChange(this::publishProgress)
 				.build();
+
+		progress(new DownloadProgress());
+		downloadTask.execute();
+
+	}
+
+	private void publishProgress(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
+		getDownloadProgress().ifPresent(downloadProgress ->{}
+
+		);
 	}
 
 	private void publishProgress(YdlDownloadTask ydlDownloadTask, YdlFileDownload ydlFileDownload) {
+
 	}
 
 	@Override
