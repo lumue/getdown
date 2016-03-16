@@ -15,12 +15,8 @@ import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.common.util.Observable;
 import io.github.lumue.getdown.core.common.util.ObservableTemplate;
-import io.github.lumue.getdown.core.download.downloader.DownloadProgress;
 import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob.DownloadJobState;
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
-import io.github.lumue.getdown.core.download.resolver.ContentLocation;
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
 
 public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable,Observable,Runnable {
 
@@ -291,6 +287,13 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 			doObserved(() -> {
 				downloadJobState = DownloadJobState.RUNNING;
 				message = Optional.of("initializing...");
+			});
+		}
+
+		protected void message(String message) {
+			doObserved(() -> {
+				downloadJobState = DownloadJobState.RUNNING;
+				AbstractDownloadJob.this.message = Optional.of(message);
 			});
 		}
 

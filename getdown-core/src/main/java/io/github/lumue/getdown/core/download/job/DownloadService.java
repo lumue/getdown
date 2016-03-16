@@ -3,6 +3,7 @@ package io.github.lumue.getdown.core.download.job;
 import java.net.URI;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
+import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownloadJob;
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.core.download.downloader.internal.HttpDownloadJob.HttpDownloadJobBuilder;
 
@@ -28,7 +29,7 @@ public class DownloadService {
 
 	public DownloadJob addDownload(final String url) {
 		String filename = resolveFilename(url);
-		ObjectBuilder<DownloadJob> jobBuilder = new HttpDownloadJobBuilder().withUrl(url).withOutputFilename(filename);
+		ObjectBuilder<DownloadJob> jobBuilder = new YoutubedlDownloadJob.YoutubedlDownloadJobBuilder().withUrl(url).withOutputFilename(filename);
 		return jobRepository.create(jobBuilder);
 	}
 
