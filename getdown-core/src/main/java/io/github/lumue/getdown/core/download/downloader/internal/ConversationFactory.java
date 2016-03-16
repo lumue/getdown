@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.download.conversation;
+package io.github.lumue.getdown.core.download.downloader.internal;
 
 
 import java.util.Iterator;

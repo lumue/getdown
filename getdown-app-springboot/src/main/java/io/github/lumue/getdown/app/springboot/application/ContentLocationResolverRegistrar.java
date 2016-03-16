@@ -1,7 +1,7 @@
 package io.github.lumue.getdown.app.springboot.application;
 
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolver;
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
+import io.github.lumue.getdown.core.download.job.ContentLocationResolver;
+import io.github.lumue.getdown.core.download.job.ContentLocationResolverRegistry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

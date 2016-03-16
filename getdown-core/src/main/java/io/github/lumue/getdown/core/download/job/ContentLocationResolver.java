@@ -1,6 +1,4 @@
-package io.github.lumue.getdown.core.download.resolver;
-
-import io.github.lumue.getdown.core.download.job.DownloadJob;
+package io.github.lumue.getdown.core.download.job;
 
 import java.io.IOException;
 import java.util.Iterator;

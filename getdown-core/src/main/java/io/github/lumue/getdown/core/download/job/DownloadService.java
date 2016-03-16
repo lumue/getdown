@@ -4,7 +4,7 @@ import java.net.URI;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
-import io.github.lumue.getdown.core.download.job.HttpDownloadJob.HttpDownloadJobBuilder;
+import io.github.lumue.getdown.core.download.downloader.internal.HttpDownloadJob.HttpDownloadJobBuilder;
 
 /**
  * manage the execution of downloads

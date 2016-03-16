@@ -12,7 +12,7 @@ import io.github.lumue.getdown.core.download.job.AsyncDownloadJobRunner;
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
 import io.github.lumue.getdown.core.download.job.DownloadService;
 import io.github.lumue.getdown.core.download.job.FilePersistentDownloadJobRepository;
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
+import io.github.lumue.getdown.core.download.job.ContentLocationResolverRegistry;
 import reactor.bus.EventBus;
 import reactor.core.Dispatcher;
 import reactor.core.dispatch.ThreadPoolExecutorDispatcher;

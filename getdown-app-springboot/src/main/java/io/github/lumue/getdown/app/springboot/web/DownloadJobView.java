@@ -3,7 +3,7 @@ package io.github.lumue.getdown.app.springboot.web;
 import java.io.Serializable;
 import java.util.Optional;
 
-import io.github.lumue.getdown.core.download.downloader.DownloadProgress;
+import io.github.lumue.getdown.core.download.job.DownloadProgress;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 
 public interface DownloadJobView extends Serializable {

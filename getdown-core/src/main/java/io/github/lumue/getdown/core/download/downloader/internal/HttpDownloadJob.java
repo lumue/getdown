@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.download.job;
+package io.github.lumue.getdown.core.download.downloader.internal;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 
+import io.github.lumue.getdown.core.download.job.ContentLocation;
+import io.github.lumue.getdown.core.download.job.DownloadJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.lumue.getdown.core.download.downloader.ContentDownloader;
-import io.github.lumue.getdown.core.download.downloader.HttpContentDownloader;
 import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob;
-import io.github.lumue.getdown.core.download.resolver.ContentLocation;
 
 public class HttpDownloadJob extends AbstractDownloadJob {
 

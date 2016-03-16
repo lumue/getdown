@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.download.downloader;
+package io.github.lumue.getdown.core.download.downloader.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +11,7 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
+import io.github.lumue.getdown.core.download.job.DownloadProgress;
 
 public class HttpContentDownloader implements ContentDownloader {
 

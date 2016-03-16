@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.download.conversation;
+package io.github.lumue.getdown.core.download.downloader.internal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

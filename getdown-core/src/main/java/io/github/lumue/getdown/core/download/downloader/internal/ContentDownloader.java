@@ -1,4 +1,6 @@
-package io.github.lumue.getdown.core.download.downloader;
+package io.github.lumue.getdown.core.download.downloader.internal;
+
+import io.github.lumue.getdown.core.download.job.DownloadProgress;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -21,7 +21,7 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="io.github.lumue.getdown.core.download.job.HttpDownloadJob.HttpDownloadJobBuilder" 
+  <class id="3" language="java" name="io.github.lumue.getdown.core.download.downloader.internal.HttpDownloadJob.HttpDownloadJobBuilder"
     project="getdown-core" 
     file="/getdown-core/src/main/java/io/github/lumue/getdown/core/download/job/HttpDownloadJob.java" binary="false" 
     corner="BOTTOM_RIGHT">    
@@ -32,7 +32,7 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="io.github.lumue.getdown.core.download.job.HttpDownloadJob" project="getdown-core" 
+  <class id="4" language="java" name="io.github.lumue.getdown.core.download.downloader.internal.HttpDownloadJob" project="getdown-core"
     file="/getdown-core/src/main/java/io/github/lumue/getdown/core/download/job/HttpDownloadJob.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="51" width="187" x="950" y="156"/>    

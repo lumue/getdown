@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.lumue.getdown.core.download.resolver.ContentLocationResolverRegistry;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 

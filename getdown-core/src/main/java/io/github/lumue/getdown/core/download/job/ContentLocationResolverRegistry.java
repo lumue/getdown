@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.download.resolver;
+package io.github.lumue.getdown.core.download.job;
 
 import java.util.HashMap;
 import java.util.Iterator;

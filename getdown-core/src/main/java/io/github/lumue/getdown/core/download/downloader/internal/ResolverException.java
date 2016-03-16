@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.download.resolver;
+package io.github.lumue.getdown.core.download.downloader.internal;
 
 public class ResolverException extends RuntimeException {
 
