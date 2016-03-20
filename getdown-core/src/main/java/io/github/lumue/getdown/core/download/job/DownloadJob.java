@@ -37,6 +37,8 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 	String getHost();
 
+	String getName();
+
 	Optional<ContentLocation> getContentLocation();
 	
 	void setDownloadPath(String downloadPath);
@@ -117,9 +119,15 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		protected String outputFilename;
 		protected String url;
 		protected String host;
+		protected String name;
 
 		public AbstractDownloadJobBuilder withOutputFilename(String outputFilename) {
 			this.outputFilename = outputFilename;
+			return this;
+		}
+
+		public AbstractDownloadJobBuilder withName(String name) {
+			this.name = name;
 			return this;
 		}
 
@@ -179,17 +187,19 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		protected DownloadJobState downloadJobState = DownloadJobState.WAITING;
 
 		@JsonProperty("downloadProgress")
-		private Optional<DownloadProgress> downloadProgress = Optional.empty();
+		private transient Optional<DownloadProgress> downloadProgress = Optional.empty();
 
-		private Optional<String> message = Optional.empty();
+		private transient Optional<String> message = Optional.empty();
 
-		private Optional<Throwable> error = Optional.empty();
+		private transient Optional<Throwable> error = Optional.empty();
 
 		@JsonProperty("contentLocation")
 		private Optional<ContentLocation> contentLocation=Optional.empty();
 
 		@JsonProperty("handle")
 		private final DownloadJobHandle handle;
+		@JsonProperty("name")
+		private String name;
 		@JsonProperty("outputFilename")
 		private final String outputFilename;
 		@JsonProperty("url")
@@ -238,7 +248,10 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 			return url;
 		}
 
-
+		@Override
+		public String getName() {
+			return name;
+		}
 
 		@Override
 		public Optional<ContentLocation> getContentLocation() {
@@ -252,22 +265,24 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 				@JsonProperty("handle") DownloadJobHandle handle,
 				@JsonProperty("state") DownloadJobState downloadJobState,
 				@JsonProperty("contentLocation") ContentLocation contentLocation,
-				@JsonProperty("downloadProgress") DownloadProgress downloadProgress, String host) {
+				@JsonProperty("downloadProgress") DownloadProgress downloadProgress, String name, String host) {
 			super();
 			this.outputFilename = outputFilename;
 			this.url = url;
 			this.handle = handle;
 			this.downloadJobState=downloadJobState;
+			this.name = name;
 			this.host = host;
 			this.contentLocation=Optional.of(contentLocation);
 			this.downloadProgress=Optional.of(downloadProgress);
 		}
 
 		public AbstractDownloadJob(
-				String url,
+				String name, String url,
 				String outputFilename,
 				String host) {
 			super();
+			this.name = name;
 			this.host=host;
 			this.outputFilename = outputFilename;
 			this.url = url;
@@ -294,6 +309,12 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 			doObserved(() -> {
 				downloadJobState = DownloadJobState.RUNNING;
 				AbstractDownloadJob.this.message = Optional.of(message);
+			});
+		}
+
+		protected void updateName(String name) {
+			doObserved(() -> {
+				this.name=name;
 			});
 		}
 

@@ -26,7 +26,7 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 	private final static ContentDownloader DOWNLOADER = new HttpContentDownloader();
 
 	private HttpDownloadJob(String url, String outputFilename,String host) {
-		super(url, outputFilename,host);
+		super(name, url, outputFilename,host);
 	}
 
 	@Override

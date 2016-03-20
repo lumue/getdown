@@ -29,7 +29,11 @@ public class DownloadService {
 
 	public DownloadJob addDownload(final String url) {
 		String filename = resolveFilename(url);
-		ObjectBuilder<DownloadJob> jobBuilder = new YoutubedlDownloadJob.YoutubedlDownloadJobBuilder().withUrl(url).withOutputFilename(filename);
+		ObjectBuilder<DownloadJob> jobBuilder = YoutubedlDownloadJob
+				.builder()
+				.withUrl(url)
+				.withOutputFilename(filename)
+				.withName(url);
 		return jobRepository.create(jobBuilder);
 	}
 

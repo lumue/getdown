@@ -16,8 +16,8 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 
 	private transient YdlDownloadTask downloadTask;
 
-	public YoutubedlDownloadJob(String url, String outputFilename, String host) {
-		super(url, outputFilename, host);
+	public YoutubedlDownloadJob(String name,String url, String outputFilename, String host) {
+		super(name, url, outputFilename, host);
 	}
 
 	@Override
@@ -26,10 +26,10 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 				.setUrl(getUrl())
 				.setOutputFolder(getDownloadPath())
 				.setWriteInfoJson(true)
-				.onStdout(this::publishMessage)
-				.onStateChanged(this::publishProgress)
-				.onNewOutputFile(this::publishProgress)
-				.onOutputFileChange(this::publishProgress)
+				.onStdout(this::handleMessage)
+				.onStateChanged(this::handleProgress)
+				.onNewOutputFile(this::handleProgress)
+				.onOutputFileChange(this::handleProgress)
 				.build();
 
 		progress(new DownloadProgress());
@@ -37,20 +37,20 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 			downloadTask.execute();
 		}
 		catch(Throwable t){
-			publishError(t);
+			handleError(t);
 		}
 	}
 
-	private void publishMessage(YdlDownloadTask ydlDownloadTask, YdlStatusMessage ydlStatusMessage) {
+	private void handleMessage(YdlDownloadTask ydlDownloadTask, YdlStatusMessage ydlStatusMessage) {
 		message(ydlStatusMessage.getLine());
 	}
 
-	private void publishError(Throwable t) {
+	private void handleError(Throwable t) {
 		error(t);
 		getDownloadProgress().ifPresent(downloadProgress -> downloadProgress.error(t));
 	}
 
-	private void publishProgress(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
+	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
 		getDownloadProgress().ifPresent(downloadProgress ->{
 			if(downloadProgress.getState().equals(ContentDownloader.DownloadState.WAITING ))
 			{
@@ -73,7 +73,7 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 		});
 	}
 
-	private void publishProgress(YdlDownloadTask ydlDownloadTask, YdlFileDownload ydlFileDownload) {
+	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlFileDownload ydlFileDownload) {
 		getDownloadProgress().ifPresent(downloadProgress ->{
 			if(ydlFileDownload.getExpectedSize()!=null)
 				downloadProgress.setSize(ydlFileDownload.getExpectedSize());
@@ -88,12 +88,16 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 
 	}
 
+	public static YoutubedlDownloadJobBuilder builder() {
+		return new YoutubedlDownloadJobBuilder();
+	}
+
 	public static class YoutubedlDownloadJobBuilder
 			extends AbstractDownloadJobBuilder {
 
 		@Override
 		public DownloadJob build() {
-			return new YoutubedlDownloadJob(this.url, this.outputFilename,this.host);
+			return new YoutubedlDownloadJob(this.name,this.url, this.outputFilename,this.host);
 		}
 
 	}

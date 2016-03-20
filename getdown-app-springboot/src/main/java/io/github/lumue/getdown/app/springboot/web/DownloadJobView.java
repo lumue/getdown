@@ -8,15 +8,15 @@ import io.github.lumue.getdown.core.download.job.DownloadJob;
 
 public interface DownloadJobView extends Serializable {
 	
-	public String getHandle();
-	public String getName();
-	public String getUrl();
-	public String getState();
-	public Long getSize();
-	public Long getProgress();
-	public String getMessage();
+	String getHandle();
+	String getName();
+	String getUrl();
+	String getState();
+	Long getSize();
+	Long getProgress();
+	String getMessage();
 	
-	public static DownloadJobView wrap(final DownloadJob download)
+	static DownloadJobView wrap(final DownloadJob download)
 	{
 		return new DownloadJobView() {
 
@@ -24,7 +24,7 @@ public interface DownloadJobView extends Serializable {
 
 			@Override
 			public String getName() {
-				String outputFilename = download.getOutputFilename();
+				String outputFilename = download.getName();
 				return outputFilename.substring(outputFilename.lastIndexOf('/') + 1);
 			}
 
