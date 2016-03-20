@@ -7,17 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.github.lumue.getdown.core.common.util.StreamUtils;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.job.DownloadService;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class DownloadJsonRpcController {
 
 	private final DownloadService downloadService;
