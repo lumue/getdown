@@ -21,7 +21,7 @@ import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
 public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable,Observable,Runnable {
 
 	@Override
-	public DownloadJobHandle getHandle();
+	DownloadJobHandle getHandle();
 
 	Optional<Throwable> getError();
 
@@ -29,25 +29,25 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 	Optional<DownloadProgress> getDownloadProgress();
 
-	public DownloadJobState getState();
+	DownloadJobState getState();
 
-	public String getOutputFilename();
+	String getOutputFilename();
 
-	public String getUrl();
+	String getUrl();
 
-	public String getHost();
+	String getHost();
 
-	public Optional<ContentLocation> getContentLocation();
+	Optional<ContentLocation> getContentLocation();
 	
-	public void setDownloadPath(String downloadPath);
+	void setDownloadPath(String downloadPath);
 	
-	public void setContentLocationResolverRegistry(ContentLocationResolverRegistry contentLocationResolverRegistry);
+	void setContentLocationResolverRegistry(ContentLocationResolverRegistry contentLocationResolverRegistry);
 
-	public void run();
+	void run();
 
 
 
-	static class DownloadJobHandle implements Serializable {
+	class DownloadJobHandle implements Serializable {
 
 		private static final long serialVersionUID = -7582907691952041979L;
 
@@ -113,7 +113,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 
 
-	public abstract static class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {
+	abstract class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {
 		protected String outputFilename;
 		protected String url;
 		protected String host;
@@ -130,7 +130,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		}
 	}
 
-	public abstract class AbstractDownloadJob extends ObservableTemplate implements DownloadJob, java.io.Serializable {
+	abstract class AbstractDownloadJob extends ObservableTemplate implements DownloadJob, java.io.Serializable {
 
 		private static final Logger LOGGER=LoggerFactory.getLogger(AbstractDownloadJob.class);
 
@@ -379,7 +379,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 
 
-	public void cancel();
+	void cancel();
 
 	
 	
