@@ -7,6 +7,8 @@ import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.download.YdlFileDownload;
 import io.github.lumue.ydlwrapper.metadata.single_info_json.SingleInfoJsonMetadataAccessor;
 import io.github.lumue.ydlwrapper.metadata.statusmessage.YdlStatusMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.github.lumue.getdown.core.download.job.DownloadJob.*;
 
@@ -15,6 +17,7 @@ import static io.github.lumue.getdown.core.download.job.DownloadJob.*;
  */
 public class YoutubedlDownloadJob extends AbstractDownloadJob implements DownloadJob {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
 	private transient YdlDownloadTask downloadTask;
 
 	public YoutubedlDownloadJob(String name,String url, String outputFilename, String host) {
@@ -52,6 +55,7 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 	}
 
 	private void handleError(Throwable t) {
+		LOGGER.error("error during youtube-dl execution ",t);
 		error(t);
 		getDownloadProgress().ifPresent(downloadProgress -> downloadProgress.error(t));
 	}
