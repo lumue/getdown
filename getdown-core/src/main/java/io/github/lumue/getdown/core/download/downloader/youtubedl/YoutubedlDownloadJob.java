@@ -5,6 +5,7 @@ import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.job.DownloadProgress;
 import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.download.YdlFileDownload;
+import io.github.lumue.ydlwrapper.metadata.single_info_json.SingleInfoJsonMetadataAccessor;
 import io.github.lumue.ydlwrapper.metadata.statusmessage.YdlStatusMessage;
 
 import static io.github.lumue.getdown.core.download.job.DownloadJob.*;
@@ -30,6 +31,7 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 				.onStateChanged(this::handleProgress)
 				.onNewOutputFile(this::handleProgress)
 				.onOutputFileChange(this::handleProgress)
+				.onPrepared(this::handlePrepared)
 				.build();
 
 		progress(new DownloadProgress());
@@ -39,6 +41,10 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 		catch(Throwable t){
 			handleError(t);
 		}
+	}
+
+	private void handlePrepared(YdlDownloadTask ydlDownloadTask, SingleInfoJsonMetadataAccessor singleInfoJsonMetadataAccessor) {
+		singleInfoJsonMetadataAccessor.getTitle().ifPresent(this::updateName);
 	}
 
 	private void handleMessage(YdlDownloadTask ydlDownloadTask, YdlStatusMessage ydlStatusMessage) {

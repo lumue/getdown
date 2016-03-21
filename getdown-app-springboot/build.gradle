@@ -14,7 +14,7 @@ apply plugin: 'application'
 apply plugin: 'spring-boot'
 apply plugin: 'docker'
 
-group = '192.168.1.105:5000'
+group = 'lumue'
 
 mainClassName = 'io.github.lumue.getdown.app.springboot.application.Application'
 

@@ -10,7 +10,7 @@ import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob
 public class MockDownloadJob extends AbstractDownloadJob{
 
 	public MockDownloadJob() {
-		super(name, "", "","");
+		super("", "", "","");
 	}
 
 	@Override
