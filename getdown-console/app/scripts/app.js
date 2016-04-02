@@ -10,6 +10,11 @@
 
   // Sets app default base URL
   app.baseUrl = '/';
+
+  if (window.location.port === '63342') {  // if idea debug server
+    app.baseUrl = '/getdown/getdown-console/app/';
+  }
+
   if (window.location.port === '') {  // if production
     // Uncomment app.baseURL below and
     // set app.baseURL to '/your-pathname/' if running from folder in production
