@@ -1,0 +1,29 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="download-view">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <div>Hello from <span>{{foo}}</span></div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'download-view',
+
+      properties: {
+        foo: {
+          type: String,
+          value: 'download-view',
+          notify: true
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>
