@@ -1,29 +1,82 @@
+
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <dom-module id="download-view">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <div>Hello from <span>{{foo}}</span></div>
-  </template>
-  <script>
-  (function() {
-    'use strict';
+	<template>
 
-    Polymer({
-      is: 'download-view',
+		<style>
+			:host {
+				display: block;
+			}
 
-      properties: {
-        foo: {
-          type: String,
-          value: 'download-view',
-          notify: true
-        }
-      }
-    });
-  })();
-  </script>
+			.card-header-tool {
+			}
+
+			.content{
+				padding: 16px;
+				height: 100%;
+			}
+			paper-material {
+				width: calc(98% - 46px);
+				margin-bottom: 32px;
+			}
+		</style>
+
+		<paper-toolbar id="toolbar">
+			<paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+			<span class="space" >&nbsp;</span>
+
+			<!-- Application name -->
+			<div class="middle middle-container">
+				<div class="app-name">downloads</div>
+			</div>
+
+			<span class="space" style="width: 100%;"></span>
+
+			<!-- Toolbar icons -->
+			<paper-icon-button align="right" icon="refresh" ></paper-icon-button>
+			<paper-icon-button align="right" icon="search"></paper-icon-button>
+
+		</paper-toolbar>
+
+		<!-- Main Content -->
+		<div class="content">
+			<section tabindex="-1">
+				<paper-material elevation="1">
+					<paper-toolbar id="toolbar" class="card-header-tool">
+						<!-- Application name -->
+						<div class="middle middle-container">
+							<div class="list-name">active</div>
+						</div>
+
+						<span class="space" style="width: 100%;"></span>
+
+						<!-- Toolbar icons -->
+						<paper-icon-button align="right" icon="refresh" ></paper-icon-button>
+						<paper-icon-button align="right" icon="search"></paper-icon-button>
+
+					</paper-toolbar>
+					Downloads!
+				</paper-material>
+			</section>
+		</div>
+
+	</template>
+	<script>
+		(function () {
+			'use strict';
+
+			Polymer({
+				is: 'download-view',
+
+				properties: {
+					foo: {
+						type: String,
+						value: 'download-view',
+						notify: true
+					}
+				}
+			});
+		})();
+	</script>
 </dom-module>

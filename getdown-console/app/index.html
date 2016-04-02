@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
@@ -51,60 +50,35 @@
 <template is="dom-bind" id="app">
 
 	<paper-drawer-panel id="paperDrawerPanel">
-		<!-- Drawer Scroll Header Panel -->
-		<paper-scroll-header-panel drawer fixed>
 
-			<!-- Drawer Toolbar -->
+		<!-- sidebar -->
+		<paper-scroll-header-panel drawer fixed>
 			<paper-toolbar id="drawerToolbar">
 				<span class="menu-name">Menu</span>
 			</paper-toolbar>
-
-			<!-- Drawer Content -->
 			<paper-menu class="app-menu" attr-for-selected="data-route" selected="[[route]]">
-				<a data-route="home" href="{{baseUrl}}">
-					<iron-icon icon="home"></iron-icon>
-					<span>Home</span>
+				<a data-route="downloads" href="{{baseUrl}}">
+					<iron-icon icon="file-download"></iron-icon>
+					<span>downloads</span>
 				</a>
 			</paper-menu>
 		</paper-scroll-header-panel>
 
+
 		<!-- Main Area -->
 		<paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
-			<!-- Main Toolbar -->
-			<paper-toolbar id="mainToolbar" class="tall">
-				<paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
 
-				<span class="space"></span>
+			<iron-pages attr-for-selected="data-route" selected="{{route}}">
 
-				<!-- Toolbar icons -->
-				<paper-icon-button icon="refresh"></paper-icon-button>
-				<paper-icon-button icon="search"></paper-icon-button>
-
-				<!-- Application name -->
-				<div class="middle middle-container">
-					<div class="app-name">getdown console</div>
+				<div data-route="downloads">
+					<download-view></download-view>
 				</div>
 
-				<!-- Application sub title -->
-				<div class="bottom bottom-container">
-					<div class="bottom-title">download stuff</div>
-				</div>
-			</paper-toolbar>
-
-			<!-- Main Content -->
-			<div class="content">
-				<iron-pages attr-for-selected="data-route" selected="{{route}}">
-
-					<section data-route="home" tabindex="-1">
-						<paper-material elevation="1">
-							<download-view></download-view>
-						</paper-material>
-					</section>
-
-				</iron-pages>
-			</div>
+			</iron-pages>
 
 		</paper-scroll-header-panel>
+
+
 	</paper-drawer-panel>
 
 	<paper-toast id="toast">
