@@ -1,5 +1,9 @@
-package io.github.lumue.getdown.core.common.persistence;
+package io.github.lumue.getdown.core.common.persistence.jdkmap;
 
+
+import io.github.lumue.getdown.core.common.persistence.HasIdentity;
+import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
+import io.github.lumue.getdown.core.common.persistence.ObjectRepository;
 
 import java.util.Collection;
 import java.util.HashMap;

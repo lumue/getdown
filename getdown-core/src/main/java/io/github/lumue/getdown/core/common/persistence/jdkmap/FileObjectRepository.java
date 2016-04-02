@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.common.persistence;
+package io.github.lumue.getdown.core.common.persistence.jdkmap;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -13,6 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.github.lumue.getdown.core.common.persistence.HasIdentity;
+import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
+import io.github.lumue.getdown.core.common.persistence.ObjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
