@@ -9,7 +9,10 @@ buildscript {
 	}
 }
 
-
+apply plugin:'java'
+//java configuration
+sourceCompatibility = jdk_version
+targetCompatibility = jdk_version
 apply plugin: 'eclipse-wtp'
 
 eclipse {

@@ -9,7 +9,12 @@ buildscript {
 }
 
 
-//plugins
+apply plugin: 'idea'
+apply plugin:'java'
+//java configuration
+sourceCompatibility = jdk_version
+targetCompatibility = jdk_version
+
 apply plugin: 'application'
 apply plugin: 'spring-boot'
 apply plugin: 'docker'
@@ -38,6 +43,11 @@ dependencies {
 	compile "io.projectreactor:reactor-bus:$reactor_version"
 
 	testCompile("org.springframework.boot:spring-boot-starter-test")
+
+	compile 'org.slf4j:slf4j-api:1.7.10'
+
+	testCompile 'junit:junit:4.11'
+	testCompile 'org.slf4j:slf4j-log4j12:1.7.10'
 }
 
 
