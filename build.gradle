@@ -18,13 +18,6 @@ allprojects {
 		maven { url "https://jitpack.io" }
 	}
 
-
-	apply plugin: 'eclipse'
-	eclipse {
-		project { 	natures 'org.springsource.ide.eclipse.gradle.core.nature' }
-		classpath {	containers 'org.springsource.ide.eclipse.gradle.classpathcontainer'
-				downloadSources = true;}
-	}
 	
 	apply plugin: 'idea'
 	
