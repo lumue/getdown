@@ -51,13 +51,6 @@ dependencies {
 }
 
 
-eclipse {
-		project { 
-			natures 'org.springframework.ide.eclipse.core.springnature'
-			buildCommand 'org.springframework.ide.eclipse.core.springbuilder'		
-		}
-}
-
 task buildDocker(type: Docker, dependsOn: build) {
 	
 	push = true
