@@ -30,6 +30,7 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 				.setUrl(getUrl())
 				.setOutputFolder(getDownloadPath())
 				.setWriteInfoJson(true)
+				.setPathToYdl("/usr/bin/youtube-dl")
 				.onStdout(this::handleMessage)
 				.onStateChanged(this::handleProgress)
 				.onNewOutputFile(this::handleProgress)
@@ -95,7 +96,11 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 
 	@Override
 	public void cancel() {
-
+		LOGGER.warn("can not cancel youtube-dl jobs. marking "+this+" as canceled and stop handling events for it. youtube-dl download will proceed");
+		getDownloadProgress().ifPresent(downloadProgress ->{
+			downloadProgress.cancel();
+			progress(downloadProgress);
+		});
 	}
 
 	public static YoutubedlDownloadJobBuilder builder() {

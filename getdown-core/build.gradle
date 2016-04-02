@@ -12,4 +12,7 @@ dependencies {
 	
 	compile 'com.fasterxml.jackson.core:jackson-core:2.3.3'
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.3.3'
+
+	compile 'net.openhft:chronicle-map:3.8.0'
+
 }

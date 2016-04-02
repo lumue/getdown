@@ -5,9 +5,11 @@ import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.common.persistence.ObjectRepository;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * not thread safe, in memory repository
@@ -17,7 +19,7 @@ import java.util.Map;
  */
 public class MapBasedObjectRepository<B extends ObjectBuilder<V>, K, V extends HasIdentity<K>> implements ObjectRepository<B, K, V> {
 
-	private final Map<K, V> objectMap;
+	protected final Map<K, V> objectMap;
 
 	public MapBasedObjectRepository(Map<K, V> jobMap) {
 		super();
@@ -25,7 +27,7 @@ public class MapBasedObjectRepository<B extends ObjectBuilder<V>, K, V extends H
 	}
 
 	MapBasedObjectRepository() {
-		this(new HashMap<K, V>());
+		this(new HashMap<>());
 	}
 
 	@Override
@@ -36,8 +38,14 @@ public class MapBasedObjectRepository<B extends ObjectBuilder<V>, K, V extends H
 	}
 
 	@Override
-	public Collection<V> list() {
-		return java.util.Collections.unmodifiableCollection(objectMap.values());
+	public List<V> list() {
+		return java.util.Collections.unmodifiableList(new ArrayList<>(objectMap.values()));
+	}
+
+
+	@Override
+	public Stream<V> stream() {
+		return objectMap.values().stream();
 	}
 
 

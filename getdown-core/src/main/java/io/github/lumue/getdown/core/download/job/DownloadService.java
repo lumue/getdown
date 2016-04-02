@@ -1,11 +1,13 @@
 package io.github.lumue.getdown.core.download.job;
 
 import java.net.URI;
+import java.util.stream.Stream;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownloadJob;
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
-import io.github.lumue.getdown.core.download.downloader.internal.HttpDownloadJob.HttpDownloadJobBuilder;
+
+import static io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob.DownloadJobState.*;
 
 /**
  * manage the execution of downloads
@@ -51,13 +53,34 @@ public class DownloadService {
 		return this.jobRepository.list();
 	}
 
-	private String resolveFilename(final String url) {
-		String path = URI.create(url).getPath();
-		return path.substring(path.lastIndexOf('/') + 1).toString();
+	public Stream<DownloadJob> streamDownloads(){
+		return this.jobRepository.stream();
 	}
 
 	public DownloadJob getDownload(DownloadJobHandle downloadJobHandle) {
 		return this.jobRepository.get(downloadJobHandle);
 	}
+
+	public Stream<DownloadJob> streamFinishedDownloads() {
+		return this.jobRepository.streamByJobState(FINISHED);
+	}
+
+	public Stream<DownloadJob> streamFailedDownloads() {
+		return this.jobRepository.streamByJobState(ERROR);
+	}
+
+	public Stream<DownloadJob> streamRunningDownloads() {
+		return this.jobRepository.streamByJobState(RUNNING);
+	}
+
+	public Stream<DownloadJob> streamWaitingDownloads() {
+		return this.jobRepository.streamByJobState(WAITING);
+	}
+
+	private String resolveFilename(final String url) {
+		String path = URI.create(url).getPath();
+		return path.substring(path.lastIndexOf('/') + 1).toString();
+	}
+
 
 }

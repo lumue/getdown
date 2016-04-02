@@ -1,5 +1,11 @@
-FROM jeanblanchard/busybox-java:8
+FROM lumue/debjdk
 MAINTAINER lm "lm@combase.de"
+
+RUN apt-get -y update && \
+apt-get -y install ffmpeg && \
+apt-get -y install youtube-dl && \
+ln -s /usr/bin/youtube-dl /usr/local/bin/youtube-dl && \
+rm -rf /var/cache/*
 
 ADD getdown-app-springboot.jar app.jar
 RUN touch /app.jar

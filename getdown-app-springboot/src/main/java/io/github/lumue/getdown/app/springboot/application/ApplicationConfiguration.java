@@ -1,8 +1,10 @@
 package io.github.lumue.getdown.app.springboot.application;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.github.lumue.getdown.core.common.persistence.chroniclemap.ChronicleMapDownloadJobRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +13,6 @@ import org.springframework.context.annotation.PropertySource;
 import io.github.lumue.getdown.core.download.job.AsyncDownloadJobRunner;
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
 import io.github.lumue.getdown.core.download.job.DownloadService;
-import io.github.lumue.getdown.core.download.job.FilePersistentDownloadJobRepository;
 import io.github.lumue.getdown.core.download.job.ContentLocationResolverRegistry;
 import reactor.bus.EventBus;
 import reactor.core.Dispatcher;
@@ -45,8 +46,8 @@ public class ApplicationConfiguration {
 
 	@Bean
 	public DownloadJobRepository downloadJobRepository(
-			@Value("${getdown.path.repository}") String repositoryPath) {
-		return new FilePersistentDownloadJobRepository(repositoryPath);
+			@Value("${getdown.path.repository}") String repositoryPath) throws IOException {
+		return new ChronicleMapDownloadJobRepository(repositoryPath);
 	}
 
 	@Bean
