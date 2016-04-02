@@ -37,6 +37,9 @@ gulp_build.dependsOn 'installGulp'
 // processes your package.json before running gulp build
 gulp_build.dependsOn 'npmInstall'
 
+//install js dependencies before gulp build
+gulp_build.dependsOn 'bowerInstall'
+
 gulp {
 	// Set the directory where gulpfile.js should be found
 	workDir = file("${project.projectDir}")
@@ -46,5 +49,23 @@ gulp {
 
 	// Whether output from Gulp should be buffered - useful when running tasks in parallel
 	bufferOutput = false
+}
+
+// Get the path for the locally installed binaries
+task npmBin << {
+	new ByteArrayOutputStream().withStream { os ->
+		def result = exec {
+			executable = 'npm'
+			args = ['bin']
+			standardOutput = os
+		}
+		ext.binPath = os.toString().trim() + "/"
+	}
+}
+
+// Install the bower components for front-end library management
+task bowerInstall(dependsOn: 'npmInstall', type: Exec){
+	workingDir 'src/main/web/app'
+	commandLine "bower", 'install'
 }
 

@@ -21,7 +21,7 @@ import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
 public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable,Observable,Runnable {
 
 	@Override
-	public DownloadJobHandle getHandle();
+	DownloadJobHandle getHandle();
 
 	Optional<Throwable> getError();
 
@@ -29,25 +29,27 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 	Optional<DownloadProgress> getDownloadProgress();
 
-	public DownloadJobState getState();
+	DownloadJobState getState();
 
-	public String getOutputFilename();
+	String getOutputFilename();
 
-	public String getUrl();
+	String getUrl();
 
-	public String getHost();
+	String getHost();
 
-	public Optional<ContentLocation> getContentLocation();
+	String getName();
+
+	Optional<ContentLocation> getContentLocation();
 	
-	public void setDownloadPath(String downloadPath);
+	void setDownloadPath(String downloadPath);
 	
-	public void setContentLocationResolverRegistry(ContentLocationResolverRegistry contentLocationResolverRegistry);
+	void setContentLocationResolverRegistry(ContentLocationResolverRegistry contentLocationResolverRegistry);
 
-	public void run();
+	void run();
 
 
 
-	static class DownloadJobHandle implements Serializable {
+	class DownloadJobHandle implements Serializable {
 
 		private static final long serialVersionUID = -7582907691952041979L;
 
@@ -62,7 +64,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 			this.key = key;
 		}
 
-		DownloadJobHandle() {
+		public DownloadJobHandle() {
 			this(UUID.randomUUID().toString());
 		}
 
@@ -113,13 +115,19 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 
 
-	public abstract static class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {
+	abstract class AbstractDownloadJobBuilder implements ObjectBuilder<DownloadJob> {
 		protected String outputFilename;
 		protected String url;
 		protected String host;
+		protected String name;
 
 		public AbstractDownloadJobBuilder withOutputFilename(String outputFilename) {
 			this.outputFilename = outputFilename;
+			return this;
+		}
+
+		public AbstractDownloadJobBuilder withName(String name) {
+			this.name = name;
 			return this;
 		}
 
@@ -130,7 +138,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		}
 	}
 
-	public abstract class AbstractDownloadJob extends ObservableTemplate implements DownloadJob, java.io.Serializable {
+	abstract class AbstractDownloadJob extends ObservableTemplate implements DownloadJob, java.io.Serializable {
 
 		private static final Logger LOGGER=LoggerFactory.getLogger(AbstractDownloadJob.class);
 
@@ -179,17 +187,21 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		protected DownloadJobState downloadJobState = DownloadJobState.WAITING;
 
 		@JsonProperty("downloadProgress")
-		private Optional<DownloadProgress> downloadProgress = Optional.empty();
+		private DownloadProgress downloadProgress = null;
 
-		private Optional<String> message = Optional.empty();
+		@JsonProperty("message")
+		private String message = null;
 
-		private Optional<Throwable> error = Optional.empty();
+		@JsonProperty("error")
+		private Throwable error = null;
 
 		@JsonProperty("contentLocation")
-		private Optional<ContentLocation> contentLocation=Optional.empty();
+		private ContentLocation contentLocation=null;
 
 		@JsonProperty("handle")
 		private final DownloadJobHandle handle;
+		@JsonProperty("name")
+		private String name;
 		@JsonProperty("outputFilename")
 		private final String outputFilename;
 		@JsonProperty("url")
@@ -209,17 +221,17 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 		@Override
 		public Optional<DownloadProgress> getDownloadProgress() {
-			return downloadProgress;
+			return Optional.ofNullable(downloadProgress);
 		}
 
 		@Override
 		public Optional<String> getMessage() {
-			return message;
+			return Optional.ofNullable(message);
 		}
 
 		@Override
 		public Optional<Throwable> getError() {
-			return error;
+			return Optional.ofNullable(error);
 		}
 
 
@@ -238,11 +250,14 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 			return url;
 		}
 
-
+		@Override
+		public String getName() {
+			return name;
+		}
 
 		@Override
 		public Optional<ContentLocation> getContentLocation() {
-			return contentLocation;
+			return Optional.ofNullable(contentLocation);
 		}
 
 		@JsonCreator
@@ -252,33 +267,47 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 				@JsonProperty("handle") DownloadJobHandle handle,
 				@JsonProperty("state") DownloadJobState downloadJobState,
 				@JsonProperty("contentLocation") ContentLocation contentLocation,
-				@JsonProperty("downloadProgress") DownloadProgress downloadProgress, String host) {
+				@JsonProperty("downloadProgress") DownloadProgress downloadProgress, String name, String host) {
 			super();
 			this.outputFilename = outputFilename;
 			this.url = url;
 			this.handle = handle;
 			this.downloadJobState=downloadJobState;
+			this.name = name;
 			this.host = host;
-			this.contentLocation=Optional.of(contentLocation);
-			this.downloadProgress=Optional.of(downloadProgress);
+			this.contentLocation=contentLocation;
+			this.downloadProgress=downloadProgress;
 		}
 
 		public AbstractDownloadJob(
+				String name,
 				String url,
 				String outputFilename,
-				String host) {
+				String host,
+				DownloadJobHandle handle) {
 			super();
+			this.name = name;
 			this.host=host;
 			this.outputFilename = outputFilename;
 			this.url = url;
-			this.handle = new DownloadJobHandle();
+			this.handle = handle;
 		}
+
+		public AbstractDownloadJob(
+				String name,
+				String url,
+				String outputFilename,
+				String host) {
+			this(name ,url,outputFilename,host,new DownloadJobHandle());
+		}
+
+
 
 
 
 		protected void progress(DownloadProgress downloadProgress) {
 			doObserved(() -> {
-			this.downloadProgress = Optional.of(downloadProgress);
+			this.downloadProgress = downloadProgress;
 			});
 		}
 
@@ -286,20 +315,26 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		protected void start() {
 			doObserved(() -> {
 				downloadJobState = DownloadJobState.RUNNING;
-				message = Optional.of("initializing...");
+				message = "initializing...";
 			});
 		}
 
 		protected void message(String message) {
 			doObserved(() -> {
 				downloadJobState = DownloadJobState.RUNNING;
-				AbstractDownloadJob.this.message = Optional.of(message);
+				AbstractDownloadJob.this.message = message;
+			});
+		}
+
+		protected void updateName(String name) {
+			doObserved(() -> {
+				this.name=name;
 			});
 		}
 
 		protected void resolve() {
 			doObserved(() -> {
-				message = Optional.of("resolving " + this.url);
+				message = "resolving " + this.url;
 				URI startUrl = URI.create(getUrl());
 				LOGGER.debug("creating ContentLocation for " + startUrl.toString());
 
@@ -312,6 +347,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 						contentLocation = locationResolver.resolve(this);
 					} catch (Exception e) {
 						this.error(e);
+						LOGGER.error(e.getLocalizedMessage(),e);
 					}
 				} else {
 					LOGGER.warn(
@@ -323,14 +359,15 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 				LOGGER.debug(
 						"created " + contentLocation + " for " + startUrl.toString());
 
-				this.setContentLocation(contentLocation);
+				if(contentLocation!=null)
+					this.setContentLocation(contentLocation);
 			});
 		}
 
 		protected void download() {
 			doObserved(() -> {
 				ContentLocation contentLocation = this.getContentLocation().get();
-			message = Optional.of("downloading from " +contentLocation.getUrl()+" to "+contentLocation.getFilename());
+			message = "downloading from " +contentLocation.getUrl()+" to "+contentLocation.getFilename();
 			});
 		}
 
@@ -343,12 +380,12 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 		protected void error(Throwable e) {
 			doObserved(() -> {
 				downloadJobState=DownloadJobState.ERROR;
-			message=Optional.of("error: "+e.getLocalizedMessage());
+			message="error: "+e.getLocalizedMessage();
 			});
 		}
 
 		protected void setContentLocation(ContentLocation contentLocation) {
-			this.contentLocation=Optional.of(contentLocation);
+			this.contentLocation=contentLocation;
 		}
 
 		public void setDownloadPath(String downloadPath){
@@ -377,7 +414,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 
 
-	public void cancel();
+	void cancel();
 
 	
 	

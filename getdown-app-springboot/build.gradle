@@ -14,7 +14,7 @@ apply plugin: 'application'
 apply plugin: 'spring-boot'
 apply plugin: 'docker'
 
-group = '192.168.1.105:5000'
+group = 'lumue'
 
 mainClassName = 'io.github.lumue.getdown.app.springboot.application.Application'
 
@@ -34,6 +34,9 @@ dependencies {
 	
 	compile("org.springframework:spring-messaging")
 	compile("io.projectreactor.spring:reactor-spring-context:$reactor_version")
+	compile "io.projectreactor:reactor-core:$reactor_version"
+	compile "io.projectreactor:reactor-bus:$reactor_version"
+
 	testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 

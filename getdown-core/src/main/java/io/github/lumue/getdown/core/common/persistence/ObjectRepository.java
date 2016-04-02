@@ -1,6 +1,7 @@
 package io.github.lumue.getdown.core.common.persistence;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 
@@ -13,11 +14,13 @@ import java.util.Collection;
  * @param <V>
  */
 public interface ObjectRepository<B, K, V> {
-	public V create(B builder);
+	V create(B builder);
 
-	public Collection<V> list();
+	List<V> list();
 
-	public void remove(K handle);
+	Stream<V> stream();
 
-	public V get(K handle);
+	void remove(K handle);
+
+	V get(K handle);
 }

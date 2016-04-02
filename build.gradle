@@ -1,5 +1,5 @@
 rootProject.group = 'io.github.lumue.getdown'
-version = '0.1.0-SNAPSHOT'
+version = 'stable-SNAPSHOT'
 
 
 
@@ -48,6 +48,10 @@ allprojects {
 		visitors = ["SwitchFallthrough"]
 		omitVisitors = ["FindNonShortCircuit"]
 		toolVersion = findbugs_version
+	}
+
+	configurations.all {
+		resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 	}
 }
 

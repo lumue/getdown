@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.common.persistence;
+package io.github.lumue.getdown.core.common.persistence.jdkmap;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -7,12 +7,19 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
+import io.github.lumue.getdown.core.common.persistence.HasIdentity;
+import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
+import io.github.lumue.getdown.core.common.persistence.ObjectRepository;
+import io.github.lumue.getdown.core.download.job.DownloadJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +43,10 @@ public abstract class FileObjectRepository<B extends ObjectBuilder<V>, K, V exte
 		restore();
 	}
 
+	@Override
+	public Stream<V> stream() {
+		return this.objectMap.values().stream();
+	}
 
 
 	@Override
@@ -48,8 +59,8 @@ public abstract class FileObjectRepository<B extends ObjectBuilder<V>, K, V exte
 
 
 	@Override
-	public Collection<V> list() {
-		return java.util.Collections.unmodifiableCollection(objectMap.values());
+	public List<V> list() {
+		return java.util.Collections.unmodifiableList(new ArrayList<>(objectMap.values()));
 	}
 
 

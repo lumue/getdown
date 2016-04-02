@@ -1,12 +1,7 @@
-// Copyright (c) 2013 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
 	var contentUrl=info.linkUrl;
 	var xmlhttp = new XMLHttpRequest();
-	var url = "http://192.168.1.105:8001/download/add?url="+encodeURIComponent(contentUrl);
+	var url = "http://192.168.1.105:7001/download/add?url="+encodeURIComponent(contentUrl);
 
 	xmlhttp.onreadystatechange = function() {
 	    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {

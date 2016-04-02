@@ -104,6 +104,7 @@
 						
 						<div id="list-item-status">
 							<div id="list-item-status-name">{{download.name}}</div>
+							<div id="list-item-status-message">{{download.message}}</div>
 							<div id="list-item-status-state">{{download.state}} {{download.progress}}/{{download.size}}</div>
 							<div id="list-item-status-progress">
 								<paper-progress style="width: 100%" value="{{(download.progress / download.size)*100}}" id="paper_progress">{{download.progress}}</paper-progress>

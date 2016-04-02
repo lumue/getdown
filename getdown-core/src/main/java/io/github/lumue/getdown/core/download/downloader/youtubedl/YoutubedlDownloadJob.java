@@ -5,7 +5,10 @@ import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.job.DownloadProgress;
 import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.download.YdlFileDownload;
+import io.github.lumue.ydlwrapper.metadata.single_info_json.SingleInfoJsonMetadataAccessor;
 import io.github.lumue.ydlwrapper.metadata.statusmessage.YdlStatusMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.github.lumue.getdown.core.download.job.DownloadJob.*;
 
@@ -14,10 +17,11 @@ import static io.github.lumue.getdown.core.download.job.DownloadJob.*;
  */
 public class YoutubedlDownloadJob extends AbstractDownloadJob implements DownloadJob {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
 	private transient YdlDownloadTask downloadTask;
 
-	public YoutubedlDownloadJob(String url, String outputFilename, String host) {
-		super(url, outputFilename, host);
+	public YoutubedlDownloadJob(String name,String url, String outputFilename, String host) {
+		super(name, url, outputFilename, host);
 	}
 
 	@Override
@@ -26,10 +30,12 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 				.setUrl(getUrl())
 				.setOutputFolder(getDownloadPath())
 				.setWriteInfoJson(true)
-				.onStdout(this::publishMessage)
-				.onStateChanged(this::publishProgress)
-				.onNewOutputFile(this::publishProgress)
-				.onOutputFileChange(this::publishProgress)
+				.setPathToYdl("/usr/bin/youtube-dl")
+				.onStdout(this::handleMessage)
+				.onStateChanged(this::handleProgress)
+				.onNewOutputFile(this::handleProgress)
+				.onOutputFileChange(this::handleProgress)
+				.onPrepared(this::handlePrepared)
 				.build();
 
 		progress(new DownloadProgress());
@@ -37,20 +43,25 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 			downloadTask.execute();
 		}
 		catch(Throwable t){
-			publishError(t);
+			handleError(t);
 		}
 	}
 
-	private void publishMessage(YdlDownloadTask ydlDownloadTask, YdlStatusMessage ydlStatusMessage) {
+	private void handlePrepared(YdlDownloadTask ydlDownloadTask, SingleInfoJsonMetadataAccessor singleInfoJsonMetadataAccessor) {
+		singleInfoJsonMetadataAccessor.getTitle().ifPresent(this::updateName);
+	}
+
+	private void handleMessage(YdlDownloadTask ydlDownloadTask, YdlStatusMessage ydlStatusMessage) {
 		message(ydlStatusMessage.getLine());
 	}
 
-	private void publishError(Throwable t) {
+	private void handleError(Throwable t) {
+		LOGGER.error("error during youtube-dl execution ",t);
 		error(t);
 		getDownloadProgress().ifPresent(downloadProgress -> downloadProgress.error(t));
 	}
 
-	private void publishProgress(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
+	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
 		getDownloadProgress().ifPresent(downloadProgress ->{
 			if(downloadProgress.getState().equals(ContentDownloader.DownloadState.WAITING ))
 			{
@@ -73,7 +84,7 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 		});
 	}
 
-	private void publishProgress(YdlDownloadTask ydlDownloadTask, YdlFileDownload ydlFileDownload) {
+	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlFileDownload ydlFileDownload) {
 		getDownloadProgress().ifPresent(downloadProgress ->{
 			if(ydlFileDownload.getExpectedSize()!=null)
 				downloadProgress.setSize(ydlFileDownload.getExpectedSize());
@@ -85,7 +96,15 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 
 	@Override
 	public void cancel() {
+		LOGGER.warn("can not cancel youtube-dl jobs. marking "+this+" as canceled and stop handling events for it. youtube-dl download will proceed");
+		getDownloadProgress().ifPresent(downloadProgress ->{
+			downloadProgress.cancel();
+			progress(downloadProgress);
+		});
+	}
 
+	public static YoutubedlDownloadJobBuilder builder() {
+		return new YoutubedlDownloadJobBuilder();
 	}
 
 	public static class YoutubedlDownloadJobBuilder
@@ -93,7 +112,7 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 
 		@Override
 		public DownloadJob build() {
-			return new YoutubedlDownloadJob(this.url, this.outputFilename,this.host);
+			return new YoutubedlDownloadJob(this.name,this.url, this.outputFilename,this.host);
 		}
 
 	}
