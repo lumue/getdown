@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,25 +18,24 @@ import java.util.stream.Stream;
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.common.persistence.ObjectRepository;
-import io.github.lumue.getdown.core.download.job.DownloadJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 
-public abstract class FileObjectRepository<B extends ObjectBuilder<V>, K, V extends HasIdentity<K>> implements
+public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V extends HasIdentity<K>> implements
 		ObjectRepository<B, K, V> {
 
 	private final String filename;
 
 	private Map<K, V> objectMap;
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(FileObjectRepository.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(JdkSerializableRepository.class);
 
 	ExecutorService flushExecutorService = Executors.newSingleThreadExecutor();
 
 
-	public FileObjectRepository(String filename) {
+	public JdkSerializableRepository(String filename) {
 		this.filename = filename + ".json";
 		this.objectMap = new ConcurrentHashMap<K, V>();
 		restore();
@@ -120,21 +118,16 @@ public abstract class FileObjectRepository<B extends ObjectBuilder<V>, K, V exte
 		return encoded;
 	}
 
-	private synchronized void triggerFlush() {
+	private void triggerFlush() {
 		final byte[] contentSnapshot = createContentSnapshot();
 
 		if (contentSnapshot == null)
 			return;
 
-		flushExecutorService.execute(new Runnable() {
-			@Override
-			public void run() {
-				flush(contentSnapshot);
-			}
-		});
+		flushExecutorService.submit(() -> flush(contentSnapshot));
 	}
 
-	protected byte[] createContentSnapshot() {
+	protected  byte[] createContentSnapshot() {
 		try {
 			ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
 			ObjectOutputStream objectOutputStream=new ObjectOutputStream(outputStream);
@@ -158,5 +151,15 @@ public abstract class FileObjectRepository<B extends ObjectBuilder<V>, K, V exte
 		{
 			LOGGER.error("Object serialisation failed during flush", e);
 		} 
+	}
+
+	@Override
+	public void close() throws Exception {
+		final byte[] contentSnapshot = createContentSnapshot();
+
+		if (contentSnapshot == null)
+			return;
+
+		flush(contentSnapshot);
 	}
 }

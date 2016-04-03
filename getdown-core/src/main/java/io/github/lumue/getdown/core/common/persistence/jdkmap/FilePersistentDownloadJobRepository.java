@@ -6,7 +6,6 @@ import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
 
 import java.io.File;
-import java.util.stream.Stream;
 
 /**
  * not thread safe, in memory repository
@@ -15,7 +14,7 @@ import java.util.stream.Stream;
  *
  */
 public class FilePersistentDownloadJobRepository extends
-		FileObjectRepository<ObjectBuilder<DownloadJob>, DownloadJobHandle, DownloadJob>
+		JdkSerializableRepository<ObjectBuilder<DownloadJob>, DownloadJobHandle, DownloadJob>
 		implements
 		DownloadJobRepository {
 

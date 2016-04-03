@@ -39,7 +39,7 @@ public class AsyncDownloadJobRunner {
 	public void runJob(final DownloadJob job) {
 		job.addObserver( o ->
 			{
-				downloadJobRepository.update(job);
+				//downloadJobRepository.update(job);
 				eventbus.notify("downloads", Event.wrap(o));
 			});
 		job.setDownloadPath(this.downloadPath);
