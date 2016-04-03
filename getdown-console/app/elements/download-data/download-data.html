@@ -11,50 +11,119 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <dom-module id="download-data">
-  <template>
+	<template>
 
-    <byutv-jsonp id="ajaxactive"
-               handle-as="json"
-               content-type="application/json"
-               method="GET"
-               last-response="{{active}}"
-               debounce-duration="3000"
-               url="http://localhost:8001/download/list">
-    </byutv-jsonp>
 
-  </template>
-  <script>
-  (function() {
-    'use strict';
+		<iron-ajax id="ajaxall"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="GET"
+		           last-response="{{all}}"
+		           debounce-duration="3000"
+		           url="http://localhost:8001/download/list"
+		           on-response="logresponse">
+		</iron-ajax>
 
-    Polymer({
-      is: 'download-data',
 
-      properties: {
-          active: {
-            type: Array,
-            notify: true
-          },
-          waiting: {
-            type: Array,
-            notify: true
-          },
-          failed: {
-            type: Array,
-            notify: true
-          },
-          finished: {
-            type: Array,
-            notify: true
-          }
-      },
-      reloadActive(){
-        this.$.ajaxactive.generateRequest();
-      },
-      ongetresponse() {
-        console.log("bla");
-      }
-    });
-  })();
-  </script>
+		<iron-ajax id="ajaxwaiting"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="GET"
+		           last-response="{{waiting}}"
+		           debounce-duration="3000"
+		           url="http://localhost:8001/download/state/waiting"
+		           on-response="logresponse">
+		</iron-ajax>
+
+
+		<iron-ajax id="ajaxactive"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="GET"
+		           last-response="{{active}}"
+		           debounce-duration="3000"
+		           url="http://localhost:8001/download/state/running"
+		           on-response="logresponse">
+		</iron-ajax>
+
+
+		<iron-ajax id="ajaxfinished"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="GET"
+		           last-response="{{finished}}"
+		           debounce-duration="3000"
+		           url="http://localhost:8001/download/state/finished"
+		           on-response="logresponse">
+		</iron-ajax>
+
+
+		<iron-ajax id="ajaxfailed"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="GET"
+		           last-response="{{failed}}"
+		           debounce-duration="3000"
+		           url="http://localhost:8001/download/state/error"
+		           on-response="logresponse">
+		</iron-ajax>
+
+	</template>
+	<script>
+		(function () {
+			'use strict';
+
+			Polymer({
+				is: 'download-data',
+
+				properties: {
+					active: {
+						type: Array,
+						notify: true
+					},
+					waiting: {
+						type: Array,
+						notify: true
+					},
+					failed: {
+						type: Array,
+						notify: true
+					},
+					finished: {
+						type: Array,
+						notify: true
+					},
+					all: {
+						type: Array,
+						notify: true
+					}
+				},
+				reloadActive(){
+					this.$.ajaxactive.generateRequest();
+				},
+				reloadWaiting(){
+					this.$.ajaxwaiting.generateRequest();
+				},
+				reloadFinished(){
+					this.$.ajaxfinished.generateRequest();
+				},
+				reloadFailed(){
+					this.$.ajaxfailed.generateRequest();
+				},
+				reloadAll(){
+					this.$.ajaxall.generateRequest();
+				},
+				reload(){
+					this.reloadActive();
+					this.reloadWaiting();
+					this.reloadFinished();
+					this.reloadFailed();
+					this.reloadAll();
+				},
+				logresponse(request) {
+					console.log(request.detail.response);
+				}
+			});
+		})();
+	</script>
 </dom-module>

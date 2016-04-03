@@ -13,19 +13,11 @@
 				height: 100%;
 			}
 
-			.content paper-toolbar {
-				--paper-toolbar-height: 32px;
-				--paper-toolbar-background: red;
-			}
 
-			paper-material {
-				width: calc(98% - 46px);
-				margin-bottom: 32px;
-			}
 		</style>
 
 		<download-data id="data"
-				       active="{{active}}"
+		               active="{{active}}"
 		               waiting="{{waiting}}"
 		               finished="{{finished}}"
 		               failed="{{failed}}">
@@ -34,24 +26,16 @@
 		<paper-toolbar id="toolbar">
 			<paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
 			<span class="title">downloads</span>
-			<paper-icon-button icon="refresh"></paper-icon-button>
+			<paper-icon-button icon="refresh" on-tap="refresh"></paper-icon-button>
 			<paper-icon-button icon="add">+</paper-icon-button>
 		</paper-toolbar>
 
 		<!-- Main Content -->
 		<div class="content">
-			<paper-material elevation="1" style="width: 100%;">
-				<paper-toolbar middleJustify>
-					<span class="title" style="margin-left:1px;">active</span>
-					<paper-icon-button icon="refresh"
-					                   on-tap="refreshactive">
-					</paper-icon-button>
-				</paper-toolbar>
-				<section>
-					<download-list downloads="{{active}}">
-					</download-list>
-				</section>
-			</paper-material>
+			<download-list-widget title="waiting" downloads="{{waiting}}" on-refresh="refreshwaiting"></download-list-widget>
+			<download-list-widget title="running" downloads="{{active}}" on-refresh="refreshactive"></download-list-widget>
+			<download-list-widget title="finished" downloads="{{finished}}" on-refresh="refreshfinished"></download-list-widget>
+			<download-list-widget title="failed" downloads="{{failed}}" on-refresh="refreshfailed"></download-list-widget>
 		</div>
 	</template>
 	<script>
@@ -79,8 +63,20 @@
 						notify: true
 					}
 				},
-				refreshactive: function(){
+				refreshactive: function () {
 					this.$.data.reloadActive();
+				},
+				refreshwaiting: function () {
+					this.$.data.reloadWaiting();
+				},
+				refreshfinished: function () {
+					this.$.data.reloadFinished();
+				},
+				refreshfailed: function () {
+					this.$.data.reloadFailed();
+				},
+				refresh: function () {
+					this.$.data.reload();
 				}
 
 			});
