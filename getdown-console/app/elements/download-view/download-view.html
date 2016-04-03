@@ -8,23 +8,14 @@
 				display: block;
 			}
 
-			.card-header-tool {
-				--paper-toolbar-height: 32px;
-				--paper-toolbar-background: red;
-			}
-
-			.card-header-tool-title{
-				font-size: small;
-				margin: 0 8px;
-			}
-
-			.card-header-tool-icon{
-
-			}
-
 			.content {
 				padding: 16px;
 				height: 100%;
+			}
+
+			.content paper-toolbar {
+				--paper-toolbar-height: 32px;
+				--paper-toolbar-background: red;
 			}
 
 			paper-material {
@@ -32,6 +23,13 @@
 				margin-bottom: 32px;
 			}
 		</style>
+
+		<download-data id="data"
+				       active="{{active}}"
+		               waiting="{{waiting}}"
+		               finished="{{finished}}"
+		               failed="{{failed}}">
+		</download-data>
 
 		<paper-toolbar id="toolbar">
 			<paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
@@ -42,23 +40,19 @@
 
 		<!-- Main Content -->
 		<div class="content">
-
-			<section tabindex="-1" >
-
-				<paper-material elevation="1" style="width: 100%;">
-					<paper-toolbar id="card-header-toolbar" class="card-header-tool" middleJustify>
-						<span class="title" style="margin-left:1px;">active</span>
-						<paper-icon-button icon="refresh" ></paper-icon-button>
-					</paper-toolbar>
-					<section>
-						Downloads!
-					</section>
-				</paper-material>
-
-			</section>
-
+			<paper-material elevation="1" style="width: 100%;">
+				<paper-toolbar middleJustify>
+					<span class="title" style="margin-left:1px;">active</span>
+					<paper-icon-button icon="refresh"
+					                   on-tap="refreshactive">
+					</paper-icon-button>
+				</paper-toolbar>
+				<section>
+					<download-list downloads="{{active}}">
+					</download-list>
+				</section>
+			</paper-material>
 		</div>
-
 	</template>
 	<script>
 		(function () {
@@ -68,12 +62,27 @@
 				is: 'download-view',
 
 				properties: {
-					foo: {
-						type: String,
-						value: 'download-view',
+					active: {
+						type: Array,
+						notify: true
+					},
+					waiting: {
+						type: Array,
+						notify: true
+					},
+					failed: {
+						type: Array,
+						notify: true
+					},
+					finished: {
+						type: Array,
 						notify: true
 					}
+				},
+				refreshactive: function(){
+					this.$.data.reloadActive();
 				}
+
 			});
 		})();
 	</script>

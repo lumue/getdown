@@ -12,6 +12,8 @@ public class AsyncDownloadJobRunner {
 
 	private final ExecutorService executorService;
 
+	private final DownloadJobRepository downloadJobRepository;
+
 	private final ContentLocationResolverRegistry contentLocationResolverRegistry;
 
 	private final String downloadPath;
@@ -22,10 +24,11 @@ public class AsyncDownloadJobRunner {
 	private static Logger LOGGER = LoggerFactory.getLogger(AsyncDownloadJobRunner.class);
 
 
-	public AsyncDownloadJobRunner(ExecutorService executorService, ContentLocationResolverRegistry contentLocationResolverRegistry,
-			String downloadPath, EventBus eventbus) {
+	public AsyncDownloadJobRunner(ExecutorService executorService, DownloadJobRepository downloadJobRepository, ContentLocationResolverRegistry contentLocationResolverRegistry,
+	                              String downloadPath, EventBus eventbus) {
 		super();
 		this.executorService = executorService;
+		this.downloadJobRepository = downloadJobRepository;
 		this.contentLocationResolverRegistry = contentLocationResolverRegistry;
 		this.downloadPath = downloadPath;
 		this.eventbus = eventbus;
@@ -36,6 +39,7 @@ public class AsyncDownloadJobRunner {
 	public void runJob(final DownloadJob job) {
 		job.addObserver( o ->
 			{
+				downloadJobRepository.update(job);
 				eventbus.notify("downloads", Event.wrap(o));
 			});
 		job.setDownloadPath(this.downloadPath);

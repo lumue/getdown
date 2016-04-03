@@ -103,6 +103,12 @@ public abstract class FileObjectRepository<B extends ObjectBuilder<V>, K, V exte
 	}
 
 
+	@Override
+	public void update(V value) {
+		objectMap.put(value.getHandle(),value);
+		this.triggerFlush();
+	}
+
 
 	private byte[] loadContent() {
 		byte[] encoded;

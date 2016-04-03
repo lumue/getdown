@@ -60,6 +60,11 @@ public class MapBasedObjectRepository<B extends ObjectBuilder<V>, K, V extends H
 		return objectMap.get(handle);
 	}
 
+	@Override
+	public void update(V value) {
+		objectMap.put(value.getHandle(),value);
+	}
+
 	protected Map<K, V> getMap() {
 		return objectMap;
 	}

@@ -81,6 +81,7 @@ public class DownloadJsonRpcController {
 	 * Remove finished and failed downloads
 	 * @return
 	 */
+	@CrossOrigin(origins = "*")
 	@RequestMapping(value = "/download/state/running", method = RequestMethod.GET)
 	public Iterable<DownloadJobView> listRunningDownloads() {
 		return downloadService
