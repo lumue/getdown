@@ -11,9 +11,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <dom-module id="download-data">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
 	<template>
-
-
 		<iron-ajax id="ajaxall"
 		           handle-as="json"
 		           content-type="application/json"
