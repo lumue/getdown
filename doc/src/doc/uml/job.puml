@@ -1,20 +1,30 @@
 @startuml
+interface DownloadJob{
+    Download start(DownloadJobExecutionContext context)
+    void resume(Download download)
+    void restart(Download download)
+    void cancel()
+}
+note top:execute a single Download in a specific way
 
-
-interface DownloadJob
-note top:defines what should be executed
 class YoutubeDownloadJob
 YoutubeDownloadJob -up-|> DownloadJob
 
 interface DownloadJobExecutor{
-    DownloadJobExecution execute()
+    Download execute(DownloadJob job,DownloadJobExecutionContext context)
 }
 note top:manage the execution of jobs
 
-interface DownloadJobExecution
+interface Download{
+    DownloadProgress getProgress()
+    DownloadJobExecutionContext getContext()
+    onUpdate(Function callback)
+}
 note top:provide info about a concrete execution of a job
 
-interface DownloadJobExecutionRequest
-note top:provide parameters about a concrete execution of a job
+interface DownloadJobExecutionContext{
+    URL getUrl()
+}
+note top:provide parameters for a DownloadJob execution
 
 @enduml
