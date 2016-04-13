@@ -22,7 +22,7 @@ interface Download{
 }
 note top:provide info about a concrete execution of a job
 
-interface DownloadJobExecutionContext{
+interface DownloadParameter{
     URL getUrl()
 }
 note top:provide parameters for a DownloadJob execution
