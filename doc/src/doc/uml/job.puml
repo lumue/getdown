@@ -10,19 +10,19 @@ note top:execute a single Download in a specific way
 class YoutubeDownloadJob
 YoutubeDownloadJob -up-|> DownloadJob
 
-interface DownloadJobExecutor{
+class DownloadJobExecutor{
     Download execute(DownloadJob job,DownloadJobExecutionContext context)
 }
 note top:manage the execution of jobs
 
-interface Download{
+class Download{
     DownloadProgress getProgress()
     DownloadJobExecutionContext getContext()
     onUpdate(Function callback)
 }
 note top:provide info about a concrete execution of a job
 
-interface DownloadJobExecutionContext{
+interface DownloadParameter{
     URL getUrl()
 }
 note top:provide parameters for a DownloadJob execution
