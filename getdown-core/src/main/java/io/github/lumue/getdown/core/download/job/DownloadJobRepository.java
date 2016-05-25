@@ -2,10 +2,9 @@ package io.github.lumue.getdown.core.download.job;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.common.persistence.ObjectRepository;
-import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob.DownloadJobState;
-import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
+import io.github.lumue.getdown.core.download.job.Download.DownloadJobState;
+import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

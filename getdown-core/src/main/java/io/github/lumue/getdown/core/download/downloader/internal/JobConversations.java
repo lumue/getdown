@@ -1,5 +1,6 @@
 package io.github.lumue.getdown.core.download.downloader.internal;
 
+import io.github.lumue.getdown.core.download.job.Download;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 
 
@@ -15,7 +16,7 @@ public class JobConversations {
 
 	private final ConversationFactoryRegistry factoryRegistry;
 
-	private final ConcurrentMap<DownloadJob.DownloadJobHandle,Conversation> downloadJobHandleConversationMap=new ConcurrentHashMap<>();
+	private final ConcurrentMap<Download.DownloadJobHandle,Conversation> downloadJobHandleConversationMap=new ConcurrentHashMap<>();
 
 	public JobConversations(ConversationFactoryRegistry factoryRegistry) {
 		this.factoryRegistry = factoryRegistry;

@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob.DownloadJobState;
-import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
+import io.github.lumue.getdown.core.download.job.Download.DownloadJobState;
+import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 
 /**
  * return true for a given {@link DownloadJob} only if
@@ -37,7 +37,7 @@ class DownloadJobThrottle implements Predicate<DownloadJob> {
 		}	
 	}
 	
-	private final Map<DownloadJobHandle, TestSample> jobHandleTestSampleMap = new ConcurrentHashMap<DownloadJob.DownloadJobHandle, TestSample>();
+	private final Map<DownloadJobHandle, TestSample> jobHandleTestSampleMap = new ConcurrentHashMap<DownloadJobHandle, TestSample>();
 	
 	
 	private final long millisecondsBetweenEventsPerDownloadJob;

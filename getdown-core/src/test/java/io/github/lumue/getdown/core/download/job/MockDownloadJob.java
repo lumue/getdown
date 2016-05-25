@@ -1,13 +1,12 @@
 package io.github.lumue.getdown.core.download.job;
 
-import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob;
 /**
  * A DownloadJob for testing
  * @author lm
  *
  */
 @SuppressWarnings("serial")
-public class MockDownloadJob extends AbstractDownloadJob{
+public class MockDownloadJob extends Download implements DownloadJob{
 
 	public MockDownloadJob() {
 		super("", "", "","");

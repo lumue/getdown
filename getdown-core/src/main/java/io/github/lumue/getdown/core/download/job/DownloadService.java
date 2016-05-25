@@ -5,9 +5,9 @@ import java.util.stream.Stream;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownloadJob;
-import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobHandle;
+import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 
-import static io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob.DownloadJobState.*;
+import static io.github.lumue.getdown.core.download.job.Download.DownloadJobState.*;
 
 /**
  * manage the execution of downloads
