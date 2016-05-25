@@ -1,0 +1,69 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="config-view">
+
+	<template>
+
+		<style>
+			:host {
+				display: block;
+			}
+
+			.content {
+				padding: 16px;
+				height: 100%;
+			}
+
+
+		</style>
+
+		<config-data
+				host="{{host}}"
+		>
+		</config-data>
+
+		<paper-toolbar id="toolbar">
+			<paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+			<span class="title">config</span>
+		</paper-toolbar>
+
+		<div class="content">
+			<section style="height: 400px;">
+				<paper-input
+						label="getdown-api host"
+						value="{{host}}"
+						type="URL">
+				</paper-input>
+			</section>
+		</div>
+
+	</template>
+
+	<script>
+		(function () {
+			'use strict';
+
+			Polymer({
+				is: 'config-view',
+
+				properties: {
+					host: {
+						type: String,
+						notify: true
+					},
+					terminal: {
+						type: String,
+						notify: true
+					},
+					jwt: {
+						type: String,
+						notify: true
+					}
+				},
+				onExit: function() {
+					app.route="home"
+				}
+			});
+		})();
+	</script>
+</dom-module>
