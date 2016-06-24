@@ -11,9 +11,9 @@ import io.github.lumue.getdown.core.download.job.DownloadJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.lumue.getdown.core.download.job.DownloadJob.AbstractDownloadJob;
+import io.github.lumue.getdown.core.download.job.Download;
 
-public class HttpDownloadJob extends AbstractDownloadJob {
+public class HttpDownloadJob extends Download implements DownloadJob{
 
 	/**
 	 * 
@@ -36,7 +36,6 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 			LOGGER.debug("start download for url " + getUrl());
 			start();
 
-			resolve();
 
 			if(DownloadJobState.ERROR.equals(getState()))
 				return;
@@ -76,7 +75,7 @@ public class HttpDownloadJob extends AbstractDownloadJob {
 
 
 	public static class HttpDownloadJobBuilder
-			extends AbstractDownloadJobBuilder {
+			extends DownloadBuilder {
 
 		@Override
 		public DownloadJob build() {

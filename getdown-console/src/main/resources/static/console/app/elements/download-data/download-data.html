@@ -17,13 +17,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		}
 	</style>
 	<template>
+
+		<config-data
+				host="{{host}}"
+		>
+		</config-data>
+
 		<iron-ajax id="ajaxall"
 		           handle-as="json"
 		           content-type="application/json"
 		           method="GET"
 		           last-response="{{all}}"
 		           debounce-duration="3000"
-		           url="http://localhost:8001/download/list"
+		           url="{host}/download/list"
 		           on-response="logresponse">
 		</iron-ajax>
 
@@ -34,7 +40,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		           method="GET"
 		           last-response="{{waiting}}"
 		           debounce-duration="3000"
-		           url="http://localhost:8001/download/state/waiting"
+		           url="{host}/download/state/waiting"
 		           on-response="logresponse">
 		</iron-ajax>
 
@@ -45,7 +51,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		           method="GET"
 		           last-response="{{active}}"
 		           debounce-duration="3000"
-		           url="http://localhost:8001/download/state/running"
+		           url="{host}/download/state/running"
 		           on-response="logresponse">
 		</iron-ajax>
 
@@ -56,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		           method="GET"
 		           last-response="{{finished}}"
 		           debounce-duration="3000"
-		           url="http://localhost:8001/download/state/finished"
+		           url="{host}/download/state/finished"
 		           on-response="logresponse">
 		</iron-ajax>
 
@@ -67,7 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		           method="GET"
 		           last-response="{{failed}}"
 		           debounce-duration="3000"
-		           url="http://localhost:8001/download/state/error"
+		           url="{host}/download/state/error"
 		           on-response="logresponse">
 		</iron-ajax>
 
@@ -99,7 +105,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					all: {
 						type: Array,
 						notify: true
+					},
+					host: {
+						type: String,
+						notify: true
 					}
+
 				},
 				reloadActive(){
 					this.$.ajaxactive.generateRequest();

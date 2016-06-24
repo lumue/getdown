@@ -2,6 +2,7 @@ package io.github.lumue.getdown.app.springboot.web;
 
 import java.util.stream.Collectors;
 
+import io.github.lumue.getdown.core.download.job.Download;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,14 +107,14 @@ public class DownloadJsonRpcController {
 	
 	@RequestMapping(value = "/{handle}", method = RequestMethod.GET)
 	public DownloadJobView getDownload(@PathVariable String handle) {
-		DownloadJob downloadJob=downloadService.getDownload(new DownloadJob.DownloadJobHandle(handle));
+		DownloadJob downloadJob=downloadService.getDownload(new Download.DownloadJobHandle(handle));
 		return DownloadJobView.wrap(downloadJob);
 	}
 	
 	@RequestMapping(value = "/{handle}/cancel", method = RequestMethod.GET)
 	public void cancelDownload(@PathVariable String handle) {
 		LOGGER.debug("canceling download job with handle " + handle);
-		downloadService.cancelDownload(new DownloadJob.DownloadJobHandle(handle));
+		downloadService.cancelDownload(new Download.DownloadJobHandle(handle));
 	}
 	
 

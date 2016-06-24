@@ -1,6 +1,7 @@
 package io.github.lumue.getdown.core.download.downloader.youtubedl;
 
 import io.github.lumue.getdown.core.download.downloader.internal.ContentDownloader;
+import io.github.lumue.getdown.core.download.job.Download;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.job.DownloadProgress;
 import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
@@ -10,17 +11,15 @@ import io.github.lumue.ydlwrapper.metadata.statusmessage.YdlStatusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.github.lumue.getdown.core.download.job.DownloadJob.*;
-
 /**
  * Created by lm on 15.03.16.
  */
-public class YoutubedlDownloadJob extends AbstractDownloadJob implements DownloadJob {
+public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
 	private transient YdlDownloadTask downloadTask;
 
-	public YoutubedlDownloadJob(String name,String url, String outputFilename, String host) {
+	public YoutubedlDownloadJob(String name, String url, String outputFilename, String host) {
 		super(name, url, outputFilename, host);
 	}
 
@@ -40,9 +39,28 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 
 		progress(new DownloadProgress());
 		try {
-			downloadTask.execute();
-		}
-		catch(Throwable t){
+			downloadTask.executeAsync();
+
+				getDownloadProgress().ifPresent(p -> {
+					boolean finished=false;
+					while (!finished) {
+						if (p.getState().equals(ContentDownloader.DownloadState.FINISHED)
+								|| p.getState().equals(ContentDownloader.DownloadState.CANCELLED)
+								|| p.getState().equals(ContentDownloader.DownloadState.ERROR)){
+							finished=true;
+						}
+						else{
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								LOGGER.error("interrupted waiting for youtube-dl download");
+								cancel();
+							}
+						}
+					}
+				});
+
+		} catch (Throwable t) {
 			handleError(t);
 		}
 	}
@@ -56,25 +74,23 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 	}
 
 	private void handleError(Throwable t) {
-		LOGGER.error("error during youtube-dl execution ",t);
+		LOGGER.error("error during youtube-dl execution ", t);
 		error(t);
 		getDownloadProgress().ifPresent(downloadProgress -> downloadProgress.error(t));
 	}
 
 	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
-		getDownloadProgress().ifPresent(downloadProgress ->{
-			if(downloadProgress.getState().equals(ContentDownloader.DownloadState.WAITING ))
-			{
-				if(ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.EXECUTING)) {
+		getDownloadProgress().ifPresent(downloadProgress -> {
+			if (downloadProgress.getState().equals(ContentDownloader.DownloadState.WAITING)) {
+				if (ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.EXECUTING)) {
 					start();
 					downloadProgress.start();
 				}
-			}else if(downloadProgress.getState().equals(ContentDownloader.DownloadState.DOWNLOADING)){
-				if(ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.SUCCESS)) {
+			} else if (downloadProgress.getState().equals(ContentDownloader.DownloadState.DOWNLOADING)) {
+				if (ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.SUCCESS)) {
 					downloadProgress.finish();
 					finish();
-				}
-				else if(ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.ERROR)) {
+				} else if (ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.ERROR)) {
 					Error error = new Error("error executing youtube-dl");
 					downloadProgress.error(error);
 					error(error);
@@ -85,10 +101,10 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 	}
 
 	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlFileDownload ydlFileDownload) {
-		getDownloadProgress().ifPresent(downloadProgress ->{
-			if(ydlFileDownload.getExpectedSize()!=null)
+		getDownloadProgress().ifPresent(downloadProgress -> {
+			if (ydlFileDownload.getExpectedSize() != null)
 				downloadProgress.setSize(ydlFileDownload.getExpectedSize());
-			if(ydlFileDownload.getDownloadedSize()!=null)
+			if (ydlFileDownload.getDownloadedSize() != null)
 				downloadProgress.updateDownloadedSize(ydlFileDownload.getDownloadedSize());
 			progress(downloadProgress);
 		});
@@ -96,8 +112,8 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 
 	@Override
 	public void cancel() {
-		LOGGER.warn("can not cancel youtube-dl jobs. marking "+this+" as canceled and stop handling events for it. youtube-dl download will proceed");
-		getDownloadProgress().ifPresent(downloadProgress ->{
+		downloadTask.cancel();
+		getDownloadProgress().ifPresent(downloadProgress -> {
 			downloadProgress.cancel();
 			progress(downloadProgress);
 		});
@@ -108,11 +124,11 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob implements Downloa
 	}
 
 	public static class YoutubedlDownloadJobBuilder
-			extends AbstractDownloadJobBuilder {
+			extends DownloadBuilder {
 
 		@Override
 		public DownloadJob build() {
-			return new YoutubedlDownloadJob(this.name,this.url, this.outputFilename,this.host);
+			return new YoutubedlDownloadJob(this.name, this.url, this.outputFilename, this.host);
 		}
 
 	}
