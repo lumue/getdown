@@ -23,14 +23,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		>
 		</config-data>
 
+		<ws-client  id="ws"
+					url="{{host}}/ws"
+		            topic="/downloads/jobStateChange"
+		            on-message="_handleJobChange">
+		</ws-client>
+
 		<iron-ajax id="ajaxall"
 		           handle-as="json"
 		           content-type="application/json"
 		           method="GET"
 		           last-response="{{all}}"
 		           debounce-duration="3000"
-		           url="{host}/download/list"
-		           on-response="logresponse">
+		           url="{{host}}/download/list"
+		           on-response="_logresponse">
 		</iron-ajax>
 
 
@@ -40,8 +46,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		           method="GET"
 		           last-response="{{waiting}}"
 		           debounce-duration="3000"
-		           url="{host}/download/state/waiting"
-		           on-response="logresponse">
+		           url="{{host}}/download/state/waiting"
+		           on-response="_logresponse">
 		</iron-ajax>
 
 
@@ -51,8 +57,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		           method="GET"
 		           last-response="{{active}}"
 		           debounce-duration="3000"
-		           url="{host}/download/state/running"
-		           on-response="logresponse">
+		           url="{{host}}/download/state/running"
+		           on-response="_logresponse">
 		</iron-ajax>
 
 
@@ -62,8 +68,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		           method="GET"
 		           last-response="{{finished}}"
 		           debounce-duration="3000"
-		           url="{host}/download/state/finished"
-		           on-response="logresponse">
+		           url="{{host}}/download/state/finished"
+		           on-response="_logresponse">
 		</iron-ajax>
 
 
@@ -73,8 +79,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		           method="GET"
 		           last-response="{{failed}}"
 		           debounce-duration="3000"
-		           url="{host}/download/state/error"
-		           on-response="logresponse">
+		           url="{{host}}/download/state/error"
+		           on-response="_logresponse">
 		</iron-ajax>
 
 	</template>
@@ -112,30 +118,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					}
 
 				},
-				reloadActive(){
+				reloadActive :function(){
 					this.$.ajaxactive.generateRequest();
 				},
-				reloadWaiting(){
+				reloadWaiting :function(){
 					this.$.ajaxwaiting.generateRequest();
 				},
-				reloadFinished(){
+				reloadFinished :function(){
 					this.$.ajaxfinished.generateRequest();
 				},
-				reloadFailed(){
+				reloadFailed :function(){
 					this.$.ajaxfailed.generateRequest();
 				},
-				reloadAll(){
+				reloadAll :function(){
 					this.$.ajaxall.generateRequest();
 				},
-				reload(){
+				reload :function(){
 					this.reloadActive();
 					this.reloadWaiting();
 					this.reloadFinished();
 					this.reloadFailed();
 					this.reloadAll();
+					this.$.ws.connect();
 				},
-				logresponse(request) {
+				_logresponse  :function(request) {
 					console.log(request.detail.response);
+				},
+				_handleJobChange: function (event) {
+					this.reloadActive();
 				}
 			});
 		})();
