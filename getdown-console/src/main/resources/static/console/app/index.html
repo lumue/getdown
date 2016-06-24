@@ -56,10 +56,14 @@
 			<paper-toolbar id="drawerToolbar">
 				<span class="menu-name">getdown</span>
 			</paper-toolbar>
-			<paper-menu class="app-menu" attr-for-selected="data-route" selected="[[route]]">
-				<a data-route="downloads" href="{{baseUrl}}">
+			<paper-menu class="app-menu" attr-for-selected="data-route" selected="{{route}}">
+				<a data-route="downloads" >
 					<iron-icon icon="file-download"></iron-icon>
 					<span>downloads</span>
+				</a>
+				<a data-route="config" >
+					<iron-icon icon="settings"></iron-icon>
+					<span>config</span>
 				</a>
 			</paper-menu>
 		</paper-scroll-header-panel>
@@ -72,6 +76,10 @@
 
 				<div data-route="downloads">
 					<download-view></download-view>
+				</div>
+
+				<div data-route="config">
+					<config-view></config-view>
 				</div>
 
 			</iron-pages>
