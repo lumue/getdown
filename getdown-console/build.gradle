@@ -1,10 +1,11 @@
 buildscript {
     repositories {
         mavenCentral()
-
+	    maven{url "https://plugins.gradle.org/m2/"}
     }
     dependencies {
-    	classpath('se.transmode.gradle:gradle-docker:1.2')
+    	classpath 'se.transmode.gradle:gradle-docker:1.2'
+	    classpath 'com.moowork.gradle:gradle-gulp-plugin:0.10'
     }
 }
 
@@ -14,8 +15,13 @@ buildscript {
 
 apply plugin: 'idea'
 apply plugin: 'docker'
+apply plugin: 'java'
 
 group = 'lumue'
+
+apply plugin: 'com.moowork.gulp'
+
+build.dependsOn 'bowerInstall'
 
 task buildDocker(type: Docker) {
 
@@ -26,9 +32,15 @@ task buildDocker(type: Docker) {
 
   doFirst {
     copy {
-      from "app"
+      from "src/main/resources/static/console/app"
       into 'build/docker/app'
     }
   }
+}
+
+// Install the bower components for front-end library management
+task bowerInstall( type: Exec){
+	workingDir '.'
+	commandLine "bower", 'install'
 }
 

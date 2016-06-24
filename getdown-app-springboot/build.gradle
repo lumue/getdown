@@ -30,7 +30,7 @@ repositories {
 
 dependencies {
 	compile project(':getdown-core')	
-	compile project(':getdown-webconsole')
+	compile project(':getdown-console')
 
 	
 	compile("org.springframework.boot:spring-boot-starter-web")
