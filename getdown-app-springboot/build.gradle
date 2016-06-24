@@ -31,7 +31,7 @@ repositories {
 dependencies {
 	compile project(':getdown-core')	
 	compile project(':getdown-console')
-
+	compile project(':getdown-webconsole')
 	
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
@@ -47,7 +47,7 @@ dependencies {
 	compile 'org.slf4j:slf4j-api:1.7.10'
 
 	testCompile 'junit:junit:4.11'
-	testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
+	testCompile group: 'ch.qos.logback', name: 'logback-classic', version: "$logback_version"
 }
 
 
