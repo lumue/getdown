@@ -40,48 +40,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		</iron-ajax>
 
 
-		<iron-ajax id="ajaxwaiting"
-		           handle-as="json"
-		           content-type="application/json"
-		           method="GET"
-		           last-response="{{waiting}}"
-		           debounce-duration="3000"
-		           url="{{host}}/download/state/waiting"
-		           on-response="_logresponse">
-		</iron-ajax>
 
-
-		<iron-ajax id="ajaxactive"
-		           handle-as="json"
-		           content-type="application/json"
-		           method="GET"
-		           last-response="{{active}}"
-		           debounce-duration="3000"
-		           url="{{host}}/download/state/running"
-		           on-response="_logresponse">
-		</iron-ajax>
-
-
-		<iron-ajax id="ajaxfinished"
-		           handle-as="json"
-		           content-type="application/json"
-		           method="GET"
-		           last-response="{{finished}}"
-		           debounce-duration="3000"
-		           url="{{host}}/download/state/finished"
-		           on-response="_logresponse">
-		</iron-ajax>
-
-
-		<iron-ajax id="ajaxfailed"
-		           handle-as="json"
-		           content-type="application/json"
-		           method="GET"
-		           last-response="{{failed}}"
-		           debounce-duration="3000"
-		           url="{{host}}/download/state/error"
-		           on-response="_logresponse">
-		</iron-ajax>
 
 	</template>
 	<script>
@@ -94,18 +53,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				properties: {
 					active: {
 						type: Array,
+						computed: '_filterByState(all,"RUNNING")',
 						notify: true
 					},
 					waiting: {
 						type: Array,
+						computed: '_filterByState(all,"WAITING")',
 						notify: true
 					},
 					failed: {
 						type: Array,
+						computed: '_filterByState(all,"ERROR")',
 						notify: true
 					},
 					finished: {
 						type: Array,
+						computed: '_filterByState(all,"FINISHED")',
+						notify: true
+					},
+					canceled: {
+						type: Array,
+						computed: '_filterByState(all,"CANCELLED")',
 						notify: true
 					},
 					all: {
@@ -118,34 +86,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					}
 
 				},
-				reloadActive :function(){
-					this.$.ajaxactive.generateRequest();
-				},
-				reloadWaiting :function(){
-					this.$.ajaxwaiting.generateRequest();
-				},
-				reloadFinished :function(){
-					this.$.ajaxfinished.generateRequest();
-				},
-				reloadFailed :function(){
-					this.$.ajaxfailed.generateRequest();
-				},
-				reloadAll :function(){
+				observers: [
+					'_handleHostUpdate(host)'
+				],
+				reload :function(){
 					this.$.ajaxall.generateRequest();
 				},
-				reload :function(){
-					this.reloadActive();
-					this.reloadWaiting();
-					this.reloadFinished();
-					this.reloadFailed();
-					this.reloadAll();
-					this.$.ws.connect();
+				_filterByState:function(downloads,state){
+					if(!downloads || !state)
+						return []
+
+					return _.chain(downloads)
+							.filter(function(d){
+								return state == d.state
+							})
+							.value()
 				},
 				_logresponse  :function(request) {
 					console.log(request.detail.response);
 				},
 				_handleJobChange: function (event) {
-					this.reloadActive();
+					this.reload();
+				},
+				_handleHostUpdate: function(host){
+					if(host){
+						this.reload();
+						this.$.ws.connect();
+					}
 				}
 			});
 		})();

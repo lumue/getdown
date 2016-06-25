@@ -10,7 +10,8 @@
     "polymer": "Polymer/polymer#^1.2.0",
     "byutv-jsonp": "^1.2.0",
     "sockjs": "~0.3.4",
-    "stomp-websocket": "~2.3.4"
+    "stomp-websocket": "~2.3.4",
+    "lodash": "^4.13.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

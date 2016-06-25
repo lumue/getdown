@@ -29,8 +29,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .avatar {
-        height: 40px;
-        width: 40px;
+        height: 50px;
+        width: 50px;
         border-radius: 20px;
         box-sizing: border-box;
         background-color: #DDD;
@@ -70,9 +70,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </div>
-      <iron-icon icon="cancel" on-tap="_handleCancelTap"></iron-icon>
-      <iron-icon icon="refresh" on-tap="_handleRefreshTap"></iron-icon>
-      <iron-icon icon="delete" ont-tap="_handleDeleteTap"></iron-icon>
+      <iron-icon icon="cancel" on-tap="_handleCancelTap" hidden$="{{_hideCancel}}"></iron-icon>
+      <iron-icon icon="refresh" on-tap="_handleRefreshTap" hidden$="{{_hideRefresh}}"></iron-icon>
+      <iron-icon icon="delete" ont-tap="_handleDeleteTap"  hidden$="{{_hideDelete}}"></iron-icon>
 
     </div>
   </template>
@@ -87,6 +87,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         download: {
           type: Object,
           notify: true
+        },
+        _hideCancel: {
+          type: Boolean,
+          computed: '_computeHideCancel(download)',
+          notify: true
+        },
+        _hideRefresh: {
+          type: Boolean,
+          computed: '_computeHideRefresh(download)',
+          notify: true
+        },
+        _hideDelete: {
+          type: Boolean,
+          computed: '_computeHideDelete(download)',
+          notify: true
         }
       },
       _handleCancelTap :function(event){
@@ -97,6 +112,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _handleDeleteTap :function(event){
         this.fire('delete',this.download)
+      },
+      _computeHideDelete : function(d){
+        if(!d)
+          return true;
+      },
+      _computeHideCancel : function(d){
+        if(!d)
+          return true
+
+        if("RUNNING" == d.state){
+          return false
+        }
+
+        return true
+      },
+      _computeHideRefresh : function(d){
+        if(!d)
+          return true
+
+        if("ERROR" == d.state || "FINISHED" == d.state){
+          return false
+        }
+
+        return true
       }
     });
   })();

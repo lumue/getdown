@@ -19,7 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       paper-toolbar {
         --paper-toolbar-height: 32px;
-        --paper-toolbar-background: red;
+        --paper-toolbar-background: #E57373;
       }
 
       paper-material {
@@ -30,9 +30,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <paper-material elevation="1" style="width: 100%;">
       <paper-toolbar middleJustify>
         <span class="title" style="margin-left:1px;">[[title]]</span>
-        <paper-icon-button icon="refresh"
-                           on-tap="refresh">
-        </paper-icon-button>
       </paper-toolbar>
       <section>
         <download-list downloads="{{downloads}}">
@@ -56,9 +53,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		    type: String,
 		    value: "set my title property!",
 	    }
-      },
-      refresh:function(e,detail){
-        this.fire('refresh');
       }
     });
   })();
