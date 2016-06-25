@@ -48,7 +48,23 @@ public class DownloadService {
 		DownloadJob job = jobRepository.get(handle);
 		downloadJobRunner.cancelJob(job);
 	}
-	
+
+	public void removeDownload(DownloadJobHandle downloadJobHandle) {
+		DownloadJob downloadJob = this.jobRepository.get(downloadJobHandle);
+		if(RUNNING.equals(downloadJob.getState())){
+			cancelDownload(downloadJobHandle);
+		}
+		this.jobRepository.remove(downloadJobHandle);
+	}
+
+	public void restartDownload(DownloadJobHandle downloadJobHandle) {
+		DownloadJob downloadJob = this.jobRepository.get(downloadJobHandle);
+		if(RUNNING.equals(downloadJob.getState())){
+			cancelDownload(downloadJobHandle);
+		}
+		startDownload(downloadJobHandle);
+	}
+
 	public Iterable<DownloadJob> listDownloads(){
 		return this.jobRepository.list();
 	}
@@ -81,6 +97,7 @@ public class DownloadService {
 		String path = URI.create(url).getPath();
 		return path.substring(path.lastIndexOf('/') + 1).toString();
 	}
+
 
 
 }
