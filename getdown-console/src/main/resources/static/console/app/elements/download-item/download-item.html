@@ -70,8 +70,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </div>
-
-      <iron-icon icon="reorder"></iron-icon>
+      <iron-icon icon="cancel" on-tap="_handleCancelTap"></iron-icon>
+      <iron-icon icon="refresh" on-tap="_handleRefreshTap"></iron-icon>
+      <iron-icon icon="delete" ont-tap="_handleDeleteTap"></iron-icon>
 
     </div>
   </template>
@@ -87,6 +88,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Object,
           notify: true
         }
+      },
+      _handleCancelTap :function(event){
+        this.fire('cancel',this.download)
+      },
+      _handleRefreshTap :function(event){
+        this.fire('refresh',this.download)
+      },
+      _handleDeleteTap :function(event){
+        this.fire('delete',this.download)
       }
     });
   })();
