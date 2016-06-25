@@ -110,11 +110,22 @@ public class DownloadJsonRpcController {
 		DownloadJob downloadJob=downloadService.getDownload(new Download.DownloadJobHandle(handle));
 		return DownloadJobView.wrap(downloadJob);
 	}
+
+	@RequestMapping(value = "/{handle}", method = RequestMethod.DELETE)
+	public void removeDownload(@PathVariable String handle) {
+		downloadService.removeDownload(new Download.DownloadJobHandle(handle));
+	}
 	
-	@RequestMapping(value = "/{handle}/cancel", method = RequestMethod.GET)
+	@RequestMapping(value = "/{handle}/cancel", method = RequestMethod.POST)
 	public void cancelDownload(@PathVariable String handle) {
 		LOGGER.debug("canceling download job with handle " + handle);
 		downloadService.cancelDownload(new Download.DownloadJobHandle(handle));
+	}
+
+	@RequestMapping(value = "/{handle}/cancel", method = RequestMethod.POST)
+	public void restartDownload(@PathVariable String handle) {
+		LOGGER.debug("canceling download job with handle " + handle);
+		downloadService.restartDownload(new Download.DownloadJobHandle(handle));
 	}
 	
 
