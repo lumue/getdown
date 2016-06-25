@@ -15,75 +15,13 @@
       height: 100%;
     }
 
-    .item {
-      @apply(--layout-horizontal);
 
-      margin: 5px 5px 0 5px;
-      padding: 10px;
-
-      border-radius: 8px;
-      background-color: white;
-      border: 1px solid #ddd;
-    }
-
-    .avatar {
-      height: 40px;
-      width: 40px;
-      border-radius: 20px;
-      box-sizing: border-box;
-      background-color: #DDD;
-    }
-
-    .pad {
-      padding: 0 16px;
-      @apply(--layout-flex);
-      @apply(--layout-vertical);
-    }
-
-    .primary {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .secondary {
-      font-size: 14px;
-    }
-
-    .add_fab {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      -webkit-transform: translateZ(0);
-    }
   </style>
   <template>
 
     <iron-list id="list" class="list" items="{{downloads}}" as="download">
       <template>
-
-        <div class="item">
-
-          <img class="avatar" src="../../images/icon-getdown.png">
-
-          <div class="pad">
-            <div class="primary">{{download.name}}</div>
-            <div class="secondary">
-              <span>{{download.state}}</span>
-              <span>{{download.progress}}</span>&nbsp;/
-              <span>{{download.size}}</span>
-              <paper-progress style="width: 100%" value="{{(download.progress / download.size)*100}}"
-                              id="paper_progress">{{download.progress}}
-              </paper-progress>
-              <div>
-                <span>{{download.message}}</span>
-              </div>
-            </div>
-          </div>
-
-          <iron-icon icon="reorder"></iron-icon>
-
-        </div>
-
+        <download-item download="{{download}}"></download-item>
       </template>
     </iron-list>
 
