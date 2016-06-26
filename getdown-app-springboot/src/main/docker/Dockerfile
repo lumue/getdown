@@ -1,5 +1,5 @@
 FROM lumue/debjdk
-MAINTAINER lm "lm@combase.de"
+MAINTAINER lm "mueller.lutz@gmail.com"
 
 RUN apt-get -y update && \
 apt-get -y install ffmpeg && \
