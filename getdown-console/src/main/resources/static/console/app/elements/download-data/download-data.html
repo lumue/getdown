@@ -33,9 +33,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		           handle-as="json"
 		           content-type="application/json"
 		           method="GET"
-		           last-response="{{all}}"
+		           last-response="{{downloads}}"
 		           debounce-duration="3000"
 		           url="{{host}}/download/list"
+		           on-response="_logresponse">
+		</iron-ajax>
+
+		<iron-ajax id="ajaxadd"
+		           handle-as="json"
+		           content-type="application/json"
+		           url="{{host}}/download"
+		           method="POST"
+		           debounce-duration="3000"
 		           on-response="_logresponse">
 		</iron-ajax>
 
@@ -53,30 +62,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				properties: {
 					active: {
 						type: Array,
-						computed: '_filterByState(all,"RUNNING")',
+						computed: '_filterByState(downloads,"RUNNING")',
 						notify: true
 					},
 					waiting: {
 						type: Array,
-						computed: '_filterByState(all,"WAITING")',
+						computed: '_filterByState(downloads,"WAITING")',
 						notify: true
 					},
 					failed: {
 						type: Array,
-						computed: '_filterByState(all,"ERROR")',
+						computed: '_filterByState(downloads,"ERROR")',
 						notify: true
 					},
 					finished: {
 						type: Array,
-						computed: '_filterByState(all,"FINISHED")',
+						computed: '_filterByState(downloads,"FINISHED")',
 						notify: true
 					},
 					canceled: {
 						type: Array,
-						computed: '_filterByState(all,"CANCELLED")',
+						computed: '_filterByState(downloads,"CANCELLED")',
 						notify: true
 					},
-					all: {
+					downloads: {
 						type: Array,
 						notify: true
 					},
@@ -87,10 +96,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 				},
 				observers: [
-					'_handleHostUpdate(host)'
+					'_handleHostUpdate(host)',
+					'_downloadsChanged(downloads)'
 				],
 				reload :function(){
 					this.$.ajaxall.generateRequest();
+				},
+				addDownload :function(url){
+					this.$.ajaxadd.body=url
+					this.$.ajaxadd.generateRequest()
 				},
 				_filterByState:function(downloads,state){
 					if(!downloads || !state)
@@ -106,13 +120,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					console.log(request.detail.response);
 				},
 				_handleJobChange: function (event) {
-					this.reload();
+					if(event && event.detail){
+
+						var d=event.detail
+						var found=false
+
+						for (var i = 0; i < this.downloads.length && !found; i++) {
+							if(this.downloads[i].handle == d.handle){
+								this.set('downloads.#'+i, d);
+								found=true
+							}
+						}
+
+						if(!found)
+							this.push('downloads',d)
+
+						//should not be necessary
+						this.notifyPath("downloads",this.downloads.slice())
+
+					}
 				},
 				_handleHostUpdate: function(host){
 					if(host){
 						this.reload();
 						this.$.ws.connect();
 					}
+				},
+				_downloadsChanged: function(downloads){
+					console.log("downloads changed")
 				}
 			});
 		})();

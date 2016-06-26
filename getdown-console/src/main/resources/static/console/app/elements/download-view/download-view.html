@@ -27,16 +27,20 @@
 			<paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
 			<span class="title">downloads</span>
 			<paper-icon-button icon="refresh" on-tap="refresh"></paper-icon-button>
-			<paper-icon-button icon="add">+</paper-icon-button>
+			<paper-icon-button icon="add" on-tap="_toggleAddDownload">+</paper-icon-button>
 		</paper-toolbar>
 
 		<!-- Main Content -->
 		<div class="content">
-			<download-list-widget title="waiting" downloads="{{waiting}}" on-refresh="refreshwaiting"></download-list-widget>
-			<download-list-widget title="running" downloads="{{active}}" on-refresh="refreshactive"></download-list-widget>
-			<download-list-widget title="finished" downloads="{{finished}}" on-refresh="refreshfinished"></download-list-widget>
-			<download-list-widget title="failed" downloads="{{failed}}" on-refresh="refreshfailed"></download-list-widget>
+			<download-list-widget title="running" downloads="{{active}}" ></download-list-widget>
+			<download-list-widget title="waiting" downloads="{{waiting}}" ></download-list-widget>
+			<download-list-widget title="finished" downloads="{{finished}}"></download-list-widget>
+			<download-list-widget title="canceled" downloads="{{canceled}}" ></download-list-widget>
+			<download-list-widget title="failed" downloads="{{failed}}"></download-list-widget>
 		</div>
+
+		<add-download-dialog id="adddialog" url="{{newurl}}" on-cancel="_cancelAddDownload" on-confirm="_confirmAddDownload"></add-download-dialog>
+
 	</template>
 	<script>
 		(function () {
@@ -61,22 +65,28 @@
 					finished: {
 						type: Array,
 						notify: true
+					},
+					newurl: {
+						type: Array,
+						notify: true
 					}
 				},
-				refreshactive: function () {
-					this.$.data.reloadActive();
-				},
-				refreshwaiting: function () {
-					this.$.data.reloadWaiting();
-				},
-				refreshfinished: function () {
-					this.$.data.reloadFinished();
-				},
-				refreshfailed: function () {
-					this.$.data.reloadFailed();
-				},
+
 				refresh: function () {
-					this.$.data.reload();
+					this.$.data.reload()
+				},
+
+				_toggleAddDownload: function () {
+					this.$.adddialog.toggle()
+				},
+
+				_cancelAddDownload: function () {
+					this._toggleAddDownload()
+				},
+
+				_confirmAddDownload: function () {
+					this.$.data.addDownload(this.newurl)
+					this._toggleAddDownload()
 				}
 
 			});
