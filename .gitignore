@@ -4,7 +4,6 @@ build/
 .classpath
 .project
 */.directory
-.gradle/
 bin/
 .directory
 *.jfr
