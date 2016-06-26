@@ -45,6 +45,16 @@ public class DownloadJsonRpcController {
 
 		return DownloadJobView.wrap(download);
 	}
+
+	/**
+	 * Add and start a download
+	 * @param url
+	 * @return
+	 */
+	@RequestMapping( method = RequestMethod.POST)
+	public DownloadJobView postDownload(@RequestBody String url) {
+		return this.addDownload(url);
+	}
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Iterable<DownloadJobView> listDownloads() {
@@ -122,7 +132,7 @@ public class DownloadJsonRpcController {
 		downloadService.cancelDownload(new Download.DownloadJobHandle(handle));
 	}
 
-	@RequestMapping(value = "/{handle}/cancel", method = RequestMethod.POST)
+	@RequestMapping(value = "/{handle}/restart", method = RequestMethod.POST)
 	public void restartDownload(@PathVariable String handle) {
 		LOGGER.debug("canceling download job with handle " + handle);
 		downloadService.restartDownload(new Download.DownloadJobHandle(handle));
