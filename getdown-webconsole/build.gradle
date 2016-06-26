@@ -27,7 +27,7 @@ gulp_dist.inputs.dir srcDir
 gulp_dist.outputs.dir targetDir
 
 // makes sure on each build that gulp is installed
-gulp_build.dependsOn 'installGulp'
+gulp_default.dependsOn 'installGulp'
 
 // processes your package.json before running gulp build
 gulp_build.dependsOn 'npmInstall'
