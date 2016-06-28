@@ -1,0 +1,157 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="download-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .item {
+        @apply(--layout-horizontal);
+
+        margin: 5px 5px 0 5px;
+        padding: 10px;
+
+        border-radius: 8px;
+        background-color: white;
+        border: 1px solid #ddd;
+      }
+
+      .avatar {
+        height: 50px;
+        width: 50px;
+        border-radius: 20px;
+        box-sizing: border-box;
+        background-color: #DDD;
+      }
+
+      .pad {
+        padding: 0 16px;
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+
+      .primary {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .secondary {
+        font-size: 14px;
+      }
+
+    </style>
+    <div class="item">
+
+      <img class="avatar" src="{{icon}}">
+
+      <div class="pad">
+        <div class="primary">{{download.name}}</div>
+        <div class="secondary">
+          <span>{{download.state}}</span>
+          <span>{{download.progress}}</span>&nbsp;/
+          <span>{{download.size}}</span>
+          <paper-progress style="width: 100%" value="{{(download.progress / download.size)*100}}"
+                          id="paper_progress">{{download.progress}}
+          </paper-progress>
+          <div>
+            <span>{{download.message}}</span>
+          </div>
+        </div>
+      </div>
+      <iron-icon icon="cancel" on-tap="_handleCancelTap" hidden$="{{_hideCancel}}"></iron-icon>
+      <iron-icon icon="refresh" on-tap="_handleRefreshTap" hidden$="{{_hideRefresh}}"></iron-icon>
+      <iron-icon icon="delete" ont-tap="_handleDeleteTap"  hidden$="{{_hideDelete}}"></iron-icon>
+
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'download-item',
+
+      properties: {
+        download: {
+          type: Object,
+          notify: true
+        },
+        icon:{
+          type: String,
+          notify: true,
+          computed: '_computeDownloadIconUrl(download)'
+        },
+        _hideCancel: {
+          type: Boolean,
+          computed: '_computeHideCancel(download)',
+          notify: true
+        },
+        _hideRefresh: {
+          type: Boolean,
+          computed: '_computeHideRefresh(download)',
+          notify: true
+        },
+        _hideDelete: {
+          type: Boolean,
+          computed: '_computeHideDelete(download)',
+          notify: true
+        }
+      },
+      _handleCancelTap :function(event){
+        this.fire('cancel',this.download)
+      },
+      _handleRefreshTap :function(event){
+        this.fire('refresh',this.download)
+      },
+      _handleDeleteTap :function(event){
+        this.fire('delete',this.download)
+      },
+      _computeHideDelete : function(d){
+        if(!d)
+          return true;
+      },
+      _computeHideCancel : function(d){
+        if(!d)
+          return true
+
+        if("RUNNING" == d.state){
+          return false
+        }
+
+        return true
+      },
+      _computeHideRefresh : function(d){
+        if(!d)
+          return true
+
+        if("ERROR" == d.state || "FINISHED" == d.state){
+          return false
+        }
+
+        return true
+      },
+      _computeDownloadIconUrl: function(d){
+        if(d){
+          var parser = document.createElement('a');
+          parser.href = d.url;
+          return parser.protocol+'//'+parser.host+'/favicon.ico'
+        }else {
+          return '../../images/icon-getdown.png'
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

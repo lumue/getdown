@@ -1,66 +1,46 @@
 buildscript {
-	repositories {
-		mavenCentral()
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
-	dependencies {
-		classpath "com.moowork.gradle:gradle-gulp-plugin:0.10"
-	}
+    repositories {
+        mavenCentral()
+	    maven{url "https://plugins.gradle.org/m2/"}
+    }
+    dependencies {
+    	classpath 'se.transmode.gradle:gradle-docker:1.2'
+	    classpath 'com.moowork.gradle:gradle-gulp-plugin:0.10'
+    }
 }
 
-apply plugin:'java'
-//java configuration
-sourceCompatibility = jdk_version
-targetCompatibility = jdk_version
-apply plugin: 'eclipse-wtp'
 
+
+
+
+apply plugin: 'idea'
+apply plugin: 'docker'
+apply plugin: 'java'
+
+group = 'lumue'
 
 apply plugin: 'com.moowork.gulp'
 
-compileJava.dependsOn gulp_default
+build.dependsOn 'bowerInstall'
 
-def srcDir = new File(projectDir, "src/main/web")
-def targetDir = new File(project.buildDir, "resources/main/static/web")
-gulp_dist.inputs.dir srcDir
-gulp_dist.outputs.dir targetDir
+task buildDocker(type: Docker) {
 
-// makes sure on each build that gulp is installed
-gulp_default.dependsOn 'installGulp'
+	push = true
+	applicationName = "getdown-webconsole"
 
-// processes your package.json before running gulp build
-gulp_build.dependsOn 'npmInstall'
+	dockerfile = file('Dockerfile')
 
-//install js dependencies before gulp build
-gulp_build.dependsOn 'bowerInstall'
-
-gulp {
-	// Set the directory where gulpfile.js should be found
-	workDir = file("${project.projectDir}")
-
-	// Whether colors should output on the terminal
-	colors = true
-
-	// Whether output from Gulp should be buffered - useful when running tasks in parallel
-	bufferOutput = false
-}
-
-// Get the path for the locally installed binaries
-task npmBin << {
-	new ByteArrayOutputStream().withStream { os ->
-		def result = exec {
-			executable = 'npm'
-			args = ['bin']
-			standardOutput = os
-		}
-		ext.binPath = os.toString().trim() + "/"
-	}
+  doFirst {
+    copy {
+      from "src/main/resources/static/console/app"
+      into 'build/docker/app'
+    }
+  }
 }
 
 // Install the bower components for front-end library management
-task bowerInstall(dependsOn: 'npmInstall', type: Exec){
-	workingDir 'src/main/web/app'
+task bowerInstall( type: Exec){
+	workingDir '.'
 	commandLine "bower", 'install'
 }
 

@@ -1,9 +1,2 @@
-/build/
-/.settings/
-/.classpath
-/.project
-/.direcotry
-/.gradle/
-/bin/
-node_modules
-getdown-webconsole.iml
+npm-debug.log
+src/main/resources/static/console/bower_components

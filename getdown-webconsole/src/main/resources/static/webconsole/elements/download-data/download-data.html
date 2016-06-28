@@ -1,0 +1,155 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="download-data">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+
+		<config-data
+				host="{{host}}"
+		>
+		</config-data>
+
+		<ws-client  id="ws"
+					url="{{host}}/ws"
+		            topic="/downloads/jobStateChange"
+		            on-message="_handleJobChange">
+		</ws-client>
+
+		<iron-ajax id="ajaxall"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="GET"
+		           last-response="{{downloads}}"
+		           debounce-duration="3000"
+		           url="{{host}}/download/list"
+		           on-response="_logresponse">
+		</iron-ajax>
+
+		<iron-ajax id="ajaxadd"
+		           handle-as="json"
+		           content-type="application/json"
+		           url="{{host}}/download"
+		           method="POST"
+		           debounce-duration="3000"
+		           on-response="_logresponse">
+		</iron-ajax>
+
+
+
+
+	</template>
+	<script>
+		(function () {
+			'use strict';
+
+			Polymer({
+				is: 'download-data',
+
+				properties: {
+					active: {
+						type: Array,
+						computed: '_filterByState(downloads,"RUNNING")',
+						notify: true
+					},
+					waiting: {
+						type: Array,
+						computed: '_filterByState(downloads,"WAITING")',
+						notify: true
+					},
+					failed: {
+						type: Array,
+						computed: '_filterByState(downloads,"ERROR")',
+						notify: true
+					},
+					finished: {
+						type: Array,
+						computed: '_filterByState(downloads,"FINISHED")',
+						notify: true
+					},
+					canceled: {
+						type: Array,
+						computed: '_filterByState(downloads,"CANCELLED")',
+						notify: true
+					},
+					downloads: {
+						type: Array,
+						notify: true
+					},
+					host: {
+						type: String,
+						notify: true
+					}
+
+				},
+				observers: [
+					'_handleHostUpdate(host)',
+					'_downloadsChanged(downloads)'
+				],
+				reload :function(){
+					this.$.ajaxall.generateRequest();
+				},
+				addDownload :function(url){
+					this.$.ajaxadd.body=url
+					this.$.ajaxadd.generateRequest()
+				},
+				_filterByState:function(downloads,state){
+					if(!downloads || !state)
+						return []
+
+					return _.chain(downloads)
+							.filter(function(d){
+								return state == d.state
+							})
+							.value()
+				},
+				_logresponse  :function(request) {
+					console.log(request.detail.response);
+				},
+				_handleJobChange: function (event) {
+					if(event && event.detail){
+
+						var d=event.detail
+						var found=false
+
+						for (var i = 0; i < this.downloads.length && !found; i++) {
+							if(this.downloads[i].handle == d.handle){
+								this.set('downloads.#'+i, d);
+								found=true
+							}
+						}
+
+						if(!found)
+							this.push('downloads',d)
+
+						//should not be necessary
+						this.notifyPath("downloads",this.downloads.slice())
+
+					}
+				},
+				_handleHostUpdate: function(host){
+					if(host){
+						this.reload();
+						this.$.ws.connect();
+					}
+				},
+				_downloadsChanged: function(downloads){
+					console.log("downloads changed")
+				}
+			});
+		})();
+	</script>
+</dom-module>

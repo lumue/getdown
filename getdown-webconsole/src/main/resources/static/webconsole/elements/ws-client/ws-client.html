@@ -1,0 +1,69 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="ws-client">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'ws-client',
+      socket: null,
+      properties: {
+        protocol: {
+          type: String,
+          notify:true
+        },
+        url: {
+          type: String,
+          notify: true
+        },
+        topic: {
+          type: String,
+          notify: true
+        }
+      },
+      _handleEvent: function (event) {
+        this.fire('message', event.detail);
+      },
+      send: function (message) {
+        if(this.socket)
+          this.socket.send(message);
+      },
+      close: function () {
+        if(this.socket)
+          this.socket.close();
+      },
+      connect:function () {
+
+        if(this.socket)
+          this.close();
+
+        if(!this.url || !this.topic)
+          return;
+
+        this.socket = new SockJS(this.url);
+
+        var stompClient = Stomp.over(this.socket);
+        var topic=this.topic
+        var element=this
+        stompClient.connect({}, function() {
+
+          stompClient.subscribe(topic, function(message){
+            var parsedMessage=JSON.parse(message.body);
+            var event = new CustomEvent('wsevent-downloads-job-state-change', { 'detail': parsedMessage });
+            element._handleEvent(event);
+          });
+
+        });
+      }
+    })
+  })();
+  </script>
+</dom-module>
