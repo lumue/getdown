@@ -23,11 +23,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		>
 		</config-data>
 
-		<ws-client  id="ws"
+		<stomp-client  id="ws"
 					url="{{host}}/ws"
 		            topic="/downloads/jobStateChange"
 		            on-message="_handleJobChange">
-		</ws-client>
+		</stomp-client>
 
 		<iron-ajax id="ajaxall"
 		           handle-as="json"
