@@ -71,8 +71,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </div>
       <iron-icon icon="cancel" on-tap="_handleCancelTap" hidden$="{{_hideCancel}}"></iron-icon>
-      <iron-icon icon="refresh" on-tap="_handleRefreshTap" hidden$="{{_hideRefresh}}"></iron-icon>
-      <iron-icon icon="delete" ont-tap="_handleDeleteTap"  hidden$="{{_hideDelete}}"></iron-icon>
+      <iron-icon icon="refresh" on-tap="_handleRestartTap" hidden$="{{_hideRefresh}}"></iron-icon>
+      <iron-icon icon="delete" on-tap="_handleDeleteTap"  hidden$="{{_hideDelete}}"></iron-icon>
 
     </div>
   </template>
@@ -112,8 +112,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _handleCancelTap :function(event){
         this.fire('cancel',this.download)
       },
-      _handleRefreshTap :function(event){
-        this.fire('refresh',this.download)
+      _handleRestartTap :function(event){
+        this.fire('restart',this.download)
       },
       _handleDeleteTap :function(event){
         this.fire('delete',this.download)

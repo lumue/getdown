@@ -49,6 +49,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		</iron-ajax>
 
 
+		<iron-ajax id="ajaxremove"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="DELETE"
+		           debounce-duration="3000"
+		           on-response="_logresponse">
+		</iron-ajax>
+
+		<iron-ajax id="ajaxpost"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="POST"
+		           debounce-duration="3000"
+		           on-response="_logresponse">
+		</iron-ajax>
+
 
 
 	</template>
@@ -105,6 +121,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				addDownload :function(url){
 					this.$.ajaxadd.body=url
 					this.$.ajaxadd.generateRequest()
+				},
+				removeDownload :function(handle){
+					this.$.ajaxremove.url=this.host+"/download/"+handle
+					this.$.ajaxremove.generateRequest()
+				},
+				cancelDownload :function(handle){
+					this.$.ajaxpost.url=this.host+"/download/"+handle+"/cancel"
+					this.$.ajaxpost.generateRequest()
+				},
+				restartDownload :function(handle){
+					this.$.ajaxpost.url=this.host+"/download/"+handle+"/restart"
+					this.$.ajaxpost.generateRequest()
 				},
 				_filterByState:function(downloads,state){
 					if(!downloads || !state)

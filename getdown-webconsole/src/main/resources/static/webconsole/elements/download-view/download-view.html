@@ -32,14 +32,42 @@
 
 		<!-- Main Content -->
 		<div class="content">
-			<download-list-widget title="running" downloads="{{active}}" ></download-list-widget>
-			<download-list-widget title="waiting" downloads="{{waiting}}" ></download-list-widget>
-			<download-list-widget title="finished" downloads="{{finished}}"></download-list-widget>
-			<download-list-widget title="canceled" downloads="{{canceled}}" ></download-list-widget>
-			<download-list-widget title="failed" downloads="{{failed}}"></download-list-widget>
+			<download-list-widget title="running" downloads="{{active}}"
+			                      on-cancel="_handleCancel"
+			                      on-delete="_handleDelete"
+			                      on-restart="_handleRestart">
+
+			</download-list-widget>
+			<download-list-widget title="waiting" downloads="{{waiting}}"
+			                      on-cancel="_handleCancel"
+			                      on-delete="_handleDelete"
+			                      on-restart="_handleRestart">
+
+			</download-list-widget>
+			<download-list-widget title="finished" downloads="{{finished}}"
+			                      on-cancel="_handleCancel"
+			                      on-delete="_handleDelete"
+			                      on-restart="_handleRestart">
+
+			</download-list-widget>
+			<download-list-widget title="canceled" downloads="{{canceled}}"
+			                      on-cancel="_handleCancel"
+			                      on-delete="_handleDelete"
+			                      on-restart="_handleRestart">
+
+			</download-list-widget>
+			<download-list-widget title="failed" downloads="{{failed}}"
+			                      on-cancel="_handleCancel"
+			                      on-delete="_handleDelete"
+			                      on-restart="_handleRestart">
+
+			</download-list-widget>
 		</div>
 
-		<add-download-dialog id="adddialog" url="{{newurl}}" on-cancel="_cancelAddDownload" on-confirm="_confirmAddDownload"></add-download-dialog>
+		<add-download-dialog id="adddialog" url="{{newurl}}"
+		                     on-cancel="_cancelAddDownload"
+		                     on-confirm="_confirmAddDownload">
+		</add-download-dialog>
 
 	</template>
 	<script>
@@ -87,7 +115,17 @@
 				_confirmAddDownload: function () {
 					this.$.data.addDownload(this.newurl)
 					this._toggleAddDownload()
+				},
+				_handleCancel: function (event) {
+					this.$.data.cancelDownload(event.detail.handle)
+				},
+				_handleDelete: function (event) {
+					this.$.data.removeDownload(event.detail.handle)
+				},
+				_handleRestart: function (event) {
+					this.$.data.restartDownload(event.detail.handle)
 				}
+
 
 			});
 		})();
