@@ -13,3 +13,4 @@ log/
 .idea
 Würde src/main/java/ löschen
 Würde src/test/ löschen
+.gradle
