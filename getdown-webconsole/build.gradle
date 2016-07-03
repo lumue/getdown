@@ -21,7 +21,7 @@ group = 'lumue'
 
 apply plugin: 'com.moowork.gulp'
 
-build.dependsOn 'bowerInstall'
+processResources.dependsOn 'bowerInstall'
 
 task buildDocker(type: Docker) {
 
