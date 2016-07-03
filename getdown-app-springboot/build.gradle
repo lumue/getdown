@@ -10,7 +10,7 @@ buildscript {
 
 
 apply plugin: 'idea'
-apply plugin:'java'
+apply plugin: 'java'
 //java configuration
 compileJava {
 	sourceCompatibility = jdk_version
@@ -19,25 +19,21 @@ compileJava {
 apply plugin: 'application'
 apply plugin: 'spring-boot'
 ext['tomcat.version'] = '8.5.2'
-apply plugin: 'docker'
 
-docker {
-	group = 'lumue'
-}
 
 repositories {
 	maven { url 'http://repo.spring.io/libs-release' }
 	maven { url 'http://repo.springsource.org/libs-milestone' }
-  }
+}
 
 dependencies {
 	compile project(':getdown-core')
 	compile project(':getdown-webconsole')
-	
+
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
 	compile("org.springframework.boot:spring-boot-starter-websocket")
-	
+
 	compile("org.springframework:spring-messaging")
 	compile("io.projectreactor.spring:reactor-spring-context:$reactor_version")
 	compile "io.projectreactor:reactor-core:$reactor_version"
@@ -52,19 +48,22 @@ dependencies {
 }
 
 
-task buildDocker(type: Docker, dependsOn: build) {
-	
-	push = false
-	applicationName = 'getdown'
-	
-	dockerfile = file('src/main/docker/Dockerfile')
-	
+task buildDocker(type: Exec, dependsOn: build) {
+
+
+	workingDir file(project.buildDir.absolutePath+'/docker')
+	commandLine 'docker', 'build', '-t','lumue/getdown','.'
+
 	doFirst {
-	  copy {
-		from jar
-		into stageDir
-	  }
+		copy {
+			from jar
+			into file(project.buildDir.absolutePath+'/docker')
+		}
+		copy {
+			from file('src/main/docker/Dockerfile')
+			into file(project.buildDir.absolutePath+'/docker')
+		}
 	}
-	
-  }
+
+}
 
