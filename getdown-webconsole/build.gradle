@@ -15,33 +15,10 @@ buildscript {
 apply plugin: 'idea'
 apply plugin: 'java'
 
-group = 'lumue'
 
 apply plugin: 'com.moowork.gulp'
 
 processResources.dependsOn 'bowerInstall'
-
-
-
-task buildDocker(type: Exec, dependsOn: build) {
-
-	def stageDir=file(project.buildDir.absolutePath+'/docker')
-
-	workingDir stageDir
-	commandLine 'docker', 'build', '-t','lumue/getdown-webconsole','.'
-
-	doFirst {
-		copy {
-      from 'src/main/resources/static/webconsole'
-      into 'build/docker/app'
-    }
-		copy {
-			from file('src/main/docker/Dockerfile')
-			into stageDir
-		}
-	}
-
-}
 
 // Install the bower components for front-end library management
 task bowerInstall( type: Exec){
