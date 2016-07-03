@@ -12,18 +12,18 @@ buildscript {
 apply plugin: 'idea'
 apply plugin:'java'
 //java configuration
-sourceCompatibility = jdk_version
-targetCompatibility = jdk_version
-
+compileJava {
+	sourceCompatibility = jdk_version
+	targetCompatibility = jdk_version
+}
 apply plugin: 'application'
 apply plugin: 'spring-boot'
 ext['tomcat.version'] = '8.5.2'
 apply plugin: 'docker'
 
-group = 'lumue'
-
-mainClassName = 'io.github.lumue.getdown.app.springboot.application.Application'
-
+docker {
+	group = 'lumue'
+}
 
 repositories {
 	maven { url 'http://repo.spring.io/libs-release' }
@@ -54,8 +54,8 @@ dependencies {
 
 task buildDocker(type: Docker, dependsOn: build) {
 	
-	push = true
-	applicationName = jar.baseName
+	push = false
+	applicationName = 'getdown'
 	
 	dockerfile = file('src/main/docker/Dockerfile')
 	
