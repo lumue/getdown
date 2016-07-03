@@ -50,18 +50,19 @@ dependencies {
 
 task buildDocker(type: Exec, dependsOn: build) {
 
+	def stageDir=file(project.buildDir.absolutePath+'/docker')
 
-	workingDir file(project.buildDir.absolutePath+'/docker')
+	workingDir stageDir
 	commandLine 'docker', 'build', '-t','lumue/getdown','.'
 
 	doFirst {
 		copy {
 			from jar
-			into file(project.buildDir.absolutePath+'/docker')
+			into stageDir
 		}
 		copy {
 			from file('src/main/docker/Dockerfile')
-			into file(project.buildDir.absolutePath+'/docker')
+			into stageDir
 		}
 	}
 
