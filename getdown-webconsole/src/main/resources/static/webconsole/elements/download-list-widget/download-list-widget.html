@@ -6,26 +6,19 @@
       :host {
         display: block;
       }
-
-      paper-toolbar {
-        --paper-toolbar-height: 32px;
-        --paper-toolbar-background: #E57373;
-      }
-
-      paper-material {
+      paper-card {
         width: calc(98% - 46px);
         margin-bottom: 32px;
       }
     </style>
-    <paper-material elevation="1" style="width: 100%;">
-      <paper-toolbar middleJustify>
-        <span class="title" style="margin-left:1px;">[[title]]</span>
-      </paper-toolbar>
-      <section>
+    <div hidden="{{!_visible}}">
+    <paper-card  heading="[[title]]" style="width: 100%;" >
+      <div class="card-content">
         <download-list downloads="{{downloads}}">
         </download-list>
-      </section>
-    </paper-material>
+      </div>
+    </paper-card>
+    </div>
   </template>
   <script>
   (function() {
@@ -42,7 +35,17 @@
 	    title:{
 		    type: String,
 		    value: "set my title property!",
-	    }
+	    },
+        _visible:{
+	      type:Boolean,
+          computed: '_computeVisible(downloads)',
+          notify: true
+        }
+      },
+      _computeVisible: function(downloads){
+        if(downloads && downloads.length > 0)
+        	return true;
+	      return false;
       }
     });
   })();

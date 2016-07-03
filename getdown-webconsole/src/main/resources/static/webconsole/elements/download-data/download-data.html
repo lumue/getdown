@@ -44,7 +44,7 @@
 		           content-type="application/json"
 		           method="DELETE"
 		           debounce-duration="3000"
-		           on-response="_logresponse">
+		           on-response="_handleDeleteResponse">
 		</iron-ajax>
 
 		<iron-ajax id="ajaxpost"
@@ -102,8 +102,7 @@
 
 				},
 				observers: [
-					'_handleHostUpdate(host)',
-					'_downloadsChanged(downloads)'
+					'_handleHostUpdate(host)'
 				],
 				reload :function(){
 					this.$.ajaxall.generateRequest();
@@ -164,8 +163,8 @@
 						this.$.ws.connect();
 					}
 				},
-				_downloadsChanged: function(downloads){
-					console.log("downloads changed")
+				_handleDeleteResponse: function(request){
+						this.reload();
 				}
 			});
 		})();
