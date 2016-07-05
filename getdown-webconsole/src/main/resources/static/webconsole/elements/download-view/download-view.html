@@ -20,7 +20,8 @@
 		               active="{{active}}"
 		               waiting="{{waiting}}"
 		               finished="{{finished}}"
-		               failed="{{failed}}">
+		               failed="{{failed}}"
+		               canceled="{{canceled}}">
 		</download-data>
 
 		<paper-toolbar id="toolbar">
@@ -91,6 +92,14 @@
 						notify: true
 					},
 					finished: {
+						type: Array,
+						notify: true
+					},
+					finished: {
+						type: Array,
+						notify: true
+					},
+					canceled: {
 						type: Array,
 						notify: true
 					},
