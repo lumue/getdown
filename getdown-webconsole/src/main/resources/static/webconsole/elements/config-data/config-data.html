@@ -4,7 +4,7 @@
 	<template>
 		<iron-localstorage name="config-host"
 		                   value="{{host}}"
-		                   on-iron-localstorage-load-empty="initializeDefaultHost">
+		                   on-iron-localstorage-load-empty="_initializeDefaultHost">
 		</iron-localstorage>
 	</template>
 
@@ -23,7 +23,7 @@
 				},
 
 				// initializes default if nothing has been stored
-				initializeDefaultHosturl: function () {
+				_initializeDefaultHost: function () {
 					this.host = "http://" + window.location.host
 				}
 
