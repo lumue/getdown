@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownloadJob;
 import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.github.lumue.getdown.core.download.job.Download.DownloadJobState.*;
 
@@ -17,6 +19,7 @@ import static io.github.lumue.getdown.core.download.job.Download.DownloadJobStat
  */
 public class DownloadService {
 
+	private final static Logger LOGGER=LoggerFactory.getLogger(DownloadService.class);
 
 	private final DownloadJobRepository jobRepository;
 
@@ -46,11 +49,22 @@ public class DownloadService {
 	
 	public void cancelDownload(final DownloadJobHandle handle){
 		DownloadJob job = jobRepository.get(handle);
+		if(job==null){
+			LOGGER.warn("no job with handle "+handle+" found. nothing to cancel");
+			return;
+		}
+
 		downloadJobRunner.cancelJob(job);
 	}
 
 	public void removeDownload(DownloadJobHandle downloadJobHandle) {
 		DownloadJob downloadJob = this.jobRepository.get(downloadJobHandle);
+
+		if(downloadJob==null){
+			LOGGER.warn("no job with handle "+downloadJobHandle+" found. nothing to remove");
+			return;
+		}
+
 		if(RUNNING.equals(downloadJob.getState())){
 			cancelDownload(downloadJobHandle);
 		}

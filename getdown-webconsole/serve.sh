@@ -1,3 +1,3 @@
 #!/bin/bash
-cd app
+cd src/main/resources/static/webconsole 
 python -m SimpleHTTPServer 8000

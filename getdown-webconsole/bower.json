@@ -12,7 +12,8 @@
     "polymer": "Polymer/polymer#^1.2.0",
     "sockjs": "~0.3.4",
     "stomp-client": "lumue/polymer-stomp-client#^0.0.1",
-    "stomp-websocket": "~2.3.4"
+    "stomp-websocket": "~2.3.4",
+    "vaadin-grid": "^1.0.0"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
