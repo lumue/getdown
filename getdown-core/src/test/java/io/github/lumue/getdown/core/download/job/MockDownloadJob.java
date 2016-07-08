@@ -19,6 +19,11 @@ public class MockDownloadJob extends Download implements DownloadJob{
 	@Override
 	public void cancel() {
 		downloadJobState=DownloadJobState.CANCELLED;
-	} 
-	
+	}
+
+	@Override
+	public Long getIndex() {
+		return 0L;
+	}
+
 }

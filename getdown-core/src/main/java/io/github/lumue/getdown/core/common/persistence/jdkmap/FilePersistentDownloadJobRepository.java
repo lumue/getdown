@@ -6,6 +6,9 @@ import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 /**
  * not thread safe, in memory repository
@@ -22,5 +25,11 @@ public class FilePersistentDownloadJobRepository extends
 		super(filename + File.separator + "download-jobs.bin");
 	}
 
-
+	@Override
+	protected Collection<DownloadJob> getValues() {
+		return super.getValues()
+				.stream()
+				.sorted((o1, o2) -> o1.getIndex().compareTo(o2.getIndex()))
+				.collect(Collectors.toList());
+	}
 }

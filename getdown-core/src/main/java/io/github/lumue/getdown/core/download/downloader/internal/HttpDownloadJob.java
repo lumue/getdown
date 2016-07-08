@@ -24,6 +24,7 @@ public class HttpDownloadJob extends Download implements DownloadJob{
 			.getLogger(HttpDownloadJob.class);
 
 	private final static ContentDownloader DOWNLOADER = new HttpContentDownloader();
+	private Long index=System.currentTimeMillis();
 
 	private HttpDownloadJob(String name,String url, String outputFilename,String host) {
 		super(name, url, outputFilename,host);
@@ -92,6 +93,11 @@ public class HttpDownloadJob extends Download implements DownloadJob{
 			getDownloadProgress().ifPresent(progress -> {progress.cancel();});
 			downloadJobState = DownloadJobState.CANCELLED;
 		}); 
+	}
+
+	@Override
+	public Long getIndex() {
+		return index;
 	}
 
 }

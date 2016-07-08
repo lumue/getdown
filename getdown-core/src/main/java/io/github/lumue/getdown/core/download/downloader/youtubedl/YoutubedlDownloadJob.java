@@ -18,6 +18,7 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
 	private transient YdlDownloadTask downloadTask;
+	private Long index=System.currentTimeMillis();
 
 	public YoutubedlDownloadJob(String name, String url, String outputFilename, String host) {
 		super(name, url, outputFilename, host);
@@ -117,6 +118,11 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 			downloadProgress.cancel();
 			progress(downloadProgress);
 		});
+	}
+
+	@Override
+	public Long getIndex() {
+		return index;
 	}
 
 	public static YoutubedlDownloadJobBuilder builder() {

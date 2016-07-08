@@ -88,8 +88,6 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 	@JsonProperty("downloadPath")
 	private String downloadPath;
 
-	private ContentLocationResolverRegistry contentLocationResolverRegistry;
-
 
 	public DownloadJobState getState() {
 		return downloadJobState;
@@ -228,14 +226,8 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 		this.downloadPath = downloadPath;
 	}
 
-	public void setContentLocationResolverRegistry(
-			ContentLocationResolverRegistry contentLocationResolverRegistry) {
-		this.contentLocationResolverRegistry = contentLocationResolverRegistry;
-	}
 
-	public ContentLocationResolverRegistry getContentLocationResolverRegistry() {
-		return contentLocationResolverRegistry;
-	}
+
 
 	public String getDownloadPath() {
 		return downloadPath;

@@ -43,7 +43,6 @@ public class AsyncDownloadJobRunner {
 				eventbus.notify("downloads", Event.wrap(o));
 			});
 		job.setDownloadPath(this.downloadPath);
-		job.setContentLocationResolverRegistry(this.contentLocationResolverRegistry);
 		AsyncDownloadJobRunner.LOGGER.debug("starting download for url " + job.getUrl());
 		this.executorService.submit(job);
 	}

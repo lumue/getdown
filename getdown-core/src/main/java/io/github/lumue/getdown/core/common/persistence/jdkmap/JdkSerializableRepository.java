@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +44,11 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 	@Override
 	public Stream<V> stream() {
-		return this.objectMap.values().stream();
+		return getValues().stream();
+	}
+
+	protected Collection<V> getValues() {
+		return this.objectMap.values();
 	}
 
 
@@ -58,7 +63,7 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 	@Override
 	public List<V> list() {
-		return java.util.Collections.unmodifiableList(new ArrayList<>(objectMap.values()));
+		return java.util.Collections.unmodifiableList(new ArrayList<>(getValues()));
 	}
 
 

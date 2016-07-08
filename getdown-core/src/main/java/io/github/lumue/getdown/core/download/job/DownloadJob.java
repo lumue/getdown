@@ -33,16 +33,16 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 	void setDownloadPath(String downloadPath);
 
-	void setContentLocationResolverRegistry(ContentLocationResolverRegistry contentLocationResolverRegistry);
 
 	void run();
 
 
 	void cancel();
 
-	
-	
 
-	
-
+	/**
+	 * sort order
+	 * @return
+	 */
+	Long getIndex();
 }
