@@ -9,7 +9,7 @@ apt-get -y install youtube-dl && \
 ln -s `which youtube-dl` /usr/local/bin/youtube-dl && \
 rm -rf /var/cache/*
 
-ADD getdown-app-springboot-stable-SNAPSHOT.jar /app.jar
+ADD getdown-app-springboot-master-SNAPSHOT.jar /app.jar
 CMD mkdir /getdown && mkdir /downloads
 
 EXPOSE 8001
