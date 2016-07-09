@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.common.persistence.jdkmap;
+package io.github.lumue.getdown.core.common.persistence.jdkserializable;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,7 +25,8 @@ import org.slf4j.LoggerFactory;
 
 
 public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V extends HasIdentity<K>> implements
-		ObjectRepository<B, K, V> {
+		ObjectRepository<B, K, V>,
+	AutoCloseable{
 
 	private final String filename;
 
@@ -167,4 +168,6 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 		flush(contentSnapshot);
 	}
+
+
 }

@@ -1,6 +1,5 @@
-package io.github.lumue.getdown.core.common.persistence.jdkmap;
+package io.github.lumue.getdown.core.common.persistence;
 
-import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;

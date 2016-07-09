@@ -21,7 +21,7 @@ public class DownloadProgress {
 	private long downloadedSize = 0;
 	private Throwable error;
 	private final String id = UUID.randomUUID().toString();
-
+	
 
 	public Long getSize() {
 		return size;

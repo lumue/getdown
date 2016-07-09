@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.common.persistence.jdkmap;
+package io.github.lumue.getdown.core.common.persistence.jdkserializable;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
  * @author lm
  *
  */
-public class FilePersistentDownloadJobRepository extends
+public class JdkSerializableDownloadJobRepository extends
 		JdkSerializableRepository<ObjectBuilder<DownloadJob>, DownloadJobHandle, DownloadJob>
 		implements
 		DownloadJobRepository {
 
-	public FilePersistentDownloadJobRepository(String filename) {
+	public JdkSerializableDownloadJobRepository(String filename) {
 		super(filename + File.separator + "download-jobs.bin");
 	}
 

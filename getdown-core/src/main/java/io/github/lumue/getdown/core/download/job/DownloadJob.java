@@ -29,7 +29,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 	String getName();
 
-	Optional<ContentLocation> getContentLocation();
+
 
 	void setDownloadPath(String downloadPath);
 

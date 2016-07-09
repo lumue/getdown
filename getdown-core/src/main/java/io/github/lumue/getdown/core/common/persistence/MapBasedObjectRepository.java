@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.common.persistence.jdkmap;
+package io.github.lumue.getdown.core.common.persistence;
 
 
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
