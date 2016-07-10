@@ -8,6 +8,8 @@ import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownl
 import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.bus.Event;
+import reactor.bus.EventBus;
 
 import static io.github.lumue.getdown.core.download.job.Download.DownloadJobState.*;
 
@@ -25,11 +27,20 @@ public class DownloadService {
 
 	private final AsyncDownloadJobRunner downloadJobRunner;
 
+	private final String downloadPath;
+
+	private final EventBus eventbus;
+
 	
-	public DownloadService(DownloadJobRepository jobRepository, AsyncDownloadJobRunner downloadJobRunner) {
+	public DownloadService(DownloadJobRepository jobRepository,
+	                       AsyncDownloadJobRunner downloadJobRunner,
+	                       String downloadPath,
+	                       EventBus eventbus) {
 		super();
 		this.jobRepository = jobRepository;
 		this.downloadJobRunner = downloadJobRunner;
+		this.downloadPath = downloadPath;
+		this.eventbus = eventbus;
 	}
 
 	public DownloadJob addDownload(final String url) {
@@ -38,8 +49,13 @@ public class DownloadService {
 				.builder()
 				.withUrl(url)
 				.withOutputFilename(filename)
-				.withName(url);
-		return jobRepository.create(jobBuilder);
+				.withName(url)
+				.withDownloadPath(downloadPath);
+
+		DownloadJob job = jobRepository.create(jobBuilder);
+		job.addObserver( o ->	eventbus.notify("downloads", Event.wrap(o)));
+		eventbus.notify("downloads", Event.wrap(job));
+		return job;
 	}
 
 	public void startDownload(final DownloadJobHandle handle) {

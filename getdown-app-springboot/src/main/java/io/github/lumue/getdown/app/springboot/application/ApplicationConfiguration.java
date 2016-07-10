@@ -3,8 +3,7 @@ package io.github.lumue.getdown.app.springboot.application;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import io.github.lumue.getdown.core.common.persistence.jdkmap.FilePersistentDownloadJobRepository;
+import io.github.lumue.getdown.core.common.persistence.jdkserializable.JdkSerializableDownloadJobRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,27 +27,31 @@ public class ApplicationConfiguration {
 
 	@Bean
 	public AsyncDownloadJobRunner downloadJobRunner(
-			ContentLocationResolverRegistry contentLocationResolverRegistry,
-			DownloadJobRepository downloadJobRepository,
-			@Value("${getdown.path.download}") String downloadPath,
+			@Value("${getdown.jobrunner.threads.prepare}") Integer threadsPrepare,
+			@Value("${getdown.jobrunner.threads.download}") Integer threadsDownload,
 			EventBus eventbus) {
-		ExecutorService executorService=Executors.newScheduledThreadPool(3);
-		return new AsyncDownloadJobRunner(executorService,
-				downloadJobRepository, contentLocationResolverRegistry, downloadPath, eventbus);
+
+		return new AsyncDownloadJobRunner(
+				threadsPrepare,
+				threadsDownload);
 	}
+
+
 
 
 	@Bean
 	public DownloadService downloadService(
 			DownloadJobRepository downloadJobRepository,
-			AsyncDownloadJobRunner downloadJobRunner) {
-		return new DownloadService(downloadJobRepository, downloadJobRunner);
+			AsyncDownloadJobRunner downloadJobRunner,
+			@Value("${getdown.path.download}") String downloadPath,
+			EventBus eventbus) {
+		return new DownloadService(downloadJobRepository, downloadJobRunner, downloadPath, eventbus);
 	}
 
 	@Bean
 	public DownloadJobRepository downloadJobRepository(
 			@Value("${getdown.path.repository}") String repositoryPath) throws IOException {
-		return new FilePersistentDownloadJobRepository(repositoryPath);
+		return new JdkSerializableDownloadJobRepository(repositoryPath);
 	}
 
 	@Bean
