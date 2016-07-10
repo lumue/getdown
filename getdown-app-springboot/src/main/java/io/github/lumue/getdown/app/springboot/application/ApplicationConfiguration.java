@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.lumue.getdown.core.common.persistence.redis.DownloadJobRedisSerializer;
 import io.github.lumue.getdown.core.common.persistence.redis.RedisDownloadJobRepository;
 import io.github.lumue.getdown.core.download.job.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import reactor.bus.EventBus;
 import reactor.core.Dispatcher;
@@ -54,12 +53,12 @@ public class ApplicationConfiguration {
 	}
 
 	@Bean
-	public RedisTemplate<String,DownloadJob> downloadJobRedisTemplate(JedisConnectionFactory jedisConnectionFactory, ObjectMapper objectMapper){
+	public RedisTemplate<String,DownloadJob> downloadJobRedisTemplate(JedisConnectionFactory jedisConnectionFactory){
 		final RedisTemplate< String, DownloadJob > template = new RedisTemplate<>();
 		template.setConnectionFactory( jedisConnectionFactory );
 		template.setKeySerializer( new StringRedisSerializer());
 		template.setHashValueSerializer(new GenericToStringSerializer<>(Long.class) );
-		template.setValueSerializer(new DownloadJobRedisSerializer(objectMapper) );
+		template.setValueSerializer(new Jackson2JsonRedisSerializer<>(DownloadJob.class));
 		return template;
 	}
 

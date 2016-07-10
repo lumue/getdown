@@ -1,14 +1,9 @@
 package io.github.lumue.getdown.core.common.persistence;
 
 
-import io.github.lumue.getdown.core.common.persistence.HasIdentity;
-import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
-import io.github.lumue.getdown.core.common.persistence.ObjectRepository;
+import io.github.lumue.getdown.core.download.job.DownloadJob;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -38,8 +33,10 @@ public class MapBasedObjectRepository<B extends ObjectBuilder<V>, K, V extends H
 	}
 
 	@Override
-	public List<V> list() {
-		return java.util.Collections.unmodifiableList(new ArrayList<>(objectMap.values()));
+	public Collection<DownloadJob> list() {
+		ArrayList<DownloadJob> list = new ArrayList<>();
+		list.addAll((Collection<? extends DownloadJob>) objectMap.values());
+		return java.util.Collections.unmodifiableList(list);
 	}
 
 

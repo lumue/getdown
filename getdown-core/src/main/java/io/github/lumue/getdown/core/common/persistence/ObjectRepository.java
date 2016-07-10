@@ -2,8 +2,7 @@ package io.github.lumue.getdown.core.common.persistence;
 
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 
-import java.io.Closeable;
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 /**
@@ -19,7 +18,7 @@ import java.util.stream.Stream;
 public interface ObjectRepository<B, K, V> extends AutoCloseable{
 	V create(B builder);
 
-	List<V> list();
+	Collection<DownloadJob> list();
 
 	Stream<V> stream();
 

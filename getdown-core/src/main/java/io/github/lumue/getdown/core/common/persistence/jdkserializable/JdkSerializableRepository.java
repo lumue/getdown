@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -19,6 +18,7 @@ import java.util.stream.Stream;
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.common.persistence.ObjectRepository;
+import io.github.lumue.getdown.core.download.job.DownloadJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,8 +63,10 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 
 	@Override
-	public List<V> list() {
-		return java.util.Collections.unmodifiableList(new ArrayList<>(getValues()));
+	public Collection<DownloadJob> list() {
+		ArrayList<DownloadJob> list = new ArrayList<>();
+		list.addAll((Collection<? extends DownloadJob>) getValues());
+		return java.util.Collections.unmodifiableList(list);
 	}
 
 
