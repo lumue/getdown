@@ -10,13 +10,7 @@ buildscript {
 }
 
 
-apply plugin: 'idea'
-apply plugin: 'java'
-//java configuration
-compileJava {
-	sourceCompatibility = jdk_version
-	targetCompatibility = jdk_version
-}
+
 apply plugin: 'application'
 apply plugin: 'spring-boot'
 ext['tomcat.version'] = '8.5.2'
@@ -41,6 +35,8 @@ dependencies {
 	compile("io.projectreactor.spring:reactor-spring-context:$reactor_version")
 	compile "io.projectreactor:reactor-core:$reactor_version"
 	compile "io.projectreactor:reactor-bus:$reactor_version"
+	compile "io.projectreactor:reactor-stream:$reactor_version"
+
 
 	testCompile("org.springframework.boot:spring-boot-starter-test")
 

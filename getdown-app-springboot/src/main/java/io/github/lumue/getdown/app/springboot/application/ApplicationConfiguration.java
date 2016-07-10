@@ -27,8 +27,7 @@ public class ApplicationConfiguration {
 	@Bean
 	public AsyncDownloadJobRunner downloadJobRunner(
 			@Value("${getdown.jobrunner.threads.prepare}") Integer threadsPrepare,
-			@Value("${getdown.jobrunner.threads.download}") Integer threadsDownload,
-			EventBus eventbus) {
+			@Value("${getdown.jobrunner.threads.download}") Integer threadsDownload) {
 
 		return new AsyncDownloadJobRunner(
 				threadsPrepare,
