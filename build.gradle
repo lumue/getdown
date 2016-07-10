@@ -6,11 +6,22 @@ version = 'stable-SNAPSHOT'
 allprojects {
 
 	ext {
-		jdk_version='1.8'
-		spring_boot_version='1.4.0.RC1'
+		jdk_version = '1.8'
+		spring_boot_version = '1.4.0.RC1'
 		findbugs_version = '3.0.1'
 		reactor_version = '2.5.0.BUILD-SNAPSHOT'
 		logback_version = '1.1.7'
+	}
+
+	buildscript {
+		repositories {
+			mavenCentral()
+			maven { url "https://plugins.gradle.org/m2/" }
+			jcenter()
+			maven { url "http://repo.spring.io/snapshot" }
+			maven { url "http://repo.spring.io/milestone" }
+
+		}
 	}
 
 	repositories {
@@ -22,12 +33,11 @@ allprojects {
 		maven {
 			url 'https://repo.spring.io/libs-milestone'
 		}
+		jcenter()
 	}
 
-	
-	apply plugin: 'idea'
+
 	apply plugin: 'findbugs'
-	
 	findbugs {
 		ignoreFailures = true
 		reportsDir = file("$project.buildDir/findbugsReports")
@@ -39,6 +49,10 @@ allprojects {
 	}
 
 	apply plugin: 'java'
+	compileJava {
+		sourceCompatibility = jdk_version
+		targetCompatibility = jdk_version
+	}
 	configurations.all {
 		resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 	}

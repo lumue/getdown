@@ -1,27 +1,13 @@
 buildscript {
-	repositories {
-		jcenter()
-		maven { url "http://repo.spring.io/snapshot" }
-		maven { url "http://repo.spring.io/milestone" }
-	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version")
 	}
 }
 
 
-
-apply plugin: 'application'
 apply plugin: 'spring-boot'
 ext['tomcat.version'] = '8.5.2'
 
-
-repositories {
-	jcenter()
-	maven { url "http://repo.spring.io/snapshot" }
-	maven { url "http://repo.spring.io/milestone" }
-	mavenCentral()
-}
 
 dependencies {
 	compile project(':getdown-core')
@@ -49,10 +35,10 @@ dependencies {
 
 task buildDocker(type: Exec, dependsOn: build) {
 
-	def stageDir=file(project.buildDir.absolutePath+'/docker')
+	def stageDir = file(project.buildDir.absolutePath + '/docker')
 
 	workingDir stageDir
-	commandLine 'docker', 'build', '-t','lumue/getdown','.'
+	commandLine 'docker', 'build', '-t', 'lumue/getdown', '.'
 
 	doFirst {
 		copy {
