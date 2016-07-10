@@ -1,6 +1,8 @@
 buildscript {
 	repositories {
-		maven { url "http://repo.spring.io/plugins-release" }
+		jcenter()
+		maven { url "http://repo.spring.io/snapshot" }
+		maven { url "http://repo.spring.io/milestone" }
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version")
@@ -21,8 +23,10 @@ ext['tomcat.version'] = '8.5.2'
 
 
 repositories {
-	maven { url 'http://repo.spring.io/libs-release' }
-	maven { url 'http://repo.springsource.org/libs-milestone' }
+	jcenter()
+	maven { url "http://repo.spring.io/snapshot" }
+	maven { url "http://repo.spring.io/milestone" }
+	mavenCentral()
 }
 
 dependencies {
