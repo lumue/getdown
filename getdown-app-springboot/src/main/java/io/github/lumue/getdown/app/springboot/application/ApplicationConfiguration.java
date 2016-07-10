@@ -4,16 +4,19 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.github.lumue.getdown.core.common.persistence.jdkserializable.JdkSerializableDownloadJobRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.lumue.getdown.core.common.persistence.redis.DownloadJobRedisSerializer;
+import io.github.lumue.getdown.core.common.persistence.redis.RedisDownloadJobRepository;
+import io.github.lumue.getdown.core.download.job.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import io.github.lumue.getdown.core.download.job.AsyncDownloadJobRunner;
-import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
-import io.github.lumue.getdown.core.download.job.DownloadService;
-import io.github.lumue.getdown.core.download.job.ContentLocationResolverRegistry;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import reactor.bus.EventBus;
 import reactor.core.Dispatcher;
 import reactor.core.dispatch.ThreadPoolExecutorDispatcher;
@@ -46,9 +49,18 @@ public class ApplicationConfiguration {
 	}
 
 	@Bean
-	public DownloadJobRepository downloadJobRepository(
-			@Value("${getdown.path.repository}") String repositoryPath) throws IOException {
-		return new JdkSerializableDownloadJobRepository(repositoryPath);
+	public DownloadJobRepository downloadJobRepository(RedisTemplate<String,DownloadJob> downloadJobRedisTemplate)  throws IOException {
+		return new RedisDownloadJobRepository(downloadJobRedisTemplate);
+	}
+
+	@Bean
+	public RedisTemplate<String,DownloadJob> downloadJobRedisTemplate(JedisConnectionFactory jedisConnectionFactory, ObjectMapper objectMapper){
+		final RedisTemplate< String, DownloadJob > template = new RedisTemplate<>();
+		template.setConnectionFactory( jedisConnectionFactory );
+		template.setKeySerializer( new StringRedisSerializer());
+		template.setHashValueSerializer(new GenericToStringSerializer<>(Long.class) );
+		template.setValueSerializer(new DownloadJobRedisSerializer(objectMapper) );
+		return template;
 	}
 
 	@Bean
