@@ -15,8 +15,7 @@ import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
 import io.github.lumue.getdown.core.download.job.DownloadService;
 import io.github.lumue.getdown.core.download.job.ContentLocationResolverRegistry;
 import reactor.bus.EventBus;
-import reactor.core.Dispatcher;
-import reactor.core.dispatch.ThreadPoolExecutorDispatcher;
+import reactor.core.publisher.TopicProcessor;
 
 @Configuration
 @PropertySource(ignoreResourceNotFound = true, value = "file://${getdown.path.config}/getdown.properties}")
@@ -56,12 +55,12 @@ public class ApplicationConfiguration {
 		return new ContentLocationResolverRegistry();
 	}
 
-	@Bean public Dispatcher dispatcher(){
-		return new ThreadPoolExecutorDispatcher(20, 1000);
+	@Bean public TopicProcessor dispatcher(){
+		return TopicProcessor.create();
 	}
 	
 	@Bean
-	public EventBus eventBus(Dispatcher dispatcher) {
+	public EventBus eventBus(TopicProcessor dispatcher) {
 		return EventBus.create(dispatcher);
 	}
 }

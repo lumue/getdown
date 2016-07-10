@@ -1,11 +1,11 @@
 package io.github.lumue.getdown.core.common.util;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selector;
-import reactor.fn.Consumer;
 
 /**
  * 
