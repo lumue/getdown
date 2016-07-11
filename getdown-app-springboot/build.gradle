@@ -38,7 +38,7 @@ task buildDocker(type: Exec, dependsOn: build) {
 	def stageDir = file(project.buildDir.absolutePath + '/docker')
 
 	workingDir stageDir
-	commandLine 'docker', 'build', '-t', 'lumue/getdown', '.'
+	commandLine 'docker', 'build', '-t', "lumue/getdown:${project.version}", '.'
 
 	doFirst {
 		copy {
