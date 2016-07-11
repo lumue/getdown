@@ -27,8 +27,8 @@ public class AsyncDownloadJobRunner {
 
 
 	public AsyncDownloadJobRunner(
-			int maxThreadsDownload,
-			int maxThreadsPrepare) {
+			int maxThreadsPrepare,
+			int maxThreadsDownload) {
 		super();
 		this.maxThreadsDownload=maxThreadsDownload;
 		this.maxThreadsPrepare=maxThreadsPrepare;
