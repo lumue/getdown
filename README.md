@@ -14,7 +14,7 @@ Webapplication to simplify downloads from various filehosting sites
 
 easy, via docker:
   
-   docker run -p 8001:8001 -v ~/mydownloads:/downloads  lumue/getdown
+```docker run -p 8001:8001 -v ~/mydownloads:/downloads  lumue/getdown```
 
 
 #### exposed ports
