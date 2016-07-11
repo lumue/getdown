@@ -13,6 +13,11 @@ public class MockDownloadJob extends Download implements DownloadJob{
 	}
 
 	@Override
+	public void prepare() {
+
+	}
+
+	@Override
 	public void run() {
 	}
 

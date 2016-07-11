@@ -4,21 +4,18 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.github.lumue.getdown.core.common.persistence.redis.RedisDownloadJobRepository;
-import io.github.lumue.getdown.core.download.job.*;
+import io.github.lumue.getdown.core.common.persistence.jdkmap.FilePersistentDownloadJobRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import io.github.lumue.getdown.core.download.job.AsyncDownloadJobRunner;
+import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
+import io.github.lumue.getdown.core.download.job.DownloadService;
+import io.github.lumue.getdown.core.download.job.ContentLocationResolverRegistry;
 import reactor.bus.EventBus;
-import reactor.core.Dispatcher;
-import reactor.core.dispatch.ThreadPoolExecutorDispatcher;
+import reactor.core.publisher.TopicProcessor;
 
 @Configuration
 @PropertySource(ignoreResourceNotFound = true, value = "file://${getdown.path.config}/getdown.properties}")
@@ -30,21 +27,40 @@ public class ApplicationConfiguration {
 
 	@Bean
 	public AsyncDownloadJobRunner downloadJobRunner(
-			ContentLocationResolverRegistry contentLocationResolverRegistry,
-			DownloadJobRepository downloadJobRepository,
-			@Value("${getdown.path.download}") String downloadPath,
-			EventBus eventbus) {
-		ExecutorService executorService=Executors.newScheduledThreadPool(3);
-		return new AsyncDownloadJobRunner(executorService,
-				downloadJobRepository, contentLocationResolverRegistry, downloadPath, eventbus);
+			@Value("${getdown.jobrunner.threads.prepare}") Integer threadsPrepare,
+			@Value("${getdown.jobrunner.threads.download}") Integer threadsDownload) {
+
+		return new AsyncDownloadJobRunner(
+				threadsPrepare,
+				threadsDownload);
 	}
+
+
 
 
 	@Bean
 	public DownloadService downloadService(
 			DownloadJobRepository downloadJobRepository,
-			AsyncDownloadJobRunner downloadJobRunner) {
-		return new DownloadService(downloadJobRepository, downloadJobRunner);
+			AsyncDownloadJobRunner downloadJobRunner,
+			@Value("${getdown.path.download}") String downloadPath,
+			EventBus eventbus) {
+		return new DownloadService(downloadJobRepository, downloadJobRunner, downloadPath, eventbus);
+	}
+
+
+
+	@Bean
+	public ContentLocationResolverRegistry contentLocationResolverRegistry() {
+		return new ContentLocationResolverRegistry();
+	}
+
+	@Bean public TopicProcessor dispatcher(){
+		return TopicProcessor.create();
+	}
+	
+	@Bean
+	public EventBus eventBus(TopicProcessor dispatcher) {
+		return EventBus.create(dispatcher);
 	}
 
 	@Bean
@@ -62,17 +78,4 @@ public class ApplicationConfiguration {
 		return template;
 	}
 
-	@Bean
-	public ContentLocationResolverRegistry contentLocationResolverRegistry() {
-		return new ContentLocationResolverRegistry();
-	}
-
-	@Bean public Dispatcher dispatcher(){
-		return new ThreadPoolExecutorDispatcher(20, 1000);
-	}
-	
-	@Bean
-	public EventBus eventBus(Dispatcher dispatcher) {
-		return EventBus.create(dispatcher);
-	}
 }

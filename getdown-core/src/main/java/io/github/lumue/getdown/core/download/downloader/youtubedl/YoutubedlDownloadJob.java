@@ -20,9 +20,36 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 	private transient YdlDownloadTask downloadTask;
 	private Long index=System.currentTimeMillis();
 
-	public YoutubedlDownloadJob(String name, String url, String outputFilename, String host) {
+	public YoutubedlDownloadJob(String name,
+	                            String url,
+	                            String outputFilename,
+	                            String host,
+	                            String downloadPath) {
 		super(name, url, outputFilename, host);
+		setDownloadPath(downloadPath);
+		downloadTask = YdlDownloadTask.builder()
+				.setUrl(getUrl())
+				.setOutputFolder(getDownloadPath())
+				.setWriteInfoJson(true)
+				.setPathToYdl("/usr/bin/youtube-dl")
+				.onStdout(this::handleMessage)
+				.onStateChanged(this::handleProgress)
+				.onNewOutputFile(this::handleProgress)
+				.onOutputFileChange(this::handleProgress)
+				.onPrepared(this::handlePrepared)
+				.build();
 	}
+
+	@Override
+	public void prepare() {
+		if(DownloadJobState.PREPARING.equals(downloadJobState))
+			return;
+		preparing();
+		downloadTask.prepare();
+		downloadJobState=DownloadJobState.WAITING;
+	}
+
+
 
 	@Override
 	public void run() {
@@ -68,6 +95,7 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	private void handlePrepared(YdlDownloadTask ydlDownloadTask, SingleInfoJsonMetadataAccessor singleInfoJsonMetadataAccessor) {
 		singleInfoJsonMetadataAccessor.getTitle().ifPresent(this::updateName);
+		prepared();
 	}
 
 	private void handleMessage(YdlDownloadTask ydlDownloadTask, YdlStatusMessage ydlStatusMessage) {
@@ -134,7 +162,7 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 		@Override
 		public DownloadJob build() {
-			return new YoutubedlDownloadJob(this.name, this.url, this.outputFilename, this.host);
+			return new YoutubedlDownloadJob(this.name, this.url, this.outputFilename, this.host,this.downloadPath);
 		}
 
 	}
