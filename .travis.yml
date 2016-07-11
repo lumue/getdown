@@ -27,3 +27,5 @@ after_success:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker tag -f lumue/getdown lumue/getdown:latest
   - docker push lumue/getdown
+  - docker push lumue/getdown:latest
+  
