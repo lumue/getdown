@@ -1,6 +1,9 @@
 FROM lumue/jdkydl
 MAINTAINER lm "mueller.lutz@gmail.com"
 
+RUN ln -s `which youtube-dl` /usr/local/bin/youtube-dl
+
+
 ADD *.jar /app.jar
 CMD mkdir /getdown && mkdir /downloads
 
