@@ -46,7 +46,6 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 			return;
 		preparing();
 		downloadTask.prepare();
-		downloadJobState=DownloadJobState.WAITING;
 	}
 
 
