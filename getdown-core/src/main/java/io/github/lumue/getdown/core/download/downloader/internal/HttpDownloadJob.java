@@ -40,7 +40,6 @@ public class HttpDownloadJob extends Download implements DownloadJob{
 		OutputStream outStream = null;
 		try {
 			LOGGER.debug("start download for url " + getUrl());
-			start();
 
 
 			if(DownloadJobState.ERROR.equals(getState()))
@@ -93,9 +92,8 @@ public class HttpDownloadJob extends Download implements DownloadJob{
 
 	@Override
 	public void cancel() {
-		doObserved(()->
+		doObserved("download-update-state",()->
 		{
-			getDownloadProgress().ifPresent(progress -> {progress.cancel();});
 			downloadJobState = DownloadJobState.CANCELLED;
 		}); 
 	}

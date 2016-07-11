@@ -5,7 +5,8 @@ public interface Observer<T extends Observable> {
 	
 	/**
 	 * called by observable when its status has changed
+	 * @param topic
 	 * @param observable
 	 */
-	public void onUpdate(T observable);
+	void onUpdate(String topic, T observable);
 }

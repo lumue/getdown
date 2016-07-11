@@ -170,35 +170,29 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 
 
 	protected void progress(DownloadProgress downloadProgress) {
-		doObserved(() -> {
+		doObserved("download-update-progress",() -> {
 			this.downloadProgress = downloadProgress;
 		});
 	}
 
 
-	protected void start() {
-		doObserved(() -> {
-			downloadJobState = DownloadJobState.RUNNING;
-			message = "initializing...";
-		});
-	}
 
 	protected void preparing() {
-		doObserved(() -> {
+		doObserved("download-update-state",() -> {
 			downloadJobState = DownloadJobState.PREPARING;
 			message = "preparing...";
 		});
 	}
 
 	protected void prepared() {
-		doObserved(() -> {
+		doObserved("download-update-state",() -> {
 			downloadJobState = DownloadJobState.PREPARED;
 			message = "prepare finished";
 		});
 	}
 
 	protected void message(String message) {
-		doObserved(() -> {
+		doObserved("download-update-state",() -> {
 			downloadJobState = DownloadJobState.RUNNING;
 			Download.this.message = message;
 		});
@@ -207,7 +201,7 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 
 
 	protected void updateName(String name) {
-		doObserved(() -> {
+		doObserved("download-update-state",() -> {
 			this.name = name;
 		});
 	}
@@ -215,22 +209,22 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 
 
 	protected void download() {
-		doObserved(() -> {
-			ContentLocation contentLocation = this.getContentLocation().get();
-			message = "downloading from " + contentLocation.getUrl() + " to " + contentLocation.getFilename();
+		doObserved("download-update-state",() -> {
+			downloadJobState = DownloadJobState.RUNNING;
+			message = "downloading" ;
 		});
 	}
 
 	protected void finish() {
-		doObserved(() -> {
+		doObserved("download-update-state",() -> {
 			downloadJobState = DownloadJobState.FINISHED;
 		});
 	}
 
 	protected void error(Throwable e) {
-		doObserved(() -> {
+		doObserved("download-update-state",() -> {
 			downloadJobState = DownloadJobState.ERROR;
-			message = "error: " + e.getLocalizedMessage();
+			message( "error: " + e.getLocalizedMessage());
 		});
 	}
 

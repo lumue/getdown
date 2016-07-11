@@ -17,7 +17,6 @@ public class DownloadProgress implements Serializable{
 		super();
 	}
 
-	private DownloadState state = DownloadState.WAITING;
 	private Long size = 1L; // null = unknown
 	private long downloadedSize = 0;
 	private Throwable error;
@@ -35,21 +34,7 @@ public class DownloadProgress implements Serializable{
 
 
 
-	public DownloadState getState() {
-		return state;
-	}
 
-	public void start() {
-		this.state = DownloadState.DOWNLOADING;
-	}
-
-	public void finish() {
-		this.state = DownloadState.FINISHED;
-	}
-	
-	public void cancel() {
-		this.state = DownloadState.CANCELLED;
-	}
 
 	public void increaseDownloadedSize(long value) {
 		this.downloadedSize += value;
@@ -58,7 +43,6 @@ public class DownloadProgress implements Serializable{
 
 	public void error(Throwable t) {
 		this.error = t;
-		this.state = DownloadState.ERROR;
 	}
 
 

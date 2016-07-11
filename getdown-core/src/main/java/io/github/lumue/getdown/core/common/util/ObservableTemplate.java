@@ -11,8 +11,8 @@ import java.util.List;
 public  class ObservableTemplate implements Observable{
 
 	@FunctionalInterface
-	public interface ObservedStateChange {
-		public void doObserved();
+	protected interface ObservedStateChange {
+		void doObserved();
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -31,14 +31,14 @@ public  class ObservableTemplate implements Observable{
 		return this;
 	}
 	
-	public void doObserved(ObservedStateChange observedStateChange){
+	protected void doObserved(String topic,ObservedStateChange observedStateChange){
 		observedStateChange.doObserved();
-		notifyObservers();
+		notifyObservers(topic);
 	}
 	
 	
-	private void notifyObservers(){
-		observers.forEach(observer -> {observer.onUpdate(this);});
+	private void notifyObservers(String topic){
+		observers.forEach(observer -> observer.onUpdate(topic,this));
 	}
 
 }

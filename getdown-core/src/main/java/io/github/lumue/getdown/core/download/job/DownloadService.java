@@ -1,6 +1,5 @@
 package io.github.lumue.getdown.core.download.job;
 
-import java.net.URI;
 import java.util.stream.Stream;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
@@ -44,17 +43,15 @@ public class DownloadService {
 	}
 
 	public DownloadJob addDownload(final String url) {
-		String filename = resolveFilename(url);
 		ObjectBuilder<DownloadJob> jobBuilder = YoutubedlDownloadJob
 				.builder()
 				.withUrl(url)
-				.withOutputFilename(filename)
 				.withName(url)
 				.withDownloadPath(downloadPath);
 
 		DownloadJob job = jobRepository.create(jobBuilder);
-		job.addObserver( o ->	eventbus.notify("downloads", Event.wrap(o)));
-		eventbus.notify("downloads", Event.wrap(job));
+		job.addObserver((topic, o) ->	eventbus.notify(topic, Event.wrap(o)));
+		eventbus.notify("download-new", Event.wrap(job));
 		return job;
 	}
 
@@ -85,6 +82,7 @@ public class DownloadService {
 			cancelDownload(downloadJobHandle);
 		}
 		this.jobRepository.remove(downloadJobHandle);
+		eventbus.notify("download-removed", Event.wrap(downloadJobHandle));
 	}
 
 	public void restartDownload(DownloadJobHandle downloadJobHandle) {
@@ -123,10 +121,6 @@ public class DownloadService {
 		return this.jobRepository.streamByJobState(WAITING);
 	}
 
-	private String resolveFilename(final String url) {
-		String path = URI.create(url).getPath();
-		return path.substring(path.lastIndexOf('/') + 1).toString();
-	}
 
 
 

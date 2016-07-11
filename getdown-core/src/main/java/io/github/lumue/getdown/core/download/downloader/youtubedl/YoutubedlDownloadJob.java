@@ -71,9 +71,9 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 				getDownloadProgress().ifPresent(p -> {
 					boolean finished=false;
 					while (!finished) {
-						if (p.getState().equals(ContentDownloader.DownloadState.FINISHED)
-								|| p.getState().equals(ContentDownloader.DownloadState.CANCELLED)
-								|| p.getState().equals(ContentDownloader.DownloadState.ERROR)){
+						if (getState().equals(DownloadJobState.FINISHED)
+								|| getState().equals(DownloadJobState.CANCELLED)
+								|| getState().equals(DownloadJobState.ERROR)){
 							finished=true;
 						}
 						else{
@@ -109,18 +109,15 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
 		getDownloadProgress().ifPresent(downloadProgress -> {
-			if (downloadProgress.getState().equals(ContentDownloader.DownloadState.WAITING)) {
+			if (getState().equals(DownloadJobState.WAITING) || getState().equals(DownloadJobState.PREPARED)) {
 				if (ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.EXECUTING)) {
-					start();
-					downloadProgress.start();
+					download();
 				}
-			} else if (downloadProgress.getState().equals(ContentDownloader.DownloadState.DOWNLOADING)) {
+			} else if (getState().equals(ContentDownloader.DownloadState.DOWNLOADING)) {
 				if (ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.SUCCESS)) {
-					downloadProgress.finish();
 					finish();
 				} else if (ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.ERROR)) {
 					Error error = new Error("error executing youtube-dl");
-					downloadProgress.error(error);
 					error(error);
 				}
 			}
@@ -140,10 +137,9 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	@Override
 	public void cancel() {
-		downloadTask.cancel();
-		getDownloadProgress().ifPresent(downloadProgress -> {
-			downloadProgress.cancel();
-			progress(downloadProgress);
+		doObserved("download-update-state",()-> {
+			downloadTask.cancel();
+			downloadJobState=DownloadJobState.CANCELLED;
 		});
 	}
 
