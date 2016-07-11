@@ -36,6 +36,7 @@ public class RedisDownloadJobRepository implements DownloadJobRepository{
 	public RedisDownloadJobRepository(RedisTemplate<String, DownloadJob> redisTemplate) {
 		this.redisOps = redisTemplate.opsForZSet();
 		nextScoreValue=new AtomicLong(0);
+
 		redisOps.scan(REDIS_COLLECTION_KEY, DEFAULT_SCAN_OPTIONS)
 		.forEachRemaining(downloadJobTypedTuple -> {
 			Double score = downloadJobTypedTuple.getScore();
