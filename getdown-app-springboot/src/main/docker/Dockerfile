@@ -1,7 +1,7 @@
 FROM lumue/jdkydl
 MAINTAINER lm "mueller.lutz@gmail.com"
 
-ADD getdown-app-springboot.jar /app.jar
+ADD *.jar /app.jar
 CMD mkdir /getdown && mkdir /downloads
 
 EXPOSE 8001
