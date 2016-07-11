@@ -10,17 +10,18 @@ Webapplication to simplify downloads from various filehosting sites
 
 ## how do i use it?
 
+### installing and running with docker
+
 easy, via docker:
-
   
-docker run -p 8001:8001 -v ~/mydownloads:/downloads  lumue/getdown
+   docker run -p 8001:8001 -v ~/mydownloads:/downloads  lumue/getdown
 
 
-### exposed ports
+#### exposed ports
 
  * 8001/tcp - access to web api and web ui
 
-### exposed volumes
+#### exposed volumes
 
  * `/download` location for downloaded files
  * `/getdown` place *.properties files here for custom configuration
