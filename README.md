@@ -1,8 +1,7 @@
 # getdown
 
 [![](https://badge.imagelayers.io/lumue/getdown:latest.svg)](https://imagelayers.io/?images=lumue/getdown-app-springboot:latest 'Get your own badge on imagelayers.io')
-
-[![Build Status](https://travis-ci.org/lumue/ydlwrapper.svg?branch=master)](https://travis-ci.org/lumue/ydlwrapper)
+[![Build Status](https://travis-ci.org/lumue/getdown.svg?branch=master)](https://travis-ci.org/lumue/getdown)
 
 ## what is it ?
 
