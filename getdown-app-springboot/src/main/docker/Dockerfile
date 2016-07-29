@@ -1,4 +1,4 @@
-FROM lumue/jdkydl
+FROM lumue/jdkydl:alpine
 MAINTAINER lm "mueller.lutz@gmail.com"
 
 RUN ln -s `which youtube-dl` /usr/local/bin/youtube-dl
