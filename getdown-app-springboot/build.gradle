@@ -34,7 +34,7 @@ dependencies {
 }
 
 
-task docker(type: Exec, dependsOn: build) {
+task docker(dependsOn: build) {
 
 	dependsOn 'dockerBuild'
 	dependsOn 'dockerTagLatest'
@@ -45,7 +45,8 @@ task dockerBuild(type: Exec){
 	def stageDir = file(project.buildDir.absolutePath + '/docker')
 
 	workingDir stageDir
-	commandLine 'docker', 'build', '-t', "lumue/getdown:${project.version}", '.'
+	executable = 'docker'
+	args=['build', '-t', "lumue/getdown:${project.version}", '.']
 
 	doFirst {
 		copy {
@@ -66,6 +67,7 @@ task dockerTagLatest(type: Exec){
 	def stageDir = file(project.buildDir.absolutePath + '/docker')
 
 	workingDir stageDir
-	commandLine (['docker', 'tag','-f', "lumue/getdown:${project.version}", 'lumue/getdown:latest'])
+	executable = 'docker'
+	args= ['tag','-f', "lumue/getdown:${project.version}", 'lumue/getdown:latest']
 
 }
