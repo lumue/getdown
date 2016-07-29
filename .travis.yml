@@ -20,7 +20,7 @@ before_install:
   - gradle installTools
 
 script:
-  - gradle buildDocker
+  - gradle docker
 
 
 after_success:
