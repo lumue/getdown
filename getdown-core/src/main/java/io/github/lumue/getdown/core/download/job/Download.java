@@ -18,6 +18,7 @@ import java.util.UUID;
 public class Download extends ObservableTemplate implements  java.io.Serializable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Download.class);
+	private Long index=System.currentTimeMillis();
 
 
 	@Override
@@ -55,6 +56,10 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 	 *
 	 */
 	private static final long serialVersionUID = -1836164199304618485L;
+
+	public Long getIndex() {
+		return index;
+	}
 
 	public enum DownloadJobState {
 		WAITING,PREPARING,RUNNING, ERROR, FINISHED, CANCELLED, PREPARED;

@@ -12,20 +12,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by lm on 15.03.16.
+ * Delegates actual downloading to {@link YdlDownloadTask}
  */
 public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
 	private transient YdlDownloadTask downloadTask;
-	private Long index=System.currentTimeMillis();
 
-	public YoutubedlDownloadJob(String name,
-	                            String url,
-	                            String outputFilename,
-	                            String host,
-	                            String downloadPath) {
-		super(name, url, outputFilename, host);
+	private YoutubedlDownloadJob(String name,
+	                             String url,
+	                             String host,
+	                             String downloadPath) {
+		super(name, url, "", host);
 		setDownloadPath(downloadPath);
 		downloadTask = YdlDownloadTask.builder()
 				.setUrl(getUrl())
@@ -147,11 +145,6 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 		});
 	}
 
-	@Override
-	public Long getIndex() {
-		return index;
-	}
-
 	public static YoutubedlDownloadJobBuilder builder() {
 		return new YoutubedlDownloadJobBuilder();
 	}
@@ -161,7 +154,7 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 		@Override
 		public DownloadJob build() {
-			return new YoutubedlDownloadJob(this.name, this.url, this.outputFilename, this.host,this.downloadPath);
+			return new YoutubedlDownloadJob(this.name, this.url, this.host,this.downloadPath);
 		}
 
 	}
