@@ -66,6 +66,6 @@ task dockerTagLatest(type: Exec){
 	def stageDir = file(project.buildDir.absolutePath + '/docker')
 
 	workingDir stageDir
-	commandLine (['docker', 'tag', "lumue/getdown:${project.version}", 'lumue/getdown:latest'])
+	commandLine (['docker', 'tag','-f', "lumue/getdown:${project.version}", 'lumue/getdown:latest'])
 
 }
