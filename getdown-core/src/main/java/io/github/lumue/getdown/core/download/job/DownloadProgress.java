@@ -1,5 +1,6 @@
 package io.github.lumue.getdown.core.download.job;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import io.github.lumue.getdown.core.download.downloader.internal.ContentDownloader.DownloadState;
@@ -10,7 +11,7 @@ import io.github.lumue.getdown.core.download.downloader.internal.ContentDownload
  * @author lm
  *
  */
-public class DownloadProgress {
+public class DownloadProgress implements Serializable{
 
 	public DownloadProgress() {
 		super();

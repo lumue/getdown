@@ -17,12 +17,15 @@ cache:
     - $HOME/.gradle/wrapper/
 
 before_install:
-  - npm install -g bower
+  - gradle installTools
 
 script:
-  - gradle buildDocker
+  - gradle docker
 
 
 after_success:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker push lumue/getdown
+  - docker tag -f lumue/getdown:master-SNAPSHOT lumue/getdown:latest
+  - docker push lumue/getdown:master-SNAPSHOT
+  - docker push lumue/getdown:latest
+  

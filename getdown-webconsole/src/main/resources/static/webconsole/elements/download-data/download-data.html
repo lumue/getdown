@@ -129,7 +129,11 @@
 
 					return _.chain(downloads)
 							.filter(function(d){
-								return state == d.state
+								var c=d.state
+								if(state!="WAITING")
+									return state == c
+								else
+									return state==c || "PREPARING"==c || "PREPARED"==c
 							})
 							.value()
 				},

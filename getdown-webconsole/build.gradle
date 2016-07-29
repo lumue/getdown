@@ -1,20 +1,24 @@
-buildscript {
-    repositories {
-        mavenCentral()
-	    maven{url "https://plugins.gradle.org/m2/"}
-    }
-}
-apply plugin: 'idea'
-apply plugin: 'java'
-
-
 processResources.dependsOn 'bowerInstall'
+
+jar.dependsOn 'gulp'
+
+task installTools( type: Exec){
+	workingDir '.'
+	executable = 'npm'
+	args = ['install']
+}
 
 // Install the bower components for front-end library management
 task bowerInstall( type: Exec){
 	workingDir '.'
 	commandLine "bower", 'install'
 }
+
+task gulp(type: Exec, dependsOn: bowerInstall){
+	workingDir '.'
+	executable='gulp'
+}
+
 
 clean.doFirst {
 	delete 'src/main/resources/static/webconsole/bower_components'

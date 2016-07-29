@@ -1,6 +1,6 @@
 package io.github.lumue.getdown.core.download.job;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,47 +10,69 @@ import reactor.bus.EventBus;
 
 public class AsyncDownloadJobRunner {
 
-	private final ExecutorService executorService;
+	private final ScheduledThreadPoolExecutor downloadExecutor;
 
-	private final DownloadJobRepository downloadJobRepository;
+	private final ScheduledThreadPoolExecutor prepareExecutor;
 
-	private final ContentLocationResolverRegistry contentLocationResolverRegistry;
+	private final Integer maxThreadsPrepare;
 
-	private final String downloadPath;
+	private final Integer maxThreadsDownload;
 
-	private final EventBus eventbus;
+
+
+
 
 
 	private static Logger LOGGER = LoggerFactory.getLogger(AsyncDownloadJobRunner.class);
 
 
-	public AsyncDownloadJobRunner(ExecutorService executorService, DownloadJobRepository downloadJobRepository, ContentLocationResolverRegistry contentLocationResolverRegistry,
-	                              String downloadPath, EventBus eventbus) {
+	public AsyncDownloadJobRunner(
+			int maxThreadsPrepare,
+			int maxThreadsDownload) {
 		super();
-		this.executorService = executorService;
-		this.downloadJobRepository = downloadJobRepository;
-		this.contentLocationResolverRegistry = contentLocationResolverRegistry;
-		this.downloadPath = downloadPath;
-		this.eventbus = eventbus;
+		this.maxThreadsDownload=maxThreadsDownload;
+		this.maxThreadsPrepare=maxThreadsPrepare;
+		this.downloadExecutor = executor(maxThreadsDownload);
+		this.prepareExecutor  =executor(maxThreadsPrepare);
 	}
 
 
 
 	public void runJob(final DownloadJob job) {
-		job.addObserver( o ->
-			{
-				//downloadJobRepository.update(job);
-				eventbus.notify("downloads", Event.wrap(o));
-			});
-		job.setDownloadPath(this.downloadPath);
-		AsyncDownloadJobRunner.LOGGER.debug("starting download for url " + job.getUrl());
-		this.executorService.submit(job);
+		String jobUrl = job.getUrl();
+		AsyncDownloadJobRunner.LOGGER.debug("starting " + jobUrl);
+
+
+		Download.DownloadJobState jobState = job.getState();
+		if(!Download.DownloadJobState.PREPARED.equals(jobState)
+			&&!Download.DownloadJobState.PREPARING.equals(jobState)){
+			AsyncDownloadJobRunner.LOGGER.debug("submitting " + jobUrl +" for prepare");
+			this.prepareExecutor.submit(job::prepare);
+		}
+
+		AsyncDownloadJobRunner.LOGGER.debug("submitting " + jobUrl +" for download");
+		this.downloadExecutor.submit(()-> {
+			while (Download.DownloadJobState.PREPARING.equals(jobState)) {
+				try {
+					LOGGER.debug("waiting for prepare of "+ jobUrl +" to finish before starting download ");
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			job.run();
+		});
 	}
 
 
 
 	public void cancelJob(DownloadJob job) {
 		job.cancel();
+	}
+
+	private static ScheduledThreadPoolExecutor executor(Integer threads){
+		return (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threads);
+
 	}
 
 }

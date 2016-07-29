@@ -33,6 +33,7 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 	void setDownloadPath(String downloadPath);
 
+	void prepare();
 
 	void run();
 

@@ -18,6 +18,7 @@ import java.util.UUID;
 public class Download extends ObservableTemplate implements  java.io.Serializable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Download.class);
+	private Long index=System.currentTimeMillis();
 
 
 	@Override
@@ -56,8 +57,12 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 	 */
 	private static final long serialVersionUID = -1836164199304618485L;
 
-	public static enum DownloadJobState {
-		WAITING, RUNNING, ERROR, FINISHED, CANCELLED;
+	public Long getIndex() {
+		return index;
+	}
+
+	public enum DownloadJobState {
+		WAITING,PREPARING,RUNNING, ERROR, FINISHED, CANCELLED, PREPARED;
 	}
 
 	@JsonProperty("state")
@@ -183,12 +188,28 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 		});
 	}
 
+	protected void preparing() {
+		doObserved(() -> {
+			downloadJobState = DownloadJobState.PREPARING;
+			message = "preparing...";
+		});
+	}
+
+	protected void prepared() {
+		doObserved(() -> {
+			downloadJobState = DownloadJobState.PREPARED;
+			message = "prepare finished";
+		});
+	}
+
 	protected void message(String message) {
 		doObserved(() -> {
 			downloadJobState = DownloadJobState.RUNNING;
 			Download.this.message = message;
 		});
 	}
+
+
 
 	protected void updateName(String name) {
 		doObserved(() -> {
@@ -311,6 +332,7 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 			return this;
 		}
 
+		protected String downloadPath;
 
 		public DownloadBuilder withOutputFilename(String outputFilename) {
 			this.outputFilename = outputFilename;
@@ -335,5 +357,10 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 		}
 
 
+
+		public ObjectBuilder<DownloadJob> withDownloadPath(String downloadPath) {
+			this.downloadPath=downloadPath;
+			return this;
+		}
 	}
 }

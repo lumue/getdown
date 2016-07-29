@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public interface ObjectRepository<B, K, V> extends AutoCloseable{
 	V create(B builder);
 
-	Collection<DownloadJob> list();
+	Collection<V> list();
 
 	Stream<V> stream();
 
