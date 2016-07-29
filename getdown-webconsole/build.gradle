@@ -1,4 +1,3 @@
-
 processResources.dependsOn 'bowerInstall'
 
 task installTools( type: Exec){
@@ -13,6 +12,12 @@ task bowerInstall( type: Exec){
 	commandLine "bower", 'install'
 }
 
+task gulp(type: Exec, dependsOn: bowerInstall){
+	workingDir '.'
+	executable='gulp'
+}
+
+gulp.dependsOn 'processResources'
 
 
 clean.doFirst {
