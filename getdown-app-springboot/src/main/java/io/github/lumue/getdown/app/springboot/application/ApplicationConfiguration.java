@@ -44,10 +44,15 @@ public class ApplicationConfiguration {
 	@Bean
 	public DownloadService downloadService(
 			DownloadJobRepository downloadJobRepository,
+			AsyncDownloadJobRunner downloadJobRunner,
 			@Value("${getdown.path.download}") String downloadPath,
 			EventBus eventbus) {
 		return new DownloadService(downloadJobRepository, downloadJobRunner, downloadPath, eventbus);
 	}
+
+
+
+
 
 	@Bean
 	public DownloadJobRepository downloadJobRepository(RedisTemplate<String,DownloadJob> downloadJobRedisTemplate)  throws IOException {
@@ -55,17 +60,15 @@ public class ApplicationConfiguration {
 	}
 
 	@Bean
-	public RedisTemplate<String,DownloadJob> downloadJobRedisTemplate(JedisConnectionFactory jedisConnectionFactory){
-		final RedisTemplate< String, DownloadJob > template = new RedisTemplate<>();
-		template.setConnectionFactory( jedisConnectionFactory );
-		template.setKeySerializer( new StringRedisSerializer());
-		template.setHashValueSerializer(new GenericToStringSerializer<>(Long.class) );
+	public RedisTemplate<String,DownloadJob> downloadJobRedisTemplate(JedisConnectionFactory jedisConnectionFactory) {
+		final RedisTemplate<String, DownloadJob> template = new RedisTemplate<>();
+		template.setConnectionFactory(jedisConnectionFactory);
+		template.setKeySerializer(new StringRedisSerializer());
+		template.setHashValueSerializer(new GenericToStringSerializer<>(Long.class));
 		template.setValueSerializer(new Jackson2JsonRedisSerializer<>(DownloadJob.class));
 		return template;
-	public DownloadJobRepository downloadJobRepository(
-			@Value("${getdown.path.repository}") String repositoryPath) throws IOException {
-		return new JdkSerializableDownloadJobRepository(repositoryPath);
 	}
+
 
 	@Bean
 	public ContentLocationResolverRegistry contentLocationResolverRegistry() {

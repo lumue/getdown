@@ -33,9 +33,9 @@ public class MapBasedObjectRepository<B extends ObjectBuilder<V>, K, V extends H
 	}
 
 	@Override
-	public Collection<DownloadJob> list() {
-		ArrayList<DownloadJob> list = new ArrayList<>();
-		list.addAll((Collection<? extends DownloadJob>) objectMap.values());
+	public Collection<V> list() {
+		ArrayList<V> list = new ArrayList<>();
+		list.addAll( objectMap.values());
 		return java.util.Collections.unmodifiableList(list);
 	}
 

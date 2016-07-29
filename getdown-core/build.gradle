@@ -14,15 +14,10 @@ dependencies {
 
 	compile 'com.fasterxml.jackson.core:jackson-core:2.3.3'
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.3.3'
-	compile 'org.slf4j:slf4j-api:1.7.10'
+	compile "org.slf4j:slf4j-api:$slf4j_version"
 
 
 	compile 'org.springframework.data:spring-data-redis:1.7.2.RELEASE'
-
-
-
-	testCompile 'junit:junit:4.11'
-	testCompile 'org.slf4j:slf4j-log4j12:1.7.10'
 
 
 }

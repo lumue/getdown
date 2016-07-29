@@ -63,9 +63,9 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 
 	@Override
-	public Collection<DownloadJob> list() {
-		ArrayList<DownloadJob> list = new ArrayList<>();
-		list.addAll((Collection<? extends DownloadJob>) getValues());
+	public Collection<V> list() {
+		ArrayList<V> list = new ArrayList<>();
+		list.addAll(getValues());
 		return java.util.Collections.unmodifiableList(list);
 	}
 

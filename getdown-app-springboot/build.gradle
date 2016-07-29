@@ -28,10 +28,9 @@ dependencies {
 
 	testCompile("org.springframework.boot:spring-boot-starter-test")
 
-	compile 'org.slf4j:slf4j-api:1.7.10'
+	compile "org.slf4j:slf4j-api:$slf4j_version"
 
-	testCompile 'junit:junit:4.11'
-	testCompile group: 'ch.qos.logback', name: 'logback-classic', version: "$logback_version"
+
 }
 
 
