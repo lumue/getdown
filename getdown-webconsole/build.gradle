@@ -1,5 +1,7 @@
 processResources.dependsOn 'bowerInstall'
 
+jar.dependsOn 'gulp'
+
 task installTools( type: Exec){
 	workingDir '.'
 	executable = 'npm'
@@ -16,8 +18,6 @@ task gulp(type: Exec, dependsOn: bowerInstall){
 	workingDir '.'
 	executable='gulp'
 }
-
-gulp.dependsOn 'processResources'
 
 
 clean.doFirst {
