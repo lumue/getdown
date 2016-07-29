@@ -1,0 +1,11 @@
+{
+  "name": "getdown-webconsole",
+  "description": "webconsole for getdown",
+  "private": true,
+  "devDependencies": {
+    "gulp": "*",
+    "vulcanize": "*",
+    "gulp-vulcanize": "*",
+    "bower": "*"
+  }
+}

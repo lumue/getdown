@@ -16,6 +16,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
 	compile("org.springframework.boot:spring-boot-starter-websocket")
+	compile("org.springframework.boot:spring-boot-devtools")
 
 	compile("org.springframework:spring-messaging")
 	compile("io.projectreactor.spring:reactor-spring-context:$reactor_version")
@@ -33,8 +34,14 @@ dependencies {
 }
 
 
-task buildDocker(type: Exec, dependsOn: build) {
+task docker(type: Exec, dependsOn: build) {
 
+	dependsOn 'dockerBuild'
+	dependsOn 'dockerTagLatest'
+
+}
+
+task dockerBuild(type: Exec){
 	def stageDir = file(project.buildDir.absolutePath + '/docker')
 
 	workingDir stageDir
@@ -50,6 +57,15 @@ task buildDocker(type: Exec, dependsOn: build) {
 			into stageDir
 		}
 	}
-
 }
 
+task dockerTagLatest(type: Exec){
+
+	mustRunAfter 'dockerBuild'
+
+	def stageDir = file(project.buildDir.absolutePath + '/docker')
+
+	workingDir stageDir
+	commandLine (['docker', 'tag', "lumue/getdown:${project.version}", 'lumue/getdown:latest'])
+
+}

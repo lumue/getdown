@@ -1,11 +1,19 @@
 
 processResources.dependsOn 'bowerInstall'
 
+task installTools( type: Exec){
+	workingDir '.'
+	executable = 'npm'
+	args = ['install']
+}
+
 // Install the bower components for front-end library management
 task bowerInstall( type: Exec){
 	workingDir '.'
 	commandLine "bower", 'install'
 }
+
+
 
 clean.doFirst {
 	delete 'src/main/resources/static/webconsole/bower_components'
