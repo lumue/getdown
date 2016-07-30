@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Created by lm on 13.04.16.
+ * Base class for DownloadsS
  */
 public class Download extends ObservableTemplate implements  java.io.Serializable {
 
@@ -61,18 +61,14 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 		return index;
 	}
 
-	public enum DownloadJobState {
-		WAITING,PREPARING,RUNNING, ERROR, FINISHED, CANCELLED, PREPARED;
-	}
-
 	@JsonProperty("state")
-	protected DownloadJobState downloadJobState = DownloadJobState.WAITING;
+	protected DownloadJob.DownloadJobState downloadJobState = DownloadJob.DownloadJobState.WAITING;
 
 	@JsonProperty("downloadProgress")
 	private DownloadProgress downloadProgress = null;
 
 	@JsonProperty("message")
-	private String message = null;
+	protected String message = null;
 
 	@JsonProperty("error")
 	private Throwable error = null;
@@ -94,7 +90,7 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 	private String downloadPath;
 
 
-	public DownloadJobState getState() {
+	public DownloadJob.DownloadJobState getState() {
 		return downloadJobState;
 	}
 
@@ -137,7 +133,7 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 			@JsonProperty("url") String url,
 			@JsonProperty("outputFilename") String outputFilename,
 			@JsonProperty("handle") DownloadJobHandle handle,
-			@JsonProperty("state") DownloadJobState downloadJobState,
+			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
 			@JsonProperty("contentLocation") ContentLocation contentLocation,
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress, String name, String host) {
 		super();
@@ -183,28 +179,30 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 
 	protected void start() {
 		doObserved(() -> {
-			downloadJobState = DownloadJobState.RUNNING;
+			downloadJobState = DownloadJob.DownloadJobState.RUNNING;
 			message = "initializing...";
 		});
 	}
 
-	protected void preparing() {
+	public void preparing() {
 		doObserved(() -> {
-			downloadJobState = DownloadJobState.PREPARING;
+			downloadJobState = DownloadJob.DownloadJobState.PREPARING;
 			message = "preparing...";
 		});
 	}
 
 	protected void prepared() {
 		doObserved(() -> {
-			downloadJobState = DownloadJobState.PREPARED;
+			downloadJobState = DownloadJob.DownloadJobState.PREPARED;
 			message = "prepare finished";
 		});
 	}
 
+
+
 	protected void message(String message) {
 		doObserved(() -> {
-			downloadJobState = DownloadJobState.RUNNING;
+			downloadJobState = DownloadJob.DownloadJobState.RUNNING;
 			Download.this.message = message;
 		});
 	}
@@ -228,13 +226,13 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 
 	protected void finish() {
 		doObserved(() -> {
-			downloadJobState = DownloadJobState.FINISHED;
+			downloadJobState = DownloadJob.DownloadJobState.FINISHED;
 		});
 	}
 
 	protected void error(Throwable e) {
 		doObserved(() -> {
-			downloadJobState = DownloadJobState.ERROR;
+			downloadJobState = DownloadJob.DownloadJobState.ERROR;
 			message = "error: " + e.getLocalizedMessage();
 		});
 	}

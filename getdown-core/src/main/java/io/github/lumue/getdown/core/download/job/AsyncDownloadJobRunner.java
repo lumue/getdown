@@ -5,9 +5,6 @@ import java.util.concurrent.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import reactor.bus.Event;
-import reactor.bus.EventBus;
-
 public class AsyncDownloadJobRunner {
 
 	private final ScheduledThreadPoolExecutor downloadExecutor;
@@ -43,16 +40,16 @@ public class AsyncDownloadJobRunner {
 		AsyncDownloadJobRunner.LOGGER.debug("starting " + jobUrl);
 
 
-		Download.DownloadJobState jobState = job.getState();
-		if(!Download.DownloadJobState.PREPARED.equals(jobState)
-			&&!Download.DownloadJobState.PREPARING.equals(jobState)){
+		DownloadJob.DownloadJobState jobState = job.getState();
+		if(!DownloadJob.DownloadJobState.PREPARED.equals(jobState)
+			&&!DownloadJob.DownloadJobState.PREPARING.equals(jobState)){
 			AsyncDownloadJobRunner.LOGGER.debug("submitting " + jobUrl +" for prepare");
 			this.prepareExecutor.submit(job::prepare);
 		}
 
 		AsyncDownloadJobRunner.LOGGER.debug("submitting " + jobUrl +" for download");
 		this.downloadExecutor.submit(()-> {
-			while (Download.DownloadJobState.PREPARING.equals(jobState)) {
+			while (!job.isPrepared()) {
 				try {
 					LOGGER.debug("waiting for prepare of "+ jobUrl +" to finish before starting download ");
 					Thread.sleep(1000);

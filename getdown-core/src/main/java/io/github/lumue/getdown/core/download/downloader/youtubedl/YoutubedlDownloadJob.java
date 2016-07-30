@@ -11,13 +11,16 @@ import io.github.lumue.ydlwrapper.metadata.statusmessage.YdlStatusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Delegates actual downloading to {@link YdlDownloadTask}
  */
 public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
-	private transient YdlDownloadTask downloadTask;
+	private transient AtomicReference<YdlDownloadTask> downloadTask=new AtomicReference<>(null);
 
 	private YoutubedlDownloadJob(String name,
 	                             String url,
@@ -25,17 +28,6 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 	                             String downloadPath) {
 		super(name, url, "", host);
 		setDownloadPath(downloadPath);
-		downloadTask = YdlDownloadTask.builder()
-				.setUrl(getUrl())
-				.setOutputFolder(getDownloadPath())
-				.setWriteInfoJson(true)
-				.setPathToYdl("/usr/bin/youtube-dl")
-				.onStdout(this::handleMessage)
-				.onStateChanged(this::handleProgress)
-				.onNewOutputFile(this::handleProgress)
-				.onOutputFileChange(this::handleProgress)
-				.onPrepared(this::handlePrepared)
-				.build();
 	}
 
 	@Override
@@ -43,28 +35,37 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 		if(DownloadJobState.PREPARING.equals(downloadJobState))
 			return;
 		preparing();
-		downloadTask.prepare();
+		getDownloadTask().prepare();
 	}
 
+	private YdlDownloadTask getDownloadTask() {
+		YdlDownloadTask result = downloadTask.get();
+		if (result == null) {
+			result = YdlDownloadTask.builder()
+					.setUrl(getUrl())
+					.setOutputFolder(getDownloadPath())
+					.setWriteInfoJson(true)
+					.setPathToYdl("/usr/bin/youtube-dl")
+					.onStdout(this::handleMessage)
+					.onStateChanged(this::handleProgress)
+					.onNewOutputFile(this::handleProgress)
+					.onOutputFileChange(this::handleProgress)
+					.onPrepared(this::handlePrepared)
+					.build();
+			if (!downloadTask.compareAndSet(null, result)) {
+				return downloadTask.get();
+			}
+		}
+		return result;
+	}
 
 
 	@Override
 	public void run() {
-		downloadTask = YdlDownloadTask.builder()
-				.setUrl(getUrl())
-				.setOutputFolder(getDownloadPath())
-				.setWriteInfoJson(true)
-				.setPathToYdl("/usr/bin/youtube-dl")
-				.onStdout(this::handleMessage)
-				.onStateChanged(this::handleProgress)
-				.onNewOutputFile(this::handleProgress)
-				.onOutputFileChange(this::handleProgress)
-				.onPrepared(this::handlePrepared)
-				.build();
 
 		progress(new DownloadProgress());
 		try {
-			downloadTask.executeAsync();
+			getDownloadTask().executeAsync();
 
 				getDownloadProgress().ifPresent(p -> {
 					boolean finished=false;
@@ -138,11 +139,32 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	@Override
 	public void cancel() {
-		downloadTask.cancel();
-		getDownloadProgress().ifPresent(downloadProgress -> {
-			downloadProgress.cancel();
-			progress(downloadProgress);
+		doObserved(()-> {
+			getDownloadTask().cancel();
+			getDownloadProgress().ifPresent(downloadProgress -> {
+				downloadProgress.cancel();
+				progress(downloadProgress);
+			});
+			downloadJobState = DownloadJobState.CANCELLED;
+			message = "download cancelled";
 		});
+	}
+
+	@Override
+	public boolean isPrepared() {
+		if (getState().equals(DownloadJobState.PREPARED))
+			return true;
+		if (getDownloadTask().isPrepared()) {
+			prepared();
+			return true;
+		}
+		return false;
+	}
+
+	private void readObject(java.io.ObjectInputStream in)
+			throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		downloadTask=new AtomicReference<>(null);
 	}
 
 	public static YoutubedlDownloadJobBuilder builder() {

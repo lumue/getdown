@@ -31,4 +31,9 @@ public class MockDownloadJob extends Download implements DownloadJob{
 		return 0L;
 	}
 
+	@Override
+	public boolean isPrepared() {
+		return true;
+	}
+
 }
