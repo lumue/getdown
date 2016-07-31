@@ -152,12 +152,13 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	@Override
 	public boolean isPrepared() {
-		if (getState().equals(DownloadJobState.PREPARED))
-			return true;
+
 		if (getDownloadTask().isPrepared()) {
-			prepared();
+			if (!getState().equals(DownloadJobState.PREPARED))
+				prepared();
 			return true;
 		}
+
 		return false;
 	}
 

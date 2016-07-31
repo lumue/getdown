@@ -11,9 +11,6 @@ public class AsyncDownloadJobRunner {
 
 	private final ScheduledThreadPoolExecutor prepareExecutor;
 
-	private final Integer maxThreadsPrepare;
-
-	private final Integer maxThreadsDownload;
 
 
 
@@ -27,8 +24,6 @@ public class AsyncDownloadJobRunner {
 			int maxThreadsPrepare,
 			int maxThreadsDownload) {
 		super();
-		this.maxThreadsDownload=maxThreadsDownload;
-		this.maxThreadsPrepare=maxThreadsPrepare;
 		this.downloadExecutor = executor(maxThreadsDownload);
 		this.prepareExecutor  =executor(maxThreadsPrepare);
 	}
@@ -41,8 +36,7 @@ public class AsyncDownloadJobRunner {
 
 
 		DownloadJob.DownloadJobState jobState = job.getState();
-		if(!DownloadJob.DownloadJobState.PREPARED.equals(jobState)
-			&&!DownloadJob.DownloadJobState.PREPARING.equals(jobState)){
+		if(!job.isPrepared()){
 			AsyncDownloadJobRunner.LOGGER.debug("submitting " + jobUrl +" for prepare");
 			this.prepareExecutor.submit(job::prepare);
 		}
