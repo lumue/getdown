@@ -1,8 +1,10 @@
 package io.github.lumue.getdown.core.common.util;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.omg.CORBA.Object;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selector;
@@ -40,7 +42,7 @@ public class ContentFilterEventTap<T> implements Consumer<Event<T>> {
 		if (!predicate.test(t.getData()))
 			return;
 
-		eventbus.notify(forwardSelectorKey, Event.wrap(t.getData()));
+		eventbus.notify(forwardSelectorKey, Event.wrap(Objects.requireNonNull(t.getData())));
 	}
 
 

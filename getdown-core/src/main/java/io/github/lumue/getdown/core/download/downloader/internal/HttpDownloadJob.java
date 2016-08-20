@@ -105,4 +105,9 @@ public class HttpDownloadJob extends Download implements DownloadJob{
 		return index;
 	}
 
+	@Override
+	public boolean isPrepared() {
+		return false;
+	}
+
 }
