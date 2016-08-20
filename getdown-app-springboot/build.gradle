@@ -60,6 +60,7 @@ task dockerBuild(type: Exec){
 			into stageDir
 		}
 	}
+
 }
 
 task dockerTagLatest(type: Exec){
