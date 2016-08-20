@@ -1,6 +1,7 @@
 package io.github.lumue.getdown.core.download.job;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 
-import static io.github.lumue.getdown.core.download.job.Download.DownloadJobState.*;
+import static io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobState.*;
 
 /**
  * manage the execution of downloads
@@ -53,8 +54,8 @@ public class DownloadService {
 				.withDownloadPath(downloadPath);
 
 		DownloadJob job = jobRepository.create(jobBuilder);
-		job.addObserver( o ->	eventbus.notify("downloads", Event.wrap(o)));
-		eventbus.notify("downloads", Event.wrap(job));
+		job.addObserver( o ->	eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))));
+		eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(job)));
 		return job;
 	}
 

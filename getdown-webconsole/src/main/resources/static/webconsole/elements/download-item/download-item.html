@@ -146,7 +146,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 					if (!d)
 						return true
 
-					if ("ERROR" == d.state || "FINISHED" == d.state) {
+					if ("ERROR" == d.state || "FINISHED" == d.state || "CANCELLED" == d.state) {
 						return false
 					}
 

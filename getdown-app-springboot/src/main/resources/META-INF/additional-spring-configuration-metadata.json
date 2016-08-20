@@ -1,0 +1,54 @@
+{
+  "properties": [
+    {
+      "name": "getdown.jobrunner.threads.prepare",
+      "type": "java.lang.Integer",
+      "description": "Description for getdown.jobrunner.threads.prepare."
+    },
+    {
+      "name": "tomcat.version",
+      "type": "java.lang.String",
+      "description": "Description for tomcat.version."
+    },
+    {
+      "name": "getdown.websocket.broadcastinterval.downloads",
+      "type": "java.lang.String",
+      "description": "Description for getdown.websocket.broadcastinterval.downloads."
+    },
+    {
+      "name": "getdown.jobrunner.threads.download",
+      "type": "java.lang.Integer",
+      "description": "Description for getdown.jobrunner.threads.download."
+    },
+    {
+      "name": "getdown.jobrunner.threads.prepare",
+      "type": "java.lang.Integer",
+      "description": "Description for getdown.jobrunner.threads.prepare."
+    },
+    {
+      "name": "getdown.path.repository",
+      "type": "java.lang.String",
+      "description": "Description for getdown.path.repository."
+    },
+    {
+      "name": "getdown.path.log",
+      "type": "java.lang.String",
+      "description": "Description for getdown.path.log."
+    },
+    {
+      "name": "getdown.path.download",
+      "type": "java.lang.String",
+      "description": "Description for getdown.path.download."
+    },
+    {
+      "name": "getdown.path.config",
+      "type": "java.lang.String",
+      "description": "Description for getdown.path.config."
+    },
+    {
+      "name": "getdown.path.home",
+      "type": "java.lang.String",
+      "description": "Description for getdown.path.home."
+    }
+  ]
+}

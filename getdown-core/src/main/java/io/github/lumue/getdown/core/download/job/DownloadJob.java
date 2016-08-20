@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.util.Observable;
-import io.github.lumue.getdown.core.download.job.Download.DownloadJobState;
 import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 
 public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable,Observable,Runnable {
@@ -46,4 +45,10 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 	 * @return
 	 */
 	Long getIndex();
+
+	boolean isPrepared();
+
+	enum DownloadJobState {
+		WAITING,PREPARING,RUNNING, ERROR, FINISHED, CANCELLED, PREPARED;
+	}
 }
