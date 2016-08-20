@@ -113,12 +113,12 @@ public class RedisDownloadJobRepository implements DownloadJobRepository{
 	}
 
 	@Override
-	public List<DownloadJob> findByJobState(Download.DownloadJobState state) {
+	public List<DownloadJob> findByJobState(DownloadJob.DownloadJobState state) {
 		return null;
 	}
 
 	@Override
-	public Stream<DownloadJob> streamByJobState(Download.DownloadJobState state) {
+	public Stream<DownloadJob> streamByJobState(DownloadJob.DownloadJobState state) {
 		return null;
 	}
 }
