@@ -40,7 +40,6 @@ dependencies {
 task docker(dependsOn: build) {
 
 	dependsOn 'dockerBuild'
-	dependsOn 'dockerTagLatest'
 
 }
 
