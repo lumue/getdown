@@ -1,6 +1,6 @@
 # getdown
 
-[![](https://badge.imagelayers.io/lumue/getdown:latest.svg)](https://imagelayers.io/?images=lumue/getdown-app-springboot:latest 'Get your own badge on imagelayers.io')
+[![](https://images.microbadger.com/badges/image/lumue/getdown.svg)](https://microbadger.com/images/lumue/getdown "Get your own image badge on microbadger.com")
 [![Build Status](https://travis-ci.org/lumue/getdown.svg?branch=master)](https://travis-ci.org/lumue/getdown)
 
 ## what is it ?
