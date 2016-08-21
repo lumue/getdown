@@ -3,6 +3,8 @@ package io.github.lumue.getdown.core.download.job;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.lumue.getdown.core.download.downloader.internal.ContentDownloader.DownloadState;
 
 /**
@@ -17,12 +19,29 @@ public class DownloadProgress implements Serializable{
 		super();
 	}
 
+	@JsonProperty("state")
 	private DownloadState state = DownloadState.WAITING;
+	@JsonProperty("size")
 	private Long size = 1L; // null = unknown
-	private long downloadedSize = 0;
+	@JsonProperty("downloadedSize")
+	private Long downloadedSize = 0L;
+	@JsonProperty("error")
 	private Throwable error;
+	@JsonProperty("id")
 	private final String id = UUID.randomUUID().toString();
-	
+
+
+	@JsonCreator
+	public DownloadProgress(
+			@JsonProperty("state") DownloadState state,
+			@JsonProperty("size") Long size,
+			@JsonProperty("downloadedSize") Long downloadedSize,
+			@JsonProperty("error") Throwable error) {
+		this.state = state;
+		this.size = size;
+		this.downloadedSize = downloadedSize;
+		this.error = error;
+	}
 
 	public Long getSize() {
 		return size;

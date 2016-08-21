@@ -18,6 +18,8 @@ import java.util.UUID;
 public class Download extends ObservableTemplate implements  java.io.Serializable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Download.class);
+
+	@JsonProperty("index")
 	private Long index=System.currentTimeMillis();
 
 
@@ -73,7 +75,6 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 	@JsonProperty("error")
 	private Throwable error = null;
 
-	@JsonProperty("contentLocation")
 	private ContentLocation contentLocation = null;
 
 	@JsonProperty("handle")
@@ -129,12 +130,11 @@ public class Download extends ObservableTemplate implements  java.io.Serializabl
 	}
 
 	@JsonCreator
-	private Download(
+	protected Download(
 			@JsonProperty("url") String url,
 			@JsonProperty("outputFilename") String outputFilename,
 			@JsonProperty("handle") DownloadJobHandle handle,
 			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
-			@JsonProperty("contentLocation") ContentLocation contentLocation,
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress, String name, String host) {
 		super();
 		this.outputFilename = outputFilename;

@@ -5,6 +5,8 @@ import io.github.lumue.getdown.core.common.util.StreamUtils;
 import io.github.lumue.getdown.core.download.job.Download;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
@@ -26,7 +28,8 @@ import java.util.stream.StreamSupport;
  */
 public class RedisDownloadJobRepository implements DownloadJobRepository{
 
-	public static final ScanOptions DEFAULT_SCAN_OPTIONS = ScanOptions.scanOptions().build();
+	private static final ScanOptions DEFAULT_SCAN_OPTIONS = ScanOptions.scanOptions().build();
+	private static final Logger LOGGER= LoggerFactory.getLogger(RedisDownloadJobRepository.class);
 	private final ZSetOperations<String, DownloadJob> redisOps;
 
 	private final AtomicLong nextScoreValue;
@@ -37,13 +40,18 @@ public class RedisDownloadJobRepository implements DownloadJobRepository{
 		this.redisOps = redisTemplate.opsForZSet();
 		nextScoreValue=new AtomicLong(0);
 
-		redisOps.scan(REDIS_COLLECTION_KEY, DEFAULT_SCAN_OPTIONS)
-		.forEachRemaining(downloadJobTypedTuple -> {
-			Double score = downloadJobTypedTuple.getScore();
-			if(score >nextScoreValue.get()) {
-				nextScoreValue.getAndSet(score.longValue());
-			}
-		});
+
+		try {
+			redisOps.scan(REDIS_COLLECTION_KEY, DEFAULT_SCAN_OPTIONS)
+			.forEachRemaining(downloadJobTypedTuple -> {
+				Double score = downloadJobTypedTuple.getScore();
+				if(score >nextScoreValue.get()) {
+					nextScoreValue.getAndSet(score.longValue());
+				}
+			});
+		} catch (Exception e) {
+			LOGGER.warn("could not scan for next highest score value",e);
+		}
 	}
 
 

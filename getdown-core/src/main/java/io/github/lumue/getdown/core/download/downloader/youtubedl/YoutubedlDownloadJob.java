@@ -1,6 +1,9 @@
 package io.github.lumue.getdown.core.download.downloader.youtubedl;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.lumue.getdown.core.download.downloader.internal.ContentDownloader;
+import io.github.lumue.getdown.core.download.job.ContentLocation;
 import io.github.lumue.getdown.core.download.job.Download;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.job.DownloadProgress;
@@ -21,6 +24,19 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
 	private transient AtomicReference<YdlDownloadTask> downloadTask=new AtomicReference<>(null);
+
+
+	@JsonCreator
+	private YoutubedlDownloadJob(
+			@JsonProperty("url") String url,
+			@JsonProperty("outputFilename") String outputFilename,
+			@JsonProperty("handle") DownloadJobHandle handle,
+			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
+			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
+			@JsonProperty("name") String name,
+			@JsonProperty("host") String host) {
+		super(url,outputFilename,handle,downloadJobState,downloadProgress,name,host);
+	}
 
 	private YoutubedlDownloadJob(String name,
 	                             String url,

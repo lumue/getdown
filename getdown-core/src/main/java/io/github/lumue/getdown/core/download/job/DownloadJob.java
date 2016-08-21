@@ -3,10 +3,12 @@ package io.github.lumue.getdown.core.download.job;
 import java.io.Serializable;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.util.Observable;
 import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 
+@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable,Observable,Runnable {
 
 	@Override
