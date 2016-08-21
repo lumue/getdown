@@ -11,6 +11,8 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.support.collections.DefaultRedisZSet;
+import org.springframework.data.redis.support.collections.RedisZSet;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -28,25 +30,24 @@ import java.util.stream.StreamSupport;
  */
 public class RedisDownloadJobRepository implements DownloadJobRepository{
 
-	private static final ScanOptions DEFAULT_SCAN_OPTIONS = ScanOptions.scanOptions().build();
+	private final static String REDIS_COLLECTION_KEY=Download.class.getSimpleName();
 	private static final Logger LOGGER= LoggerFactory.getLogger(RedisDownloadJobRepository.class);
-	private final ZSetOperations<String, DownloadJob> redisOps;
 
+	private final RedisZSet<DownloadJob> redisZSet;
 	private final AtomicLong nextScoreValue;
 
-	private final static String REDIS_COLLECTION_KEY=Download.class.getSimpleName();
 
-	public RedisDownloadJobRepository(RedisTemplate<String, DownloadJob> redisTemplate) {
-		this.redisOps = redisTemplate.opsForZSet();
+	public RedisDownloadJobRepository(RedisZSet<DownloadJob> zSet) {
+		this.redisZSet=zSet;
 		nextScoreValue=new AtomicLong(0);
 
 
 		try {
-			redisOps.scan(REDIS_COLLECTION_KEY, DEFAULT_SCAN_OPTIONS)
-			.forEachRemaining(downloadJobTypedTuple -> {
-				Double score = downloadJobTypedTuple.getScore();
+			zSet.scan()
+			.forEachRemaining(downloadJob -> {
+				Long score = downloadJob.getIndex();
 				if(score >nextScoreValue.get()) {
-					nextScoreValue.getAndSet(score.longValue());
+					nextScoreValue.getAndSet(score);
 				}
 			});
 		} catch (Exception e) {
@@ -54,13 +55,16 @@ public class RedisDownloadJobRepository implements DownloadJobRepository{
 		}
 	}
 
+	public RedisDownloadJobRepository(RedisTemplate<String, DownloadJob> downloadJobRedisTemplate) {
+		this(new DefaultRedisZSet<>(downloadJobRedisTemplate.boundZSetOps(REDIS_COLLECTION_KEY)));
+	}
 
 
 	@Override
 	public DownloadJob create(ObjectBuilder<DownloadJob> builder) {
 		Download.DownloadBuilder b= (Download.DownloadBuilder) builder;
 		DownloadJob d = b.withIndex(nextScore()).build();
-		this.redisOps.add(REDIS_COLLECTION_KEY,d,d.getIndex());
+		this.redisZSet.add(d,d.getIndex());
 		return d;
 	}
 
@@ -70,63 +74,34 @@ public class RedisDownloadJobRepository implements DownloadJobRepository{
 
 	@Override
 	public Collection<DownloadJob> list() {
-		Cursor<ZSetOperations.TypedTuple<DownloadJob>> cursor = this.redisOps.scan(REDIS_COLLECTION_KEY, DEFAULT_SCAN_OPTIONS);
-		List<DownloadJob> jobList = StreamUtils.stream(cursor)
-				.map((t) -> t.getValue())
-				.collect(Collectors.toList());
-		try {
-			cursor.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return jobList;
+		return redisZSet;
 	}
 
 	@Override
 	public Stream<DownloadJob> stream() {
-		Cursor<ZSetOperations.TypedTuple<DownloadJob>> cursor = this.redisOps.scan(REDIS_COLLECTION_KEY, DEFAULT_SCAN_OPTIONS);
-		return StreamUtils.stream(cursor)
-				.map((t)->t.getValue());
+		return redisZSet.stream();
 	}
 
 	@Override
 	public void remove(Download.DownloadJobHandle handle) {
-		this.redisOps.remove(REDIS_COLLECTION_KEY,get(handle));
+		this.redisZSet.remove(get(handle));
 	}
 
 	@Override
 	public DownloadJob get(Download.DownloadJobHandle handle) {
-		Cursor<ZSetOperations.TypedTuple<DownloadJob>> cursor = this.redisOps.scan(REDIS_COLLECTION_KEY, DEFAULT_SCAN_OPTIONS);
-		DownloadJob found = StreamUtils.stream(cursor)
-				.map((t) -> t.getValue())
+		return this.stream()
 				.filter(job -> job.getHandle().equals(handle))
 				.findFirst()
 				.orElse(null);
-		try {
-			cursor.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return found;
 	}
 
 	@Override
 	public void update(DownloadJob value) {
-		return;
+		this.redisZSet.add(value,value.getIndex());
 	}
 
 	@Override
 	public void close() throws Exception {
-
 	}
 
-	@Override
-	public List<DownloadJob> findByJobState(DownloadJob.DownloadJobState state) {
-		return null;
-	}
-
-	@Override
-	public Stream<DownloadJob> streamByJobState(DownloadJob.DownloadJobState state) {
-		return null;
-	}
 }
