@@ -17,8 +17,10 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-logging")
 	compile("org.springframework.boot:spring-boot-starter-websocket")
 	compile("org.springframework.boot:spring-boot-starter-redis")
+	compile("org.springframework.boot:spring-boot-starter-tomcat")
 	compile("org.springframework.boot:spring-boot-configuration-processor")
 	compile("org.springframework.boot:spring-boot-devtools")
+
 
 	compile("org.springframework:spring-messaging")
 	compile("io.projectreactor.spring:reactor-spring-context:$reactor_version")
