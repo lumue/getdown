@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.lumue.getdown.core.common.persistence.redis.RedisDownloadJobRepository;
 import io.github.lumue.getdown.core.download.job.*;
 import io.github.lumue.getdown.core.common.persistence.jdkserializable.JdkSerializableDownloadJobRepository;
@@ -65,7 +68,13 @@ public class ApplicationConfiguration {
 		template.setConnectionFactory(jedisConnectionFactory);
 		template.setKeySerializer(new StringRedisSerializer());
 		template.setHashValueSerializer(new GenericToStringSerializer<>(Long.class));
-		template.setValueSerializer(new Jackson2JsonRedisSerializer<>(DownloadJob.class));
+		Jackson2JsonRedisSerializer<DownloadJob> serializer = new Jackson2JsonRedisSerializer<>(DownloadJob.class);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+		mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+		mapper.setVisibility(PropertyAccessor.CREATOR, JsonAutoDetect.Visibility.ANY);
+		serializer.setObjectMapper(mapper);
+		template.setValueSerializer(serializer);
 		return template;
 	}
 
