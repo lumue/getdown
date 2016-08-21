@@ -1,11 +1,6 @@
 {
   "properties": [
     {
-      "name": "getdown.jobrunner.threads.prepare",
-      "type": "java.lang.Integer",
-      "description": "Description for getdown.jobrunner.threads.prepare."
-    },
-    {
       "name": "tomcat.version",
       "type": "java.lang.String",
       "description": "Description for tomcat.version."

@@ -17,7 +17,7 @@ allprojects {
 			jcenter()
 			maven { url "http://repo.spring.io/snapshot" }
 			maven { url "http://repo.spring.io/milestone" }
-
+			maven { url 'http://repo.spring.io/plugins-release' }
 		}
 	}
 
