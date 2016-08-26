@@ -26,7 +26,7 @@ public class HttpDownloadJob extends Download implements DownloadJob{
 	private final static ContentDownloader DOWNLOADER = new HttpContentDownloader();
 	private Long index=System.currentTimeMillis();
 
-	private HttpDownloadJob(String name,String url, String outputFilename,String host) {
+	private HttpDownloadJob(String name,String url, String outputFilename,String host,Long index) {
 		super(name, url, outputFilename,host, index);
 	}
 
@@ -85,7 +85,7 @@ public class HttpDownloadJob extends Download implements DownloadJob{
 
 		@Override
 		public DownloadJob build() {
-			return new HttpDownloadJob(this.name,this.url, this.outputFilename,this.host);
+			return new HttpDownloadJob(this.name,this.url, this.outputFilename,this.host,this.index);
 		}
 
 	}
