@@ -34,8 +34,9 @@ public class YoutubedlDownloadJob extends Download {
 			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
 			@JsonProperty("name") String name,
-			@JsonProperty("host") String host) {
-		super(url,outputFilename,handle,downloadJobState,downloadProgress,name,host);
+			@JsonProperty("host") String host,
+			@JsonProperty("index") Long index) {
+		super(url,outputFilename,handle,downloadJobState,downloadProgress,name,host,index);
 	}
 
 	private YoutubedlDownloadJob(String name,
