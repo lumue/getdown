@@ -55,7 +55,11 @@ public class DownloadJsonRpcController {
 	public DownloadJobView postDownload(@RequestBody String url) {
 		return this.addDownload(url);
 	}
-	
+
+	/**
+	 * get all downloads
+	 * @return
+	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Iterable<DownloadJobView> listDownloads() {
 
@@ -66,7 +70,7 @@ public class DownloadJsonRpcController {
 	}
 
 	/**
-	 * Remove finished and failed downloads
+	 * get finished downloads
 	 * @return
 	 */
 	@RequestMapping(value = "/state/finished", method = RequestMethod.GET)
@@ -78,7 +82,7 @@ public class DownloadJsonRpcController {
 	}
 
 	/**
-	 * Remove finished and failed downloads
+	 * get waiting
 	 * @return
 	 */
 	@RequestMapping(value = "/state/waiting", method = RequestMethod.GET)
@@ -90,7 +94,7 @@ public class DownloadJsonRpcController {
 	}
 
 	/**
-	 * Remove finished and failed downloads
+	 * get running downloads
 	 * @return
 	 */
 	@RequestMapping(value = "/state/running", method = RequestMethod.GET)
@@ -102,7 +106,7 @@ public class DownloadJsonRpcController {
 	}
 
 	/**
-	 * Remove finished and failed downloads
+	 * get failed downloads
 	 * @return
 	 */
 	@RequestMapping(value = "/state/error", method = RequestMethod.GET)
