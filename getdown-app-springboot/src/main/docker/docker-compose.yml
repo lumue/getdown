@@ -1,5 +1,5 @@
 getdown:
-  image: lumue/getdown:redis-SNAPSHOT
+  image: lumue/getdown:master-SNAPSHOT
   restart: always
   log_driver: "syslog"
   log_opt:
@@ -10,8 +10,7 @@ getdown:
     - /mnt/nasbox/media:/downloads
   ports:
     - "7001:8001"
-
-links:
+  links:
     - redis
 
 redis:
