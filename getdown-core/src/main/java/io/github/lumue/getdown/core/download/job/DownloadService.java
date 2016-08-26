@@ -13,6 +13,7 @@ import reactor.bus.Event;
 import reactor.bus.EventBus;
 
 import static io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobState.*;
+import static reactor.bus.selector.Selectors.$;
 
 /**
  * manage the execution of downloads
@@ -42,6 +43,10 @@ public class DownloadService {
 		this.downloadJobRunner = downloadJobRunner;
 		this.downloadPath = downloadPath;
 		this.eventbus = eventbus;
+		this.eventbus.on($("downloads"),e -> {
+			DownloadJob data = (DownloadJob) e.getData();
+			this.jobRepository.update(data);
+		});
 	}
 
 	public DownloadJob addDownload(final String url) {
@@ -60,12 +65,12 @@ public class DownloadService {
 	}
 
 	public void startDownload(final DownloadJobHandle handle) {
-		DownloadJob job = jobRepository.get(handle);
+		DownloadJob job = getObservedDownloadJob(handle);
 		downloadJobRunner.runJob(job);
 	}
 	
 	public void cancelDownload(final DownloadJobHandle handle){
-		DownloadJob job = jobRepository.get(handle);
+		DownloadJob job = getObservedDownloadJob(handle);
 		if(job==null){
 			LOGGER.warn("no job with handle "+handle+" found. nothing to cancel");
 			return;
@@ -75,8 +80,7 @@ public class DownloadService {
 	}
 
 	public void removeDownload(DownloadJobHandle downloadJobHandle) {
-		DownloadJob downloadJob = this.jobRepository.get(downloadJobHandle);
-
+		DownloadJob downloadJob = getObservedDownloadJob(downloadJobHandle);
 		if(downloadJob==null){
 			LOGGER.warn("no job with handle "+downloadJobHandle+" found. nothing to remove");
 			return;
@@ -88,8 +92,14 @@ public class DownloadService {
 		this.jobRepository.remove(downloadJobHandle);
 	}
 
-	public void restartDownload(DownloadJobHandle downloadJobHandle) {
+	private DownloadJob getObservedDownloadJob(DownloadJobHandle downloadJobHandle) {
 		DownloadJob downloadJob = this.jobRepository.get(downloadJobHandle);
+		downloadJob.addObserver( o ->	eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))));
+		return downloadJob;
+	}
+
+	public void restartDownload(DownloadJobHandle downloadJobHandle) {
+		DownloadJob downloadJob = getObservedDownloadJob(downloadJobHandle);
 		if(RUNNING.equals(downloadJob.getState())){
 			cancelDownload(downloadJobHandle);
 		}

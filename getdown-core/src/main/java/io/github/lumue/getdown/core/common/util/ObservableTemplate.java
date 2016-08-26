@@ -1,5 +1,7 @@
 package io.github.lumue.getdown.core.common.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,14 +10,26 @@ import java.util.List;
  * @author lm
  *
  */
-public  class ObservableTemplate implements Observable{
+public class ObservableTemplate implements Observable{
+
+	private final Observable observable;
+
+	public ObservableTemplate(Observable observable) {
+		this.observable = observable;
+	}
+
+	public Observable getObservable() {
+		return observable;
+	}
+
 
 	@FunctionalInterface
 	public interface ObservedStateChange {
-		public void doObserved();
+		void doObserved();
 	}
 	
 	@SuppressWarnings("rawtypes")
+	@JsonIgnore
 	private final List<Observer> observers=new ArrayList<>();
 	
 	@Override
@@ -35,10 +49,10 @@ public  class ObservableTemplate implements Observable{
 		observedStateChange.doObserved();
 		notifyObservers();
 	}
-	
-	
-	private void notifyObservers(){
-		observers.forEach(observer -> {observer.onUpdate(this);});
+
+
+	private void notifyObservers() {
+		observers.forEach(observer -> observer.onUpdate(getObservable()));
 	}
 
 }

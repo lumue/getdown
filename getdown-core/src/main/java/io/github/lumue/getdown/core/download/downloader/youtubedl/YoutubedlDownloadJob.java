@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Delegates actual downloading to {@link YdlDownloadTask}
  */
-public class YoutubedlDownloadJob extends Download implements DownloadJob {
+public class YoutubedlDownloadJob extends Download {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
 	private transient AtomicReference<YdlDownloadTask> downloadTask=new AtomicReference<>(null);
@@ -166,16 +166,12 @@ public class YoutubedlDownloadJob extends Download implements DownloadJob {
 		});
 	}
 
+
+
 	@Override
 	public boolean isPrepared() {
 
-		if (getDownloadTask().isPrepared()) {
-			if (!getState().equals(DownloadJobState.PREPARED))
-				prepared();
-			return true;
-		}
-
-		return false;
+		return getDownloadTask().isPrepared();
 	}
 
 	private void readObject(java.io.ObjectInputStream in)
