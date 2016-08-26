@@ -41,8 +41,9 @@ public class YoutubedlDownloadJob extends Download {
 	private YoutubedlDownloadJob(String name,
 	                             String url,
 	                             String host,
-	                             String downloadPath) {
-		super(name, url, "", host);
+	                             String downloadPath,
+	                             Long index) {
+		super(name, url, "", host,index);
 		setDownloadPath(downloadPath);
 	}
 
@@ -189,7 +190,7 @@ public class YoutubedlDownloadJob extends Download {
 
 		@Override
 		public DownloadJob build() {
-			return new YoutubedlDownloadJob(this.name, this.url, this.host,this.downloadPath);
+			return new YoutubedlDownloadJob(this.name, this.url, this.host,this.downloadPath,this.index);
 		}
 
 	}

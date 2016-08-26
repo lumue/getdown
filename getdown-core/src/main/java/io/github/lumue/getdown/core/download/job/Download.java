@@ -139,7 +139,10 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 			@JsonProperty("outputFilename") String outputFilename,
 			@JsonProperty("handle") DownloadJobHandle handle,
 			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
-			@JsonProperty("downloadProgress") DownloadProgress downloadProgress, String name, String host) {
+			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
+			String name,
+			String host,
+			Long index) {
 		super();
 		this.outputFilename = outputFilename;
 		this.url = url;
@@ -149,6 +152,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		this.host = host;
 		this.contentLocation = contentLocation;
 		this.downloadProgress = downloadProgress;
+		this.index=index;
 	}
 
 	public Download(
@@ -156,21 +160,23 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 			String url,
 			String outputFilename,
 			String host,
-			DownloadJobHandle handle) {
+			DownloadJobHandle handle,
+			Long index) {
 		super();
 		this.name = name;
 		this.host = host;
 		this.outputFilename = outputFilename;
 		this.url = url;
 		this.handle = handle;
+		this.index=index;
 	}
 
 	public Download(
 			String name,
 			String url,
 			String outputFilename,
-			String host) {
-		this(name, url, outputFilename, host, new DownloadJobHandle());
+			String host, Long index) {
+		this(name, url, outputFilename, host, new DownloadJobHandle(),index);
 	}
 
 
@@ -343,7 +349,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		protected String host;
 		protected String name;
 		private String handle=null;
-		private Long index=null;
+		protected Long index=null;
 
 		public DownloadBuilder withIndex(long index){
 			this.index=index;

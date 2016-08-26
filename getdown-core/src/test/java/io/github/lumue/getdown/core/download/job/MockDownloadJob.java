@@ -9,7 +9,7 @@ package io.github.lumue.getdown.core.download.job;
 public class MockDownloadJob extends Download implements DownloadJob{
 
 	public MockDownloadJob() {
-		super("", "", "","");
+		super("", "", "","", index);
 	}
 
 	@Override
