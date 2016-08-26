@@ -29,11 +29,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 				.withSockJS();
 	}
 
-	@Bean
-	public ThrottelingDownloadJobEventTap throttelingDownloadJobEventTap(EventBus eventbus,
-			@Value("${getdown.websocket.broadcastinterval.downloads}") long throttleinterval) {
-		return new ThrottelingDownloadJobEventTap(eventbus, "ws-downloads", throttleinterval);
-	}
+
 
 
 }

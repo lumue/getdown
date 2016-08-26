@@ -19,7 +19,7 @@ public class DownloadWebsocketController {
 	@Autowired
 	public DownloadWebsocketController(final EventBus eventbus) {
 		super();
-		eventbus.on($("ws-downloads"), this::broadcastJobStateChange);
+		eventbus.on($("throtteled-downloads"), this::broadcastJobStateChange);
 	}
 
 	public void broadcastJobStateChange(Event<DownloadJob> event) {
