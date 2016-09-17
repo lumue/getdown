@@ -27,4 +27,29 @@ interface DownloadParameter{
 }
 note top:provide parameters for a DownloadJob execution
 
+
+
+@enduml
+
+@startuml
+
+[*] -right-> new  : add
+new -right-> ready : prepare
+new --> unavailable : prepare_failed
+unavailable --> new : retry_prepare
+ready -up-> downloading : download
+downloading -right-> [*] : completed
+ready -right-> [*] : remove
+
+state downloading{
+    waiting --> running : run
+    waiting --> ready : cancel
+    running --> waiting : pause
+    running --> ready : cancel
+    running --> failed : error
+    running --> running : progress
+    failed --> waiting : retry
+    failed --> ready : cancel
+}
+
 @enduml
