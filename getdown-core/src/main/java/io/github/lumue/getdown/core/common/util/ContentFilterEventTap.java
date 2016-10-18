@@ -29,23 +29,15 @@ public class ContentFilterEventTap<T> implements Consumer<Event<T>> {
 	private final String forwardSelectorKey;
 
 	private final Predicate<T> predicate;
-	private final Selector<?> selector;
 
 	public ContentFilterEventTap(EventBus eventbus, String forwardSelectorKey, Selector<?> selector, Predicate<T> predicate) {
 		super();
 		this.eventbus = eventbus;
 		this.forwardSelectorKey = forwardSelectorKey;
 		this.predicate = predicate;
-		this.selector=selector;
 	}
 
-	/**
-	 * start listening
-	 */
-	@PostConstruct
-	public void start(){
-		eventbus.on(selector, this);
-	}
+
 
 	@Override
 	public void accept(Event<T> t) {

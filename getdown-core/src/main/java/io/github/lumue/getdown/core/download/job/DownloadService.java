@@ -48,10 +48,7 @@ public class DownloadService {
 		this.downloadPath = downloadPath;
 		this.eventbus = eventbus;
 		this.urlProcessor = urlProcessor;
-		this.eventbus.on($("downloads"),e -> {
-			DownloadJob data = (DownloadJob) e.getData();
-			this.jobRepository.update(data);
-		});
+
 	}
 
 	public DownloadJob addDownload(final String url) {
@@ -153,7 +150,7 @@ public class DownloadService {
 	@PostConstruct
 	public void resumeWaitingJobsFromRepo(){
 		this.jobRepository.stream()
-				.filter(job -> !job.getState().equals(FINISHED))
+				.filter(job -> !job.getState().equals(FINISHED) && !job.getState().equals(CANCELLED))
 				.forEach( job -> {
 					job.addObserver( o ->	eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))));
 					downloadJobRunner.submitJob(job);
