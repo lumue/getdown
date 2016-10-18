@@ -53,7 +53,11 @@ public class YoutubedlDownloadJob extends Download {
 		if(DownloadJobState.PREPARING.equals(downloadJobState))
 			return;
 		preparing();
-		getDownloadTask().prepare();
+		try {
+			getDownloadTask().prepare();
+		} catch (Exception e) {
+			handleError(e);
+		}
 	}
 
 	private YdlDownloadTask getDownloadTask() {

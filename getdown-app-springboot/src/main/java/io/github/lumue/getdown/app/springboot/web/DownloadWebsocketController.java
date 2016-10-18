@@ -10,19 +10,29 @@ import org.springframework.stereotype.Controller;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 
+import javax.annotation.PostConstruct;
+
 @Controller
 public class DownloadWebsocketController {
 
-	@Autowired
-	private SimpMessagingTemplate template;
+	private final EventBus eventbus;
+
+	private final SimpMessagingTemplate template;
 
 	@Autowired
-	public DownloadWebsocketController(final EventBus eventbus) {
+	public DownloadWebsocketController(final EventBus eventbus, SimpMessagingTemplate template) {
 		super();
-		eventbus.on($("throtteled-downloads"), this::broadcastJobStateChange);
+		this.eventbus=eventbus;
+		this.template = template;
 	}
 
-	public void broadcastJobStateChange(Event<DownloadJob> event) {
+	@PostConstruct
+	public void startSubcription(){
+		eventbus.on($("throtteled-downloads"),
+				this::broadcastJobStateChange);
+	}
+
+	private void broadcastJobStateChange(Event<DownloadJob> event) {
 		template.convertAndSend("/downloads/jobStateChange", DownloadJobView.wrap(event.getData()));
 	}
 }

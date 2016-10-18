@@ -50,6 +50,8 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 
 	boolean isPrepared();
 
+	void waiting();
+
 	enum DownloadJobState {
 		WAITING,PREPARING,RUNNING, ERROR, FINISHED, CANCELLED, PREPARED;
 	}

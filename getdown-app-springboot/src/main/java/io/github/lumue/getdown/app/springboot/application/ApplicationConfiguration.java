@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.lumue.getdown.core.common.persistence.redis.RedisDownloadJobRepository;
 import io.github.lumue.getdown.core.download.job.*;
-import io.github.lumue.getdown.core.common.persistence.jdkserializable.JdkSerializableDownloadJobRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.PropertySource;
 
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -50,11 +48,23 @@ public class ApplicationConfiguration {
 			DownloadJobRepository downloadJobRepository,
 			AsyncDownloadJobRunner downloadJobRunner,
 			@Value("${getdown.path.download}") String downloadPath,
-			EventBus eventbus) {
-		return new DownloadService(downloadJobRepository, downloadJobRunner, downloadPath, eventbus);
+			EventBus eventbus,
+			UrlProcessor urlProcessor) {
+		return new DownloadService(downloadJobRepository, downloadJobRunner, downloadPath, eventbus, urlProcessor);
 	}
 
+	@Bean
+	public UrlProcessor urlProcessor(){
+		return ChainingUrlProcessor.newBuilder()
+				.add(in -> {
+					if(in.startsWith("http://vivo.sx"))
+						return in.replace("http://vivo.sx","https://vivo.sx");
+					return in;
+				})
+				.build();
 
+
+	}
 
 
 

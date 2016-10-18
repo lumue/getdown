@@ -201,6 +201,15 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		});
 	}
 
+
+	public void waiting() {
+		observableTemplate.doObserved(() -> {
+			downloadJobState = DownloadJobState.WAITING;
+			message = "waiting...";
+		});
+	}
+
+
 	protected void prepared() {
 		observableTemplate.doObserved(() -> {
 			downloadJobState = DownloadJob.DownloadJobState.PREPARED;

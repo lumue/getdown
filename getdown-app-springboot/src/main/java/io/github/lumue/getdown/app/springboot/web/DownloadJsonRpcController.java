@@ -65,7 +65,7 @@ public class DownloadJsonRpcController {
 
 		return downloadService
 				.streamDownloads()
-				.map(downloadJob -> DownloadJobView.wrap(downloadJob))
+				.map(DownloadJobView::wrap)
 				.collect(Collectors.toList());
 	}
 
@@ -77,7 +77,7 @@ public class DownloadJsonRpcController {
 	public Iterable<DownloadJobView> listFinishedDownloads() {
 		return downloadService
 				.streamFinishedDownloads()
-				.map(downloadJob -> DownloadJobView.wrap(downloadJob))
+				.map(DownloadJobView::wrap)
 				.collect(Collectors.toList());
 	}
 
@@ -89,7 +89,7 @@ public class DownloadJsonRpcController {
 	public Iterable<DownloadJobView> listWaitingDownloads() {
 		return downloadService
 				.streamWaitingDownloads()
-				.map(downloadJob -> DownloadJobView.wrap(downloadJob))
+				.map(DownloadJobView::wrap)
 				.collect(Collectors.toList());
 	}
 
@@ -101,7 +101,7 @@ public class DownloadJsonRpcController {
 	public Iterable<DownloadJobView> listRunningDownloads() {
 		return downloadService
 				.streamRunningDownloads()
-				.map(downloadJob -> DownloadJobView.wrap(downloadJob))
+				.map(DownloadJobView::wrap)
 				.collect(Collectors.toList());
 	}
 
@@ -113,7 +113,7 @@ public class DownloadJsonRpcController {
 	public Iterable<DownloadJobView> listFailedDownloads() {
 		return downloadService
 				.streamFailedDownloads()
-				.map(downloadJob -> DownloadJobView.wrap(downloadJob))
+				.map(DownloadJobView::wrap)
 				.collect(Collectors.toList());
 	}
 

@@ -9,6 +9,8 @@ import reactor.bus.Event;
 import reactor.bus.EventBus;
 import reactor.bus.selector.Selector;
 
+import javax.annotation.PostConstruct;
+
 /**
  * 
  * Listens to Events matching a given selector and matches them to a given
@@ -27,12 +29,21 @@ public class ContentFilterEventTap<T> implements Consumer<Event<T>> {
 	private final String forwardSelectorKey;
 
 	private final Predicate<T> predicate;
+	private final Selector<?> selector;
 
 	public ContentFilterEventTap(EventBus eventbus, String forwardSelectorKey, Selector<?> selector, Predicate<T> predicate) {
 		super();
 		this.eventbus = eventbus;
 		this.forwardSelectorKey = forwardSelectorKey;
 		this.predicate = predicate;
+		this.selector=selector;
+	}
+
+	/**
+	 * start listening
+	 */
+	@PostConstruct
+	public void start(){
 		eventbus.on(selector, this);
 	}
 

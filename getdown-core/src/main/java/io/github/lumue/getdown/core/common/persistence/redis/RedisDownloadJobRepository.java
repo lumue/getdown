@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.support.collections.DefaultRedisZSet;
 import org.springframework.data.redis.support.collections.RedisZSet;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -42,6 +43,11 @@ public class RedisDownloadJobRepository implements DownloadJobRepository{
 		nextScoreValue=new AtomicLong(0);
 
 
+	}
+
+	@PostConstruct
+	public void initScore() {
+		RedisZSet<DownloadJob> zSet=redisZSet;
 		try {
 			zSet.scan()
 			.forEachRemaining(downloadJob -> {
@@ -98,6 +104,7 @@ public class RedisDownloadJobRepository implements DownloadJobRepository{
 
 	@Override
 	public void update(DownloadJob value) {
+		this.redisZSet.removeByScore(value.getIndex(),value.getIndex());
 		this.redisZSet.add(value,value.getIndex());
 	}
 

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 
+import javax.annotation.PostConstruct;
+
 import static io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobState.*;
 import static reactor.bus.selector.Selectors.$;
 
@@ -33,16 +35,19 @@ public class DownloadService {
 
 	private final EventBus eventbus;
 
+	private final UrlProcessor urlProcessor;
+
 	
 	public DownloadService(DownloadJobRepository jobRepository,
 	                       AsyncDownloadJobRunner downloadJobRunner,
 	                       String downloadPath,
-	                       EventBus eventbus) {
+	                       EventBus eventbus, UrlProcessor urlProcessor) {
 		super();
 		this.jobRepository = jobRepository;
 		this.downloadJobRunner = downloadJobRunner;
 		this.downloadPath = downloadPath;
 		this.eventbus = eventbus;
+		this.urlProcessor = urlProcessor;
 		this.eventbus.on($("downloads"),e -> {
 			DownloadJob data = (DownloadJob) e.getData();
 			this.jobRepository.update(data);
@@ -50,12 +55,13 @@ public class DownloadService {
 	}
 
 	public DownloadJob addDownload(final String url) {
-		String filename = resolveFilename(url);
+		String processedUrl=preprocessUrl(url);
+		String filename = resolveFilename(processedUrl);
 		ObjectBuilder<DownloadJob> jobBuilder = YoutubedlDownloadJob
 				.builder()
-				.withUrl(url)
+				.withUrl(processedUrl)
 				.withOutputFilename(filename)
-				.withName(url)
+				.withName(processedUrl)
 				.withDownloadPath(downloadPath);
 
 		DownloadJob job = jobRepository.create(jobBuilder);
@@ -64,9 +70,14 @@ public class DownloadService {
 		return job;
 	}
 
+	private String preprocessUrl(String url) {
+		return urlProcessor.processUrl(url);
+	}
+
+
 	public void startDownload(final DownloadJobHandle handle) {
 		DownloadJob job = getObservedDownloadJob(handle);
-		downloadJobRunner.runJob(job);
+		downloadJobRunner.submitJob(job);
 	}
 	
 	public void cancelDownload(final DownloadJobHandle handle){
@@ -136,9 +147,16 @@ public class DownloadService {
 
 	private String resolveFilename(final String url) {
 		String path = URI.create(url).getPath();
-		return path.substring(path.lastIndexOf('/') + 1).toString();
+		return path.substring(path.lastIndexOf('/') + 1);
 	}
 
-
-
+	@PostConstruct
+	public void resumeWaitingJobsFromRepo(){
+		this.jobRepository.stream()
+				.filter(job -> !job.getState().equals(FINISHED))
+				.forEach( job -> {
+					job.addObserver( o ->	eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))));
+					downloadJobRunner.submitJob(job);
+				});
+	}
 }

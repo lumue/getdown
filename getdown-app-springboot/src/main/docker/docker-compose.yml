@@ -3,7 +3,7 @@ getdown:
   restart: always
   log_driver: "syslog"
   log_opt:
-    syslog-tag: "getdown_getdown"
+    tag: "getdown_getdown"
     syslog-address: "udp://192.168.1.105:514"
   volumes:
     - /data/docker-volumes/getdown/getdown:/getdown
@@ -18,7 +18,7 @@ redis:
   restart: always
   log_driver: "syslog"
   log_opt:
-    syslog-tag: "getdown_redis"
+    tag: "getdown_redis"
     syslog-address: "udp://192.168.1.105:514"
   volumes:
     - /data/docker-volumes/getdown/redis:/data
