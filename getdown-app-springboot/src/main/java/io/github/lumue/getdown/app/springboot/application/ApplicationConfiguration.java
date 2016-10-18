@@ -104,9 +104,5 @@ public class ApplicationConfiguration {
 		return EventBus.create(dispatcher);
 	}
 
-	@Bean
-	public ThrottelingDownloadJobEventTap throttelingDownloadJobEventTap(EventBus eventbus,
-	                                                                     @Value("${getdown.websocket.broadcastinterval.downloads}") long throttleinterval) {
-		return new ThrottelingDownloadJobEventTap(eventbus, "throtteled-downloads", throttleinterval);
-	}
+
 }

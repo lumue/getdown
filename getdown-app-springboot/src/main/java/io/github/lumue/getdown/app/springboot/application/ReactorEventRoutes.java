@@ -3,7 +3,7 @@ package io.github.lumue.getdown.app.springboot.application;
 import io.github.lumue.getdown.app.springboot.web.DownloadWebsocketController;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
-import io.github.lumue.getdown.core.download.job.ThrottelingDownloadJobEventTap;
+import io.github.lumue.getdown.core.download.job.ThrottlingDownloadJobEventTap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -29,14 +29,16 @@ public class ReactorEventRoutes {
 
 	private final EventBus eventbus;
 
-	private final ThrottelingDownloadJobEventTap throttelingDownloadJobEventTap;
+	private final ThrottlingDownloadJobEventTap throttlingDownloadJobEventTap;
 
 	@Autowired
-	public ReactorEventRoutes(DownloadWebsocketController websocketController, DownloadJobRepository downloadJobRepository, EventBus eventbus, ThrottelingDownloadJobEventTap throttelingDownloadJobEventTap) {
+	public ReactorEventRoutes(DownloadWebsocketController websocketController,
+	                          DownloadJobRepository downloadJobRepository,
+	                          EventBus eventbus) {
 		this.websocketController = websocketController;
 		this.downloadJobRepository = downloadJobRepository;
 		this.eventbus = eventbus;
-		this.throttelingDownloadJobEventTap = throttelingDownloadJobEventTap;
+		this.throttlingDownloadJobEventTap = new ThrottlingDownloadJobEventTap(eventbus, "throtteled-downloads", 1000);
 	}
 
 	/**
@@ -44,8 +46,8 @@ public class ReactorEventRoutes {
 	 */
 	@PostConstruct
 	public void setup(){
-		this.eventbus.on($("downloads"), this.throttelingDownloadJobEventTap);
-		this.eventbus.on($("throtteled-downloads"), (Event<DownloadJob> e) -> this.downloadJobRepository.update(e.getData()));
-		this.eventbus.on($("throtteled-downloads"),this.websocketController);
+		this.eventbus.on($("downloads"),throttlingDownloadJobEventTap );
+		this.eventbus.on($("throttled-downloads"), (Event<DownloadJob> e) -> this.downloadJobRepository.update(e.getData()));
+		this.eventbus.on($("throttled-downloads"),websocketController);
 	}
 }
