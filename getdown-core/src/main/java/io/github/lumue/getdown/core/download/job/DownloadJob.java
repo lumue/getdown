@@ -55,4 +55,6 @@ public interface DownloadJob extends HasIdentity<DownloadJobHandle>,Serializable
 	enum DownloadJobState {
 		WAITING,PREPARING,RUNNING, ERROR, FINISHED, CANCELLED, PREPARED;
 	}
+
+
 }

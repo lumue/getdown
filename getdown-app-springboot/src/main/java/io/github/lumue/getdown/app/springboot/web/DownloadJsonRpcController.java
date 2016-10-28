@@ -57,6 +57,14 @@ public class DownloadJsonRpcController {
 	}
 
 	/**
+	 * stop and remove all downloads
+	 */
+	@RequestMapping( method = RequestMethod.DELETE)
+	public void deleteDownloads() {
+		downloadService.removeAll();
+	}
+
+	/**
 	 * get all downloads
 	 * @return
 	 */

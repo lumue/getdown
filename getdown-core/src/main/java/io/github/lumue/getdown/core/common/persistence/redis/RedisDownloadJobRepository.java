@@ -91,6 +91,8 @@ public class RedisDownloadJobRepository implements DownloadJobRepository{
 	@Override
 	public void remove(Download.DownloadJobHandle handle) {
 		DownloadJob job = get(handle);
+		if(job==null)
+			return;
 		this.redisZSet.removeByScore(job.getIndex(),job.getIndex());
 	}
 

@@ -94,6 +94,7 @@ public class DownloadService {
 			return;
 		}
 
+		LOGGER.debug("removing download "+downloadJob);
 		if(RUNNING.equals(downloadJob.getState())){
 			cancelDownload(downloadJobHandle);
 		}
@@ -155,5 +156,11 @@ public class DownloadService {
 					job.addObserver( o ->	eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))));
 					downloadJobRunner.submitJob(job);
 				});
+	}
+
+	public void removeAll() {
+		LOGGER.debug("removing all downloads");
+		this.jobRepository.stream()
+				.forEach(job->removeDownload(job.getHandle()));
 	}
 }

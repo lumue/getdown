@@ -179,6 +179,17 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		this(name, url, outputFilename, host, new DownloadJobHandle(),index);
 	}
 
+	@Override
+	public String toString() {
+		return "Download{" +
+				"index=" + index +
+				", handle=" + handle +
+				", name='" + name + '\'' +
+				", url='" + url + '\'' +
+				'}';
+	}
+
+
 
 	protected void progress(DownloadProgress downloadProgress) {
 		observableTemplate.doObserved(() -> {
