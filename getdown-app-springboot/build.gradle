@@ -2,7 +2,7 @@ buildscript {
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version")
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
-
+		classpath "gradle.plugin.com.github.lkishalmi.gradle:gradle-gatling-plugin:0.4.1"
 	}
 }
 
@@ -11,8 +11,25 @@ apply plugin: 'spring-boot'
 apply plugin: 'propdeps'
 apply plugin: 'propdeps-maven'
 apply plugin: 'propdeps-idea'
-apply plugin: 'propdeps-eclipse'
+
 ext['tomcat.version'] = '8.5.2'
+
+apply plugin: "com.github.lkishalmi.gatling"
+gatling {
+	toolVersion = '2.2.2'
+	jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
+	logLevel ='DEBUG'
+}
+sourceSets {
+	gatling {
+		compileClasspath += sourceSets.main.runtimeClasspath
+		compileClasspath += sourceSets.test.runtimeClasspath
+		runtimeClasspath += sourceSets.main.runtimeClasspath
+		runtimeClasspath += sourceSets.test.runtimeClasspath
+	}
+}
+
+
 
 
 dependencies {
@@ -27,7 +44,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
 	compile("org.springframework.boot:spring-boot-starter-websocket")
-	compile("org.springframework.boot:spring-boot-starter-redis")
+	compile("org.springframework.boot:spring-boot-starter-data-redis")
 	compile("org.springframework.boot:spring-boot-starter-tomcat")
 	compile("org.springframework.boot:spring-boot-configuration-processor")
 	compile("org.springframework.boot:spring-boot-devtools")
@@ -40,13 +57,21 @@ dependencies {
 	compile "io.projectreactor:reactor-stream:$reactor_version"
 
 
-	testCompile("org.springframework.boot:spring-boot-starter-test")
+
 
 	compile 'org.slf4j:slf4j-api:1.7.10'
 	compile group: 'org.apache.tomcat', name: 'tomcat-juli', version: '8.5.2'
 
 	testCompile 'junit:junit:4.11'
 	testCompile group: 'ch.qos.logback', name: 'logback-classic', version: "$logback_version"
+	testCompile("org.springframework.boot:spring-boot-starter-test")
+
+
+	testCompile("org.springframework.boot:spring-boot-starter-test")
+
+	// helper libs
+	testCompile("org.apache.httpcomponents:httpclient:${apache_http_version}")
+	testCompile("org.apache.httpcomponents:fluent-hc:${apache_http_version}")
 }
 
 compileJava.dependsOn(processResources)

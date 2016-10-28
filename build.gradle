@@ -8,6 +8,9 @@ allprojects {
 		reactor_version = '2.5.0.BUILD-SNAPSHOT'
 		logback_version = '1.1.7'
 		slf4j_version ='1.7.21'
+		cucumber_version='1.2.5'
+		gatling_version='2.2.2'
+		apache_http_version='4.5.2'
 	}
 
 	buildscript {
@@ -19,17 +22,15 @@ allprojects {
 			maven { url "http://repo.spring.io/milestone" }
 			maven { url 'http://repo.spring.io/plugins-release' }
 		}
-	}
 
+	}
 	repositories {
 		mavenCentral()
 		maven { url "https://jitpack.io" }
 		maven { url 'http://repo.spring.io/libs-snapshot' }
 		maven { url 'http://repo.spring.io/milestone' }
 		maven { url 'http://repo.spring.io/snapshot' }
-		maven {
-			url 'https://repo.spring.io/libs-milestone'
-		}
+		maven { url 'https://repo.spring.io/libs-milestone'	}
 		jcenter()
 	}
 
@@ -51,10 +52,17 @@ allprojects {
 		targetCompatibility = jdk_version
 	}
 
+	apply plugin: 'scala'
+
+	apply plugin: 'idea'
+
 	dependencies{
+		compile "org.scala-lang:scala-library:2.11.7"
+
 		testCompile 'junit:junit:4.11'
 		testCompile group: 'ch.qos.logback', name: 'logback-classic', version: "$logback_version"
 	}
+
 
 	configurations.all {
 		resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
