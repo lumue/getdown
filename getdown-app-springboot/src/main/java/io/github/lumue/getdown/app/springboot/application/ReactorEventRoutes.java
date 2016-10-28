@@ -46,8 +46,7 @@ public class ReactorEventRoutes {
 	 */
 	@PostConstruct
 	public void setup(){
-		this.eventbus.on($("downloads"),throttlingDownloadJobEventTap );
-		this.eventbus.on($("throttled-downloads"), (Event<DownloadJob> e) -> this.downloadJobRepository.update(e.getData()));
-		this.eventbus.on($("throttled-downloads"),websocketController);
+		this.eventbus.on($("downloads"), (Event<DownloadJob> e) -> this.downloadJobRepository.update(e.getData()));
+		this.eventbus.on($("downloads"),websocketController);
 	}
 }
