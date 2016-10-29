@@ -24,6 +24,7 @@ public class YoutubedlDownloadJob extends Download {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
 	private transient AtomicReference<YdlDownloadTask> downloadTask=new AtomicReference<>(null);
+	private boolean forceMp4OnYoutube=true;
 
 
 	@JsonCreator
@@ -63,7 +64,7 @@ public class YoutubedlDownloadJob extends Download {
 	private YdlDownloadTask getDownloadTask() {
 		YdlDownloadTask result = downloadTask.get();
 		if (result == null) {
-			result = YdlDownloadTask.builder()
+			YdlDownloadTask.YdlDownloadTaskBuilder builder = YdlDownloadTask.builder()
 					.setUrl(getUrl())
 					.setOutputFolder(getDownloadPath())
 					.setWriteInfoJson(true)
@@ -72,8 +73,14 @@ public class YoutubedlDownloadJob extends Download {
 					.onStateChanged(this::handleProgress)
 					.onNewOutputFile(this::handleProgress)
 					.onOutputFileChange(this::handleProgress)
-					.onPrepared(this::handlePrepared)
-					.build();
+					.onPrepared(this::handlePrepared);
+
+			if (getUrl().contains("youtube.com") ) {
+				builder.setForceMp4(isForceMp4OnYoutube());
+			}
+
+				result = builder
+						.build();
 			if (!downloadTask.compareAndSet(null, result)) {
 				return downloadTask.get();
 			}
@@ -188,6 +195,14 @@ public class YoutubedlDownloadJob extends Download {
 
 	public static YoutubedlDownloadJobBuilder builder() {
 		return new YoutubedlDownloadJobBuilder();
+	}
+
+	public boolean isForceMp4OnYoutube() {
+		return forceMp4OnYoutube;
+	}
+
+	public void setForceMp4OnYoutube(boolean forceMp4OnYoutube) {
+		this.forceMp4OnYoutube = forceMp4OnYoutube;
 	}
 
 	public static class YoutubedlDownloadJobBuilder
