@@ -2,7 +2,7 @@ package io.github.lumue.getdown.app.springboot.web;
 
 import java.util.stream.Collectors;
 
-import io.github.lumue.getdown.core.download.job.Download;
+import io.github.lumue.getdown.core.download.job.DownloadJobHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,25 +129,25 @@ public class DownloadJsonRpcController {
 	
 	@RequestMapping(value = "/{handle}", method = RequestMethod.GET)
 	public DownloadJobView getDownload(@PathVariable String handle) {
-		DownloadJob downloadJob=downloadService.getDownload(new Download.DownloadJobHandle(handle));
+		DownloadJob downloadJob=downloadService.getDownload(new DownloadJobHandle(handle));
 		return DownloadJobView.wrap(downloadJob);
 	}
 
 	@RequestMapping(value = "/{handle}", method = RequestMethod.DELETE)
 	public void removeDownload(@PathVariable String handle) {
-		downloadService.removeDownload(new Download.DownloadJobHandle(handle));
+		downloadService.removeDownload(new DownloadJobHandle(handle));
 	}
 	
 	@RequestMapping(value = "/{handle}/cancel", method = RequestMethod.POST)
 	public void cancelDownload(@PathVariable String handle) {
 		LOGGER.debug("canceling download job with handle " + handle);
-		downloadService.cancelDownload(new Download.DownloadJobHandle(handle));
+		downloadService.cancelDownload(new DownloadJobHandle(handle));
 	}
 
 	@RequestMapping(value = "/{handle}/restart", method = RequestMethod.POST)
 	public void restartDownload(@PathVariable String handle) {
 		LOGGER.debug("canceling download job with handle " + handle);
-		downloadService.restartDownload(new Download.DownloadJobHandle(handle));
+		downloadService.restartDownload(new DownloadJobHandle(handle));
 	}
 	
 

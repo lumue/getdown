@@ -10,16 +10,17 @@ dependencies {
 	compile "io.projectreactor:reactor-core:$reactor_version"
 	compile "io.projectreactor:reactor-bus:$reactor_version"
 
-	compile 'com.google.http-client:google-http-client:1.19.0'
 
-	compile 'com.fasterxml.jackson.core:jackson-core:2.3.3'
-	compile 'com.fasterxml.jackson.core:jackson-databind:2.3.3'
+	compile "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+	compile "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
+	compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+	compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jackson_version"
 	compile "org.slf4j:slf4j-api:$slf4j_version"
 
 
-	compile 'org.springframework.data:spring-data-redis:1.7.2.RELEASE'
+	compile 'org.springframework.data:spring-data-redis:1.7.3.RELEASE'
 
 
 }
 
-
+apply from: '../gradle/plantuml.gradle'
