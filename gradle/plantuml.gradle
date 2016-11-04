@@ -1,0 +1,21 @@
+configurations{ plantDependencies }
+dependencies {
+	plantDependencies('net.sourceforge.plantuml-depend:plantuml-dependency-cli:1.4.0')
+}
+
+task plantUmlDependency( type: JavaExec) {
+
+	standardInput = System.in
+
+	main='net.sourceforge.plantumldependency.cli.main.program.PlantUMLDependencyProgram'
+
+	String outputFile = "$project.buildDir/plantuml.puml"
+	String baseFolder = "$project.rootDir/getdown-core/src/main/java"
+
+	classpath = project.configurations.plantDependencies
+
+	args '-o', outputFile
+	args '-b', baseFolder
+	args '-i', '**/*.java'
+
+}
