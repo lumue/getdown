@@ -2,7 +2,7 @@ package io.github.lumue.getdown.core.common.persistence.jdkserializable;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
-import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
+import io.github.lumue.getdown.core.download.job.DownloadJobHandle;
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class JdkSerializableDownloadJobRepository extends
 	protected Collection<DownloadJob> getValues() {
 		return super.getValues()
 				.stream()
-				.sorted((o1, o2) -> o1.getIndex().compareTo(o2.getIndex()))
+				.sorted(Comparator.comparing(DownloadJob::getIndex))
 				.collect(Collectors.toList());
 	}
 }

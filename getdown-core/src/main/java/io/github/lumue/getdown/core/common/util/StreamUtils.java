@@ -1,9 +1,5 @@
 package io.github.lumue.getdown.core.common.util;
 
-import io.github.lumue.getdown.core.download.job.DownloadJob;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.ZSetOperations;
-
 import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;

@@ -10,16 +10,4 @@ getdown:
     - /mnt/nasbox/media:/downloads
   ports:
     - "7001:8001"
-  links:
-    - redis
-
-redis:
-  image: redis:alpine
-  restart: always
-  log_driver: "syslog"
-  log_opt:
-    tag: "getdown_redis"
-    syslog-address: "udp://192.168.1.105:514"
-  volumes:
-    - /data/docker-volumes/getdown/redis:/data
 

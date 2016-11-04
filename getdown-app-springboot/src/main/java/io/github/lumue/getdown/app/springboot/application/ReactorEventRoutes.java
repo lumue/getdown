@@ -46,7 +46,6 @@ public class ReactorEventRoutes {
 	 */
 	@PostConstruct
 	public void setup(){
-		this.eventbus.on($("downloads"), (Event<DownloadJob> e) -> this.downloadJobRepository.update(e.getData()));
 		this.eventbus.on($("downloads"),websocketController);
 	}
 }

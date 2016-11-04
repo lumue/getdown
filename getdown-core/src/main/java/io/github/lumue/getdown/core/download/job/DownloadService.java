@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownloadJob;
-import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.bus.Event;
@@ -15,7 +14,6 @@ import reactor.bus.EventBus;
 import javax.annotation.PostConstruct;
 
 import static io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobState.*;
-import static reactor.bus.selector.Selectors.$;
 
 /**
  * manage the execution of downloads

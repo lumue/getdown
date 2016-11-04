@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.lumue.getdown.core.download.downloader.internal.ContentDownloader.DownloadState;
 
 /**
  * handle to an active download

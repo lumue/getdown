@@ -18,7 +18,6 @@ dependencies {
 	compile "org.slf4j:slf4j-api:$slf4j_version"
 
 
-	compile 'org.springframework.data:spring-data-redis:1.7.3.RELEASE'
 
 
 }

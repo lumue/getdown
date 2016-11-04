@@ -9,7 +9,7 @@
     "page": "visionmedia/page.js#~1.6.4",
     "paper-elements": "PolymerElements/paper-elements#^1.0.7",
     "platinum-elements": "PolymerElements/platinum-elements#^2.0.0",
-    "polymer": "Polymer/polymer#^1.5.0",
+    "polymer": "Polymer/polymer#^1.7.0",
     "sockjs": "~0.3.4",
     "stomp-client": "lumue/polymer-stomp-client#^0.0.1",
     "stomp-websocket": "~2.3.4",

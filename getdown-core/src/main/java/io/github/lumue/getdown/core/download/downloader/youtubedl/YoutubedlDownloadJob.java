@@ -2,10 +2,9 @@ package io.github.lumue.getdown.core.download.downloader.youtubedl;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.lumue.getdown.core.download.downloader.internal.ContentDownloader;
-import io.github.lumue.getdown.core.download.job.ContentLocation;
 import io.github.lumue.getdown.core.download.job.Download;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
+import io.github.lumue.getdown.core.download.job.DownloadJobHandle;
 import io.github.lumue.getdown.core.download.job.DownloadProgress;
 import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.download.YdlFileDownload;
@@ -16,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static io.github.lumue.getdown.core.download.job.DownloadState.*;
 
 /**
  * Delegates actual downloading to {@link YdlDownloadTask}
@@ -99,9 +100,9 @@ public class YoutubedlDownloadJob extends Download {
 				getDownloadProgress().ifPresent(p -> {
 					boolean finished=false;
 					while (!finished) {
-						if (p.getState().equals(ContentDownloader.DownloadState.FINISHED)
-								|| p.getState().equals(ContentDownloader.DownloadState.CANCELLED)
-								|| p.getState().equals(ContentDownloader.DownloadState.ERROR)){
+						if (p.getState().equals(FINISHED)
+								|| p.getState().equals(CANCELLED)
+								|| p.getState().equals(ERROR)){
 							finished=true;
 						}
 						else{
@@ -137,12 +138,12 @@ public class YoutubedlDownloadJob extends Download {
 
 	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
 		getDownloadProgress().ifPresent(downloadProgress -> {
-			if (downloadProgress.getState().equals(ContentDownloader.DownloadState.WAITING)) {
+			if (downloadProgress.getState().equals(WAITING)) {
 				if (ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.EXECUTING)) {
 					start();
 					downloadProgress.start();
 				}
-			} else if (downloadProgress.getState().equals(ContentDownloader.DownloadState.DOWNLOADING)) {
+			} else if (downloadProgress.getState().equals(DOWNLOADING)) {
 				if (ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.SUCCESS)) {
 					downloadProgress.finish();
 					finish();

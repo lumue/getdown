@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 import io.github.lumue.getdown.core.download.job.DownloadJob.DownloadJobState;
-import io.github.lumue.getdown.core.download.job.Download.DownloadJobHandle;
 
 /**
  * return true for a given {@link DownloadJob} only if
