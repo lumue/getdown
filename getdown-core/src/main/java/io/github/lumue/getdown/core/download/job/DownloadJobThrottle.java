@@ -36,7 +36,7 @@ class DownloadJobThrottle implements Predicate<DownloadJob> {
 		}	
 	}
 	
-	private final Map<DownloadJobHandle, TestSample> jobHandleTestSampleMap = new ConcurrentHashMap<DownloadJobHandle, TestSample>();
+	private final Map<String, TestSample> jobHandleTestSampleMap = new ConcurrentHashMap<String, TestSample>();
 	
 	
 	private final long millisecondsBetweenEventsPerDownloadJob;
@@ -69,7 +69,7 @@ class DownloadJobThrottle implements Predicate<DownloadJob> {
 		return false;
 	}
 
-	private boolean putValueAndReturnTrue(DownloadJobHandle downloadJobHandle, TestSample testSample) {
+	private boolean putValueAndReturnTrue(String downloadJobHandle, TestSample testSample) {
 		jobHandleTestSampleMap.put(downloadJobHandle, testSample);
 		return true;
 	}

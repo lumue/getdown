@@ -10,10 +10,8 @@ import io.github.lumue.getdown.core.common.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Base class for DownloadsS
@@ -81,7 +79,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 	private ContentLocation contentLocation = null;
 
 	@JsonProperty("handle")
-	private final DownloadJobHandle handle;
+	private final String handle;
 	@JsonProperty("name")
 	private String name;
 	@JsonProperty("outputFilename")
@@ -113,7 +111,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 	}
 
 
-	public DownloadJobHandle getHandle() {
+	public String getHandle() {
 		return handle;
 	}
 
@@ -137,7 +135,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 	protected Download(
 			@JsonProperty("url") String url,
 			@JsonProperty("outputFilename") String outputFilename,
-			@JsonProperty("handle") DownloadJobHandle handle,
+			@JsonProperty("handle") String handle,
 			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
 			String name,
@@ -160,7 +158,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 			String url,
 			String outputFilename,
 			String host,
-			DownloadJobHandle handle,
+			String handle,
 			Long index) {
 		super();
 		this.name = name;
@@ -176,7 +174,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 			String url,
 			String outputFilename,
 			String host, Long index) {
-		this(name, url, outputFilename, host, new DownloadJobHandle(),index);
+		this(name, url, outputFilename, host, new String(),index);
 	}
 
 	@Override

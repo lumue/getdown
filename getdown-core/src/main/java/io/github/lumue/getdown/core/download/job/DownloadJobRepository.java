@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface DownloadJobRepository extends ObjectRepository<ObjectBuilder< DownloadJob>, DownloadJobHandle, DownloadJob> {
+public interface DownloadJobRepository extends ObjectRepository<ObjectBuilder< DownloadJob>, String, DownloadJob> {
 
 
 	/**

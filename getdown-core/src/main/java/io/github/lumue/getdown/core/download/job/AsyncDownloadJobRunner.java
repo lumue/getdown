@@ -74,7 +74,7 @@ public class AsyncDownloadJobRunner implements Runnable {
 		});
 	}
 
-	void submitJob(final DownloadJob job) {
+	public void submitJob(final DownloadJob job) {
 		String jobUrl = job.getUrl();
 		job.waiting();
 		AsyncDownloadJobRunner.LOGGER.debug("queueing " + jobUrl+" for execution");
@@ -85,7 +85,7 @@ public class AsyncDownloadJobRunner implements Runnable {
 
 
 
-	void cancelJob(DownloadJob job) {
+	public void cancelJob(DownloadJob job) {
 		job.cancel();
 	}
 

@@ -16,7 +16,7 @@ class BasicSimulation extends Simulation {
 
 
 	val scn: ScenarioBuilder = scenario("BasicSimulation")
-		  .repeat(4) {
+		  .repeat(14) {
 			  feed(feeder)
 			    .exec(
 				  http("add ${url}").post("/download").body(StringBody("${url}"))
@@ -26,6 +26,6 @@ class BasicSimulation extends Simulation {
 
 
 	setUp(
-		scn.inject(atOnceUsers(20))
+		scn.inject(atOnceUsers(2))
 	).protocols(httpConf)
 }

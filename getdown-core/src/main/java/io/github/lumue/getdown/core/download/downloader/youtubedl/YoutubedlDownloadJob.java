@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.lumue.getdown.core.download.job.Download;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
-import io.github.lumue.getdown.core.download.job.DownloadJobHandle;
+
 import io.github.lumue.getdown.core.download.job.DownloadProgress;
 import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.download.YdlFileDownload;
@@ -32,7 +32,7 @@ public class YoutubedlDownloadJob extends Download {
 	private YoutubedlDownloadJob(
 			@JsonProperty("url") String url,
 			@JsonProperty("outputFilename") String outputFilename,
-			@JsonProperty("handle") DownloadJobHandle handle,
+			@JsonProperty("handle") String handle,
 			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
 			@JsonProperty("name") String name,

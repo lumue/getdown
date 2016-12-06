@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.download.job;
+package io.github.lumue.getdown.core.download;
 
 import java.net.URI;
 import java.util.Objects;
@@ -6,6 +6,10 @@ import java.util.stream.Stream;
 
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownloadJob;
+import io.github.lumue.getdown.core.download.job.AsyncDownloadJobRunner;
+import io.github.lumue.getdown.core.download.job.DownloadJob;
+import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
+import io.github.lumue.getdown.core.download.job.UrlProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.bus.Event;
@@ -60,7 +64,9 @@ public class DownloadService {
 				.withDownloadPath(downloadPath);
 
 		DownloadJob job = jobRepository.create(jobBuilder);
-		job.addObserver( o ->	eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))));
+		job.addObserver( o ->
+				eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))
+				));
 		eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(job)));
 		return job;
 	}
@@ -70,12 +76,12 @@ public class DownloadService {
 	}
 
 
-	public void startDownload(final DownloadJobHandle handle) {
+	public void startDownload(final String handle) {
 		DownloadJob job = getObservedDownloadJob(handle);
 		downloadJobRunner.submitJob(job);
 	}
 	
-	public void cancelDownload(final DownloadJobHandle handle){
+	public void cancelDownload(final String handle){
 		DownloadJob job = getObservedDownloadJob(handle);
 		if(job==null){
 			LOGGER.warn("no job with handle "+handle+" found. nothing to cancel");
@@ -85,7 +91,7 @@ public class DownloadService {
 		downloadJobRunner.cancelJob(job);
 	}
 
-	public void removeDownload(DownloadJobHandle downloadJobHandle) {
+	public void removeDownload(String downloadJobHandle) {
 		DownloadJob downloadJob = getObservedDownloadJob(downloadJobHandle);
 		if(downloadJob==null){
 			LOGGER.warn("no job with handle "+downloadJobHandle+" found. nothing to remove");
@@ -99,13 +105,13 @@ public class DownloadService {
 		this.jobRepository.remove(downloadJobHandle);
 	}
 
-	private DownloadJob getObservedDownloadJob(DownloadJobHandle downloadJobHandle) {
+	private DownloadJob getObservedDownloadJob(String downloadJobHandle) {
 		DownloadJob downloadJob = this.jobRepository.get(downloadJobHandle);
 		downloadJob.addObserver( o ->	eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))));
 		return downloadJob;
 	}
 
-	public void restartDownload(DownloadJobHandle downloadJobHandle) {
+	public void restartDownload(String downloadJobHandle) {
 		DownloadJob downloadJob = getObservedDownloadJob(downloadJobHandle);
 		if(RUNNING.equals(downloadJob.getState())){
 			cancelDownload(downloadJobHandle);
@@ -121,7 +127,7 @@ public class DownloadService {
 		return this.jobRepository.stream();
 	}
 
-	public DownloadJob getDownload(DownloadJobHandle downloadJobHandle) {
+	public DownloadJob getDownload(String downloadJobHandle) {
 		return this.jobRepository.get(downloadJobHandle);
 	}
 

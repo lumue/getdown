@@ -1,7 +1,7 @@
 package io.github.lumue.getdown.core.common.persistence;
 
 import io.github.lumue.getdown.core.download.job.DownloadJob;
-import io.github.lumue.getdown.core.download.job.DownloadJobHandle;
+
 import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
 
 import java.util.Map;
@@ -12,11 +12,11 @@ import java.util.Map;
  * @author lm
  *
  */
-public class MapBasedDownloadJobRepository extends MapBasedObjectRepository<ObjectBuilder<DownloadJob>, DownloadJobHandle, DownloadJob>
+public class MapBasedDownloadJobRepository extends MapBasedObjectRepository<ObjectBuilder<DownloadJob>, String, DownloadJob>
 		implements
 		DownloadJobRepository {
 
-	public MapBasedDownloadJobRepository(Map<DownloadJobHandle, DownloadJob> jobMap) {
+	public MapBasedDownloadJobRepository(Map<String, DownloadJob> jobMap) {
 		super(jobMap);
 	}
 

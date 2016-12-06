@@ -1,6 +1,7 @@
 package io.github.lumue.getdown.app.springboot.application;
 
 import io.github.lumue.getdown.core.common.persistence.jdkserializable.JdkSerializableDownloadJobRepository;
+import io.github.lumue.getdown.core.download.DownloadService;
 import io.github.lumue.getdown.core.download.job.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
