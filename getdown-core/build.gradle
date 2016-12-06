@@ -7,7 +7,7 @@ dependencies {
 
 	compile 'com.github.lumue:ydlwrapper:master-SNAPSHOT'
 
-	compile "io.projectreactor:reactor-core:$reactor_version"
+	compile "io.projectreactor:reactor-core:3.0.3.RELEASE"
 	compile "io.projectreactor:reactor-bus:$reactor_version"
 
 
@@ -17,9 +17,8 @@ dependencies {
 	compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jackson_version"
 	compile "org.slf4j:slf4j-api:$slf4j_version"
 
-
-
-
+	compile 'io.reactivex:rxjava-file-utils:0.1.4'
+	compile 'io.reactivex:rxjava-reactive-streams:1.2.1'
 }
 
 apply from: '../gradle/plantuml.gradle'

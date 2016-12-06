@@ -7,7 +7,7 @@ buildscript {
 }
 
 
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'propdeps'
 apply plugin: 'propdeps-maven'
 apply plugin: 'propdeps-idea'
@@ -22,8 +22,8 @@ gatling {
 }
 sourceSets {
 	gatling {
-		compileClasspath += sourceSets.main.runtimeClasspath
-		compileClasspath += sourceSets.test.runtimeClasspath
+		compileClasspath += sourceSets.main.compileClasspath
+		compileClasspath += sourceSets.test.compileClasspath
 		runtimeClasspath += sourceSets.main.runtimeClasspath
 		runtimeClasspath += sourceSets.test.runtimeClasspath
 	}
@@ -51,7 +51,7 @@ dependencies {
 
 	compile("org.springframework:spring-messaging")
 	compile("io.projectreactor.spring:reactor-spring-context:$reactor_version")
-	compile "io.projectreactor:reactor-core:$reactor_version"
+	compile "io.projectreactor:reactor-core:3.0.3.RELEASE"
 	compile "io.projectreactor:reactor-bus:$reactor_version"
 	compile "io.projectreactor:reactor-stream:$reactor_version"
 
