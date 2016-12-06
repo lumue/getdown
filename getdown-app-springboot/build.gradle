@@ -51,7 +51,7 @@ dependencies {
 
 	compile("org.springframework:spring-messaging")
 	compile("io.projectreactor.spring:reactor-spring-context:$reactor_version")
-	compile "io.projectreactor:reactor-core:3.0.3.RELEASE"
+	compile "io.projectreactor:reactor-core:$reactor_version"
 	compile "io.projectreactor:reactor-bus:$reactor_version"
 	compile "io.projectreactor:reactor-stream:$reactor_version"
 
