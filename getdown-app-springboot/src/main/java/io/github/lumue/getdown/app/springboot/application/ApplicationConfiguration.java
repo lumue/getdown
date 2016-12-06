@@ -38,7 +38,7 @@ public class ApplicationConfiguration {
 	public DownloadService downloadService(
 			DownloadJobRepository downloadJobRepository,
 			AsyncDownloadJobRunner downloadJobRunner,
-			@Value("${getdown.path.download}") String downloadPath,
+			@Value("${getdown.path.media}") String downloadPath,
 			EventBus eventbus,
 			UrlProcessor urlProcessor) {
 		return new DownloadService(downloadJobRepository, downloadJobRunner, downloadPath, eventbus, urlProcessor);
