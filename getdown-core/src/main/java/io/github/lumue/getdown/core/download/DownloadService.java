@@ -135,8 +135,8 @@ public class DownloadService {
 
 	public Stream<DownloadJob> streamDownloads(){
 			return Stream.concat(
-					downloadJobRunner.streamQueuedJobs(),
-					Stream.concat(downloadJobRunner.streamPreparingJobs(),downloadJobRunner.streamDownloadingJobs())
+					downloadJobRunner.streamQueued(),
+					Stream.concat(downloadJobRunner.streamRunning(),downloadJobRunner.streamDone())
 			);
 	}
 
@@ -150,13 +150,11 @@ public class DownloadService {
 
 
 	public Stream<DownloadJob> streamRunningDownloads() {
-		return Stream.concat(
-				this.downloadJobRunner.streamPreparingJobs(),
-				this.downloadJobRunner.streamDownloadingJobs());
+		return this.downloadJobRunner.streamRunning();
 	}
 
 	public Stream<DownloadJob> streamWaitingDownloads() {
-		return this.downloadJobRunner.streamQueuedJobs();
+		return this.downloadJobRunner.streamQueued();
 	}
 
 

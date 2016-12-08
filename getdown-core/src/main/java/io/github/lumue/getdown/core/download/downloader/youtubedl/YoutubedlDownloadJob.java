@@ -92,14 +92,6 @@ public class YoutubedlDownloadJob extends Download {
 
 	@Override
 	public void run() {
-		while (!isPrepared() && !getState().equals(DownloadJob.DownloadJobState.ERROR)) {
-			try {
-				LOGGER.debug("waiting for prepare of "+ getUrl() +" to finish before starting download ");
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 		progress(new DownloadProgress());
 		try {
 			getDownloadTask().executeAsync();

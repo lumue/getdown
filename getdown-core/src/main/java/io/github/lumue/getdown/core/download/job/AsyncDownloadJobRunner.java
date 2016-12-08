@@ -1,6 +1,8 @@
 package io.github.lumue.getdown.core.download.job;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
@@ -21,17 +23,20 @@ public class AsyncDownloadJobRunner implements Runnable {
 
 	private final ScheduledThreadPoolExecutor prepareExecutor;
 
-	private final AtomicBoolean shouldRun=new AtomicBoolean(false);
+	private final AtomicBoolean shouldRun = new AtomicBoolean(false);
 
+
+	private final List<DownloadJob> running = new ArrayList<>();
+
+	private final List<DownloadJob> done = new ArrayList<>();
 
 	//queue capacity can be small.. running a job should be virtually nonblocking, since prepare an download are implemented as async operations
-	private final BlockingQueue<DownloadJob> jobQueue=new PriorityBlockingQueue<>(10, new Comparator<DownloadJob>() {
+	private final BlockingQueue<DownloadJob> jobQueue = new PriorityBlockingQueue<>(10, new Comparator<DownloadJob>() {
 		@Override
 		public int compare(DownloadJob o1, DownloadJob o2) {
 			return o1.getIndex().compareTo(o2.getIndex());
 		}
 	});
-
 
 
 	private static Logger LOGGER = LoggerFactory.getLogger(AsyncDownloadJobRunner.class);
@@ -43,85 +48,79 @@ public class AsyncDownloadJobRunner implements Runnable {
 			int maxThreadsDownload) {
 		super();
 		this.downloadExecutor = executor(maxThreadsDownload);
-		this.prepareExecutor  =executor(maxThreadsPrepare);
-		this.jobRunner=executor(1);
+		this.prepareExecutor = executor(maxThreadsPrepare);
+		this.jobRunner = executor(1);
 	}
-
 
 
 	private void runJob(final DownloadJob job) {
 		String jobUrl = job.getUrl();
 		AsyncDownloadJobRunner.LOGGER.debug("starting " + jobUrl);
-
-
-
-		DownloadJob.DownloadJobState jobState = job.getState();
-		if(!job.isPrepared()){
+		running.add(job);
+		if (!job.isPrepared()) {
 			CompletableFuture.runAsync(job::prepare, prepareExecutor)
-			.thenRunAsync(job,downloadExecutor);
-		}
-		else
-			CompletableFuture.runAsync(job,downloadExecutor);
-
-
+					.thenRunAsync(job, downloadExecutor)
+					.thenRun(() -> {
+						running.remove(job);
+						done.add(job);
+					});
+		} else
+			CompletableFuture.runAsync(job, downloadExecutor)
+					.thenRun(() -> {
+						running.remove(job);
+						done.add(job);
+					});
 	}
 
 	public void submitJob(final DownloadJob job) {
 		String jobUrl = job.getUrl();
 		job.waiting();
-		AsyncDownloadJobRunner.LOGGER.debug("queueing " + jobUrl+" for execution");
+		AsyncDownloadJobRunner.LOGGER.debug("queueing " + jobUrl + " for execution");
 		jobQueue.add(job);
 	}
-
-
-
 
 
 	public void cancelJob(DownloadJob job) {
 		job.cancel();
 	}
 
-	private static ScheduledThreadPoolExecutor executor(Integer threads){
+	private static ScheduledThreadPoolExecutor executor(Integer threads) {
 		return (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threads);
 
 	}
 
 	@Override
 	public void run() {
-		while(shouldRun.get()){
+		while (shouldRun.get()) {
 			try {
 				runJob(jobQueue.take());
 			} catch (InterruptedException e) {
-				LOGGER.warn("interrupted while accessing job queue",e);
+				LOGGER.warn("interrupted while accessing job queue", e);
 			}
 		}
 	}
 
-	public void stop(){
-		shouldRun.compareAndSet(true,false);
+	public void stop() {
+		shouldRun.compareAndSet(true, false);
 	}
 
 
-
-	public Stream<DownloadJob> streamDownloadingJobs() {
-		return downloadExecutor.getQueue()
-		.stream()
-		.map(r->(DownloadJob)r);
+	public Stream<DownloadJob> streamRunning() {
+		return running.stream();
 	}
 
-	public Stream<DownloadJob> streamPreparingJobs() {
-		return prepareExecutor.getQueue()
-				.stream()
-				.map(r->(DownloadJob)r);
-	}
 
-	public Stream<DownloadJob> streamQueuedJobs() {
+	public Stream<DownloadJob> streamQueued() {
 		return jobQueue.stream();
 	}
 
+	public Stream<DownloadJob> streamDone() {
+		return done.stream();
+	}
+
 	@PostConstruct
-	public void start(){
-		shouldRun.compareAndSet(false,true);
+	public void start() {
+		shouldRun.compareAndSet(false, true);
 		jobRunner.execute(this);
 	}
 }
