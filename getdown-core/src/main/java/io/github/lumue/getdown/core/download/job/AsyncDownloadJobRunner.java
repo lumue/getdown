@@ -56,22 +56,13 @@ public class AsyncDownloadJobRunner implements Runnable {
 
 		DownloadJob.DownloadJobState jobState = job.getState();
 		if(!job.isPrepared()){
-			AsyncDownloadJobRunner.LOGGER.debug("submitting " + jobUrl +" for prepare");
-			this.prepareExecutor.submit(job::prepare);
+			CompletableFuture.runAsync(job::prepare, prepareExecutor)
+			.thenRunAsync(job,downloadExecutor);
 		}
+		else
+			CompletableFuture.runAsync(job,downloadExecutor);
 
-		AsyncDownloadJobRunner.LOGGER.debug("submitting " + jobUrl +" for download");
-		this.downloadExecutor.submit(()-> {
-			while (!job.isPrepared() && !job.getState().equals(DownloadJob.DownloadJobState.ERROR)) {
-				try {
-					LOGGER.debug("waiting for prepare of "+ jobUrl +" to finish before starting download ");
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			job.run();
-		});
+
 	}
 
 	void submitJob(final DownloadJob job) {
