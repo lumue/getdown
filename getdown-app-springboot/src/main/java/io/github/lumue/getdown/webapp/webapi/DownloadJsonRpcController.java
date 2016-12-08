@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.app.springboot.web;
+package io.github.lumue.getdown.webapp.webapi;
 
 import java.util.stream.Collectors;
 

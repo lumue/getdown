@@ -1,6 +1,7 @@
-package io.github.lumue.getdown.app.springboot.web;
+package io.github.lumue.getdown.webapp.websocket;
 
 import io.github.lumue.getdown.core.download.job.DownloadJob;
+import io.github.lumue.getdown.webapp.webapi.DownloadJobView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;

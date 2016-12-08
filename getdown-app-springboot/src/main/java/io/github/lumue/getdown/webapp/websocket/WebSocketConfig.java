@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.app.springboot.web;
+package io.github.lumue.getdown.webapp.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

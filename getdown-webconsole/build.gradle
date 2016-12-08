@@ -11,7 +11,7 @@ task installTools( type: Exec){
 // Install the bower components for front-end library management
 task bowerInstall( type: Exec){
 	workingDir '.'
-	commandLine "bower", 'install'
+	commandLine "node_modules/bower/bin/bower", 'install'
 }
 
 task gulp(type: Exec, dependsOn: bowerInstall){

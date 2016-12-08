@@ -1,6 +1,6 @@
-package io.github.lumue.getdown.app.springboot.application;
+package io.github.lumue.getdown.webapp;
 
-import io.github.lumue.getdown.app.springboot.web.DownloadWebsocketController;
+import io.github.lumue.getdown.webapp.websocket.DownloadWebsocketController;
 import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
 import io.github.lumue.getdown.core.download.job.ThrottlingDownloadJobEventTap;
 import org.springframework.beans.factory.annotation.Autowired;

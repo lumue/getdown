@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.app.springboot.application;
+package io.github.lumue.getdown.webapp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

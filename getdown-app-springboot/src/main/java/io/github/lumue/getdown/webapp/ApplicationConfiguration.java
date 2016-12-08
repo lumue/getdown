@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.app.springboot.application;
+package io.github.lumue.getdown.webapp;
 
 import io.github.lumue.getdown.core.common.persistence.jdkserializable.JdkSerializableDownloadTaskRepository;
 import io.github.lumue.getdown.core.download.DownloadService;
