@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Base class for DownloadsS
@@ -20,7 +21,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Download.class);
 
-	@JsonProperty("index")
+
 	private Long index=System.currentTimeMillis();
 
 
@@ -82,8 +83,6 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 	private final String handle;
 	@JsonProperty("name")
 	private String name;
-	@JsonProperty("outputFilename")
-	private final String outputFilename;
 	@JsonProperty("url")
 	private final String url;
 	@JsonProperty("host")
@@ -115,9 +114,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		return handle;
 	}
 
-	public String getOutputFilename() {
-		return outputFilename;
-	}
+
 
 	public String getUrl() {
 		return url;
@@ -134,7 +131,6 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 	@JsonCreator
 	protected Download(
 			@JsonProperty("url") String url,
-			@JsonProperty("outputFilename") String outputFilename,
 			@JsonProperty("handle") String handle,
 			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
@@ -142,7 +138,6 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 			String host,
 			Long index) {
 		super();
-		this.outputFilename = outputFilename;
 		this.url = url;
 		this.handle = handle;
 		this.downloadJobState = downloadJobState;
@@ -156,26 +151,17 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 	public Download(
 			String name,
 			String url,
-			String outputFilename,
 			String host,
 			String handle,
 			Long index) {
 		super();
 		this.name = name;
 		this.host = host;
-		this.outputFilename = outputFilename;
 		this.url = url;
 		this.handle = handle;
 		this.index=index;
 	}
 
-	public Download(
-			String name,
-			String url,
-			String outputFilename,
-			String host, Long index) {
-		this(name, url, outputFilename, host, new String(),index);
-	}
 
 	@Override
 	public String toString() {
@@ -307,7 +293,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		protected String url;
 		protected String host;
 		protected String name;
-		private String handle=null;
+		protected String handle= UUID.randomUUID().toString();
 		protected Long index=System.currentTimeMillis();
 
 		public DownloadBuilder withIndex(long index){

@@ -1,8 +1,10 @@
 package io.github.lumue.getdown.app.springboot.application;
 
-import io.github.lumue.getdown.core.common.persistence.jdkserializable.JdkSerializableDownloadJobRepository;
+import io.github.lumue.getdown.core.common.persistence.jdkserializable.JdkSerializableDownloadTaskRepository;
 import io.github.lumue.getdown.core.download.DownloadService;
+import io.github.lumue.getdown.core.download.files.WorkPathManager;
 import io.github.lumue.getdown.core.download.job.*;
+import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,7 @@ import reactor.bus.EventBus;
 import reactor.core.publisher.TopicProcessor;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,12 +40,18 @@ public class ApplicationConfiguration {
 
 	@Bean
 	public DownloadService downloadService(
-			DownloadJobRepository downloadJobRepository,
+			DownloadTaskRepository downloadTaskRepository,
 			AsyncDownloadJobRunner downloadJobRunner,
 			@Value("${getdown.path.media}") String downloadPath,
 			EventBus eventbus,
-			UrlProcessor urlProcessor) {
-		return new DownloadService(downloadJobRepository, downloadJobRunner, downloadPath, eventbus, urlProcessor);
+			UrlProcessor urlProcessor,
+			WorkPathManager workPathManager) {
+		return new DownloadService(downloadTaskRepository, downloadJobRunner, downloadPath, eventbus, urlProcessor, workPathManager);
+	}
+
+	@Bean
+	public WorkPathManager workPathManager(@Value("${getdown.path.download}") String workPath) throws IOException {
+		return new WorkPathManager(Paths.get(workPath));
 	}
 
 	@Bean
@@ -61,8 +70,8 @@ public class ApplicationConfiguration {
 
 
 	@Bean
-	public DownloadJobRepository downloadJobRepository(@Value("getdown.path.repository") String path)  throws IOException {
-		return new JdkSerializableDownloadJobRepository(path);
+	public DownloadTaskRepository downloadTaskRepository(@Value("${getdown.path.repository}") String path)  throws IOException {
+		return new JdkSerializableDownloadTaskRepository(path);
 	}
 
 

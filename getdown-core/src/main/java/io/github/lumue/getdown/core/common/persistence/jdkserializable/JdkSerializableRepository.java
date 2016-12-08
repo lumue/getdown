@@ -10,15 +10,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.common.persistence.ObjectRepository;
-import io.github.lumue.getdown.core.download.job.DownloadJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,16 +31,15 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 	private final String filename;
 
-	private Map<K, V> objectMap;
+	private Map<K, byte[]> objectMap=new ConcurrentHashMap<>();
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(JdkSerializableRepository.class);
 
-	ExecutorService flushExecutorService = Executors.newSingleThreadExecutor();
+	private ExecutorService flushExecutorService = Executors.newSingleThreadExecutor();
 
 
-	public JdkSerializableRepository(String filename) {
-		this.filename = filename + ".json";
-		this.objectMap = new ConcurrentHashMap<K, V>();
+	JdkSerializableRepository(String filename) {
+		this.filename = filename ;
 		restore();
 	}
 
@@ -49,16 +49,42 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 	}
 
 	protected Collection<V> getValues() {
-		return this.objectMap.values();
+		return this.objectMap.values().stream()
+				.map(this::deserializeObject)
+				.collect(Collectors.toList());
+	}
+
+	private V deserializeObject(byte[] b) {
+		try {
+			ObjectInputStream inputStream=new ObjectInputStream(new ByteArrayInputStream(b));
+			return (V) inputStream.<V>readObject();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private byte[] serializeObject(V object) {
+		try {
+			ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+			ObjectOutputStream objectOutputStream=new ObjectOutputStream(outputStream);
+			objectOutputStream.writeObject(object);
+			objectOutputStream.close();
+			return outputStream.toByteArray();
+		}catch (IOException e)
+		{
+			LOGGER.error("Object serialisation failed", e);
+			return null;
+		}
 	}
 
 
 	@Override
 	public V create(B builder) {
-		V job = builder.build();
-		objectMap.put(job.getHandle(), job);
+		builder.withKey(UUID.randomUUID().toString());
+		V o = builder.build();
+		objectMap.put(o.getHandle(), serializeObject(o));
 		triggerFlush();
-		return job;
+		return o;
 	}
 
 
@@ -78,12 +104,9 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 	@Override
 	public V get(K handle) {
-		return objectMap.get(handle);
+		return deserializeObject(objectMap.get(handle));
 	}
 
-	protected Map<K, V> getMap() {
-		return objectMap;
-	}
 
 	@SuppressWarnings("unchecked")
 	private synchronized void restore() {
@@ -98,7 +121,7 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 		try {
 			ObjectInputStream inputStream=new ObjectInputStream(new ByteArrayInputStream(contentSnapshot));
-			objectMap=(ConcurrentHashMap<K, V>) inputStream.readObject();
+			objectMap=(ConcurrentHashMap<K, byte[]>) inputStream.readObject();
 			inputStream.close();
 		} catch (Exception e)
 		{
@@ -111,9 +134,10 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 	@Override
 	public void update(V value) {
-		objectMap.put(value.getHandle(),value);
+		objectMap.put(value.getHandle(),serializeObject(value));
 		this.triggerFlush();
 	}
+
 
 
 	private byte[] loadContent() {
@@ -135,7 +159,7 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 		flushExecutorService.submit(() -> flush(contentSnapshot));
 	}
 
-	protected  byte[] createContentSnapshot() {
+	private byte[] createContentSnapshot() {
 		try {
 			ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
 			ObjectOutputStream objectOutputStream=new ObjectOutputStream(outputStream);

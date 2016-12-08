@@ -24,7 +24,7 @@ public interface DownloadJobView extends Serializable {
 
 			@Override
 			public String getName() {
-				String outputFilename = download.getName();
+				String outputFilename = download.getName()!=null?download.getName():download.getUrl();
 				return outputFilename.substring(outputFilename.lastIndexOf('/') + 1);
 			}
 
@@ -55,7 +55,7 @@ public interface DownloadJobView extends Serializable {
 
 			@Override
 			public String getHandle() {
-				return download.getHandle().toString();
+				return download.getHandle();
 			}
 
 			@Override

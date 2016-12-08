@@ -3,6 +3,7 @@ package io.github.lumue.getdown.app.springboot.web;
 import java.util.stream.Collectors;
 
 
+import io.github.lumue.getdown.core.download.task.DownloadTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +39,12 @@ public class DownloadJsonRpcController {
 
 		LOGGER.debug("adding and starting download job for " + url);
 
-		DownloadJob download = downloadService.addDownload(url);
-		downloadService.startDownload(download.getHandle());
+		DownloadTask download = downloadService.addDownload(url);
+		DownloadJob job=downloadService.startDownload(download.getHandle());
 
 		LOGGER.debug("download job for " + url + " added and started");
 
-		return DownloadJobView.wrap(download);
+		return DownloadJobView.wrap(job);
 	}
 
 	/**
@@ -77,17 +78,7 @@ public class DownloadJsonRpcController {
 				.collect(Collectors.toList());
 	}
 
-	/**
-	 * get finished downloads
-	 * @return
-	 */
-	@RequestMapping(value = "/state/finished", method = RequestMethod.GET)
-	public Iterable<DownloadJobView> listFinishedDownloads() {
-		return downloadService
-				.streamFinishedDownloads()
-				.map(DownloadJobView::wrap)
-				.collect(Collectors.toList());
-	}
+
 
 	/**
 	 * get waiting
@@ -112,19 +103,6 @@ public class DownloadJsonRpcController {
 				.map(DownloadJobView::wrap)
 				.collect(Collectors.toList());
 	}
-
-	/**
-	 * get failed downloads
-	 * @return
-	 */
-	@RequestMapping(value = "/state/error", method = RequestMethod.GET)
-	public Iterable<DownloadJobView> listFailedDownloads() {
-		return downloadService
-				.streamFailedDownloads()
-				.map(DownloadJobView::wrap)
-				.collect(Collectors.toList());
-	}
-
 
 	
 	@RequestMapping(value = "/{handle}", method = RequestMethod.GET)

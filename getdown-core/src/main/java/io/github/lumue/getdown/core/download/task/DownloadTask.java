@@ -1,8 +1,10 @@
 package io.github.lumue.getdown.core.download.task;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import io.github.lumue.getdown.core.common.persistence.HasIdentity;
+import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 
-import java.time.DateTimeException;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
  *
  * Created by lm on 06.12.16.
  */
-public class DownloadTask {
+public class DownloadTask implements HasIdentity<String>, Serializable{
 
 	private final String id;
 
@@ -21,9 +23,8 @@ public class DownloadTask {
 
 	private String targetLocation;
 
-	public DownloadTask(String id, String sourceUrl) {
-		this(id,sourceUrl,LocalDateTime.now());
-	}
+	private Long priority =0L;
+
 
 	@JsonCreator
 	private DownloadTask(
@@ -40,6 +41,16 @@ public class DownloadTask {
 		this.creationTime=creationTime;
 		this.sourceUrl=sourceUrl;
 	}
+
+	private DownloadTask(DownloadTaskBuilder builder) {
+		id = builder.id;
+		sourceUrl = builder.sourceUrl;
+		creationTime = LocalDateTime.now();
+		setTargetLocation(builder.targetLocation);
+		setPriority(builder.priority);
+	}
+
+
 
 	public String getId() {
 		return id;
@@ -59,5 +70,65 @@ public class DownloadTask {
 
 	public void setTargetLocation(String targetLocation) {
 		this.targetLocation = targetLocation;
+	}
+
+	@Override
+	public String getHandle() {
+		return getId();
+	}
+
+	public void setPriority(Long priority) {
+		this.priority = priority;
+	}
+
+	public Long getPriority() {
+		return this.priority;
+	}
+
+
+
+	public static DownloadTaskBuilder builder() {
+		return new DownloadTaskBuilder();
+	}
+
+	public static final class DownloadTaskBuilder implements ObjectBuilder<DownloadTask> {
+		private String id;
+		private String sourceUrl;
+		private String targetLocation;
+		private Long priority=100L;
+
+		private DownloadTaskBuilder() {
+		}
+
+		public DownloadTaskBuilder withId(String val) {
+			id = val;
+			return this;
+		}
+
+		public DownloadTaskBuilder withSourceUrl(String val) {
+			sourceUrl = val;
+			return this;
+		}
+
+
+		public DownloadTaskBuilder withTargetLocation(String val) {
+			targetLocation = val;
+			return this;
+		}
+
+		public DownloadTaskBuilder withPriority(Long val) {
+			priority = val;
+			return this;
+		}
+
+		@Override
+		public DownloadTaskBuilder withKey(String keyValue) {
+			this.id=keyValue;
+			return this;
+		}
+
+		public DownloadTask build() {
+			return new DownloadTask(this);
+		}
 	}
 }

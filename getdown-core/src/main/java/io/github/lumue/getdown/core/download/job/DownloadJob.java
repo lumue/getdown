@@ -20,11 +20,7 @@ public interface DownloadJob extends HasIdentity<String>,Serializable,Observable
 
 	DownloadJobState getState();
 
-	String getOutputFilename();
-
 	String getUrl();
-
-	String getHost();
 
 	String getName();
 

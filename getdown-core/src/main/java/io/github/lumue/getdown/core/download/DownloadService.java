@@ -1,15 +1,16 @@
 package io.github.lumue.getdown.core.download;
 
-import java.net.URI;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownloadJob;
+import io.github.lumue.getdown.core.download.files.WorkPathManager;
 import io.github.lumue.getdown.core.download.job.AsyncDownloadJobRunner;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
-import io.github.lumue.getdown.core.download.job.DownloadJobRepository;
 import io.github.lumue.getdown.core.download.job.UrlProcessor;
+import io.github.lumue.getdown.core.download.task.DownloadTask;
+import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.bus.Event;
@@ -29,8 +30,6 @@ public class DownloadService {
 
 	private final static Logger LOGGER=LoggerFactory.getLogger(DownloadService.class);
 
-	private final DownloadJobRepository jobRepository;
-
 	private final AsyncDownloadJobRunner downloadJobRunner;
 
 	private final String downloadPath;
@@ -39,36 +38,38 @@ public class DownloadService {
 
 	private final UrlProcessor urlProcessor;
 
-	
-	public DownloadService(DownloadJobRepository jobRepository,
+	private final DownloadTaskRepository downloadTaskRepository;
+
+	private final WorkPathManager workPathManager;
+
+	public DownloadService(DownloadTaskRepository downloadTaskRepository,
 	                       AsyncDownloadJobRunner downloadJobRunner,
 	                       String downloadPath,
-	                       EventBus eventbus, UrlProcessor urlProcessor) {
+	                       EventBus eventbus, UrlProcessor urlProcessor, WorkPathManager workPathManager) {
 		super();
-		this.jobRepository = jobRepository;
+		this.downloadTaskRepository=downloadTaskRepository;
 		this.downloadJobRunner = downloadJobRunner;
 		this.downloadPath = downloadPath;
 		this.eventbus = eventbus;
 		this.urlProcessor = urlProcessor;
-
+		this.workPathManager = workPathManager;
 	}
 
-	public DownloadJob addDownload(final String url) {
+	public DownloadTask addDownload(final String url) {
 		String processedUrl=preprocessUrl(url);
-		String filename = resolveFilename(processedUrl);
-		ObjectBuilder<DownloadJob> jobBuilder = YoutubedlDownloadJob
-				.builder()
-				.withUrl(processedUrl)
-				.withOutputFilename(filename)
-				.withName(processedUrl)
-				.withDownloadPath(downloadPath);
 
-		DownloadJob job = jobRepository.create(jobBuilder);
-		job.addObserver( o ->
-				eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))
-				));
-		eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(job)));
-		return job;
+		DownloadTask task = downloadTaskRepository.create(DownloadTask
+				.builder()
+				.withSourceUrl(processedUrl)
+				.withTargetLocation(downloadPath));
+		try {
+			workPathManager.createPath(task.getHandle());
+		} catch (IOException e) {
+			downloadTaskRepository.remove(task.getHandle());
+			throw new RuntimeException(e);
+		}
+		eventbus.notify("tasks", Event.wrap(Objects.requireNonNull(task)));
+		return task;
 	}
 
 	private String preprocessUrl(String url) {
@@ -76,13 +77,29 @@ public class DownloadService {
 	}
 
 
-	public void startDownload(final String handle) {
-		DownloadJob job = getObservedDownloadJob(handle);
+	public DownloadJob startDownload(final String handle) {
+		DownloadJob job = createDownloadJob(handle);
 		downloadJobRunner.submitJob(job);
+		eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(job)));
+		return job;
 	}
-	
+
+	private DownloadJob createDownloadJob(String handle) {
+		DownloadTask task = downloadTaskRepository.get(handle);
+
+		DownloadJob job = YoutubedlDownloadJob.builder()
+				.withUrl(task.getSourceUrl())
+				.withDownloadPath(workPathManager.getPath(handle).toString())
+				.withKey(task.getHandle())
+				.build();
+		job.addObserver( o ->
+				eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))
+				));
+		return job;
+	}
+
 	public void cancelDownload(final String handle){
-		DownloadJob job = getObservedDownloadJob(handle);
+		DownloadJob job = getDownload(handle);
 		if(job==null){
 			LOGGER.warn("no job with handle "+handle+" found. nothing to cancel");
 			return;
@@ -92,7 +109,7 @@ public class DownloadService {
 	}
 
 	public void removeDownload(String downloadJobHandle) {
-		DownloadJob downloadJob = getObservedDownloadJob(downloadJobHandle);
+		DownloadJob downloadJob = getDownload(downloadJobHandle);
 		if(downloadJob==null){
 			LOGGER.warn("no job with handle "+downloadJobHandle+" found. nothing to remove");
 			return;
@@ -102,69 +119,55 @@ public class DownloadService {
 		if(RUNNING.equals(downloadJob.getState())){
 			cancelDownload(downloadJobHandle);
 		}
-		this.jobRepository.remove(downloadJobHandle);
 	}
 
-	private DownloadJob getObservedDownloadJob(String downloadJobHandle) {
-		DownloadJob downloadJob = this.jobRepository.get(downloadJobHandle);
-		downloadJob.addObserver( o ->	eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))));
-		return downloadJob;
-	}
+
 
 	public void restartDownload(String downloadJobHandle) {
-		DownloadJob downloadJob = getObservedDownloadJob(downloadJobHandle);
+		DownloadJob downloadJob = getDownload(downloadJobHandle);
 		if(RUNNING.equals(downloadJob.getState())){
 			cancelDownload(downloadJobHandle);
 		}
 		startDownload(downloadJobHandle);
 	}
 
-	public Iterable<DownloadJob> listDownloads(){
-		return this.jobRepository.list();
-	}
+
 
 	public Stream<DownloadJob> streamDownloads(){
-		return this.jobRepository.stream();
+			return Stream.concat(
+					downloadJobRunner.streamQueuedJobs(),
+					Stream.concat(downloadJobRunner.streamPreparingJobs(),downloadJobRunner.streamDownloadingJobs())
+			);
 	}
 
 	public DownloadJob getDownload(String downloadJobHandle) {
-		return this.jobRepository.get(downloadJobHandle);
+		return this.streamDownloads()
+				.filter(downloadJob -> downloadJob.getHandle().equals(downloadJobHandle))
+				.findFirst()
+				.orElse(null);
 	}
 
-	public Stream<DownloadJob> streamFinishedDownloads() {
-		return this.jobRepository.streamByJobState(FINISHED);
-	}
 
-	public Stream<DownloadJob> streamFailedDownloads() {
-		return this.jobRepository.streamByJobState(ERROR);
-	}
 
 	public Stream<DownloadJob> streamRunningDownloads() {
-		return this.jobRepository.streamByJobState(RUNNING);
+		return Stream.concat(
+				this.downloadJobRunner.streamPreparingJobs(),
+				this.downloadJobRunner.streamDownloadingJobs());
 	}
 
 	public Stream<DownloadJob> streamWaitingDownloads() {
-		return this.jobRepository.streamByJobState(WAITING);
+		return this.downloadJobRunner.streamQueuedJobs();
 	}
 
-	private String resolveFilename(final String url) {
-		String path = URI.create(url).getPath();
-		return path.substring(path.lastIndexOf('/') + 1);
-	}
+
 
 	@PostConstruct
 	public void resumeWaitingJobsFromRepo(){
-		this.jobRepository.stream()
-				.filter(job -> !job.getState().equals(FINISHED) && !job.getState().equals(CANCELLED))
-				.forEach( job -> {
-					job.addObserver( o ->	eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))));
-					downloadJobRunner.submitJob(job);
-				});
+
 	}
 
 	public void removeAll() {
 		LOGGER.debug("removing all downloads");
-		this.jobRepository.stream()
-				.forEach(job->removeDownload(job.getHandle()));
+		this.streamDownloads().forEach(job->removeDownload(job.getHandle()));
 	}
 }

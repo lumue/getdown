@@ -1,21 +1,10 @@
 package io.github.lumue.getdown.core.download.files;
 
-import io.github.lumue.getdown.core.download.task.DownloadTask;
-import reactor.core.publisher.Flux;
-import rx.Observable;
-import rx.Scheduler;
-import rx.fileutils.FileSystemEvent;
-import rx.fileutils.FileSystemEventKind;
-import rx.fileutils.FileSystemWatcher;
-import rx.schedulers.Schedulers;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.WatchEvent;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 
 /**
@@ -37,9 +26,12 @@ public class WorkPathManager  {
 
 
 	public Path createPath(String taskId) throws IOException {
-		Path path = root.resolve(taskId);
+		Path path = getPath(taskId);
 		Files.createDirectory(path);
 		return path;
 	}
 
+	public Path getPath(String taskId) {
+		return root.resolve(taskId);
+	}
 }

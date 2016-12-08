@@ -31,22 +31,22 @@ public class YoutubedlDownloadJob extends Download {
 	@JsonCreator
 	private YoutubedlDownloadJob(
 			@JsonProperty("url") String url,
-			@JsonProperty("outputFilename") String outputFilename,
 			@JsonProperty("handle") String handle,
 			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
 			@JsonProperty("name") String name,
 			@JsonProperty("host") String host,
 			@JsonProperty("index") Long index) {
-		super(url,outputFilename,handle,downloadJobState,downloadProgress,name,host,index);
+		super(url,handle,downloadJobState,downloadProgress,name,host,index);
 	}
 
-	private YoutubedlDownloadJob(String name,
+	private YoutubedlDownloadJob(String handle,
+								 String name,
 	                             String url,
 	                             String host,
 	                             String downloadPath,
 	                             Long index) {
-		super(name, url, "", host,index);
+		super(name, url, host, handle,index);
 		setDownloadPath(downloadPath);
 	}
 
@@ -92,7 +92,14 @@ public class YoutubedlDownloadJob extends Download {
 
 	@Override
 	public void run() {
-
+		while (!isPrepared() && !getState().equals(DownloadJob.DownloadJobState.ERROR)) {
+			try {
+				LOGGER.debug("waiting for prepare of "+ getUrl() +" to finish before starting download ");
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		progress(new DownloadProgress());
 		try {
 			getDownloadTask().executeAsync();
@@ -211,7 +218,7 @@ public class YoutubedlDownloadJob extends Download {
 
 		@Override
 		public DownloadJob build() {
-			return new YoutubedlDownloadJob(this.name, this.url, this.host,this.downloadPath,this.index);
+			return new YoutubedlDownloadJob(this.handle,this.name, this.url, this.host,this.downloadPath,this.index);
 		}
 
 	}

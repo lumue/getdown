@@ -3,6 +3,7 @@ package io.github.lumue.getdown.core.download.job;
 import java.util.Comparator;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,21 +58,11 @@ public class AsyncDownloadJobRunner implements Runnable {
 		DownloadJob.DownloadJobState jobState = job.getState();
 		if(!job.isPrepared()){
 			AsyncDownloadJobRunner.LOGGER.debug("submitting " + jobUrl +" for prepare");
-			this.prepareExecutor.submit(job::prepare);
+			this.prepareExecutor.submit(job);
 		}
 
 		AsyncDownloadJobRunner.LOGGER.debug("submitting " + jobUrl +" for download");
-		this.downloadExecutor.submit(()-> {
-			while (!job.isPrepared() && !job.getState().equals(DownloadJob.DownloadJobState.ERROR)) {
-				try {
-					LOGGER.debug("waiting for prepare of "+ jobUrl +" to finish before starting download ");
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			job.run();
-		});
+		this.downloadExecutor.submit(job);
 	}
 
 	public void submitJob(final DownloadJob job) {
@@ -107,6 +98,24 @@ public class AsyncDownloadJobRunner implements Runnable {
 
 	public void stop(){
 		shouldRun.compareAndSet(true,false);
+	}
+
+
+
+	public Stream<DownloadJob> streamDownloadingJobs() {
+		return downloadExecutor.getQueue()
+		.stream()
+		.map(r->(DownloadJob)r);
+	}
+
+	public Stream<DownloadJob> streamPreparingJobs() {
+		return prepareExecutor.getQueue()
+				.stream()
+				.map(r->(DownloadJob)r);
+	}
+
+	public Stream<DownloadJob> streamQueuedJobs() {
+		return jobQueue.stream();
 	}
 
 	@PostConstruct
