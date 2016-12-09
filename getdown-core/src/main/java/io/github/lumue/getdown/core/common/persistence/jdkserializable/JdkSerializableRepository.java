@@ -55,6 +55,8 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 	}
 
 	private V deserializeObject(byte[] b) {
+		if(b==null)
+			return null;
 		try {
 			ObjectInputStream inputStream=new ObjectInputStream(new ByteArrayInputStream(b));
 			return (V) inputStream.<V>readObject();
@@ -80,7 +82,7 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 	@Override
 	public V create(B builder) {
-		builder.withKey(UUID.randomUUID().toString());
+		builder.withHandle(UUID.randomUUID().toString());
 		V o = builder.build();
 		objectMap.put(o.getHandle(), serializeObject(o));
 		triggerFlush();
@@ -104,7 +106,10 @@ public abstract class JdkSerializableRepository<B extends ObjectBuilder<V>, K, V
 
 	@Override
 	public V get(K handle) {
-		return deserializeObject(objectMap.get(handle));
+		byte[] b = objectMap.get(handle);
+		if(b==null)
+			return null;
+		return deserializeObject(b);
 	}
 
 

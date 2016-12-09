@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'
 	xmlns:yt='http://gdata.youtube.com/schemas/2007' xmlns:media='http://search.yahoo.com/mrss/'>
-	<id>http://gdata.youtube.com/feeds/api/videos/S6P3ZLOUgXk</id>
+	<handle>http://gdata.youtube.com/feeds/api/videos/S6P3ZLOUgXk</handle>
 	<published>2013-06-25T15:48:00.000Z</published>
 	<updated>2015-01-24T09:36:21.000Z</updated>
 	<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video' />

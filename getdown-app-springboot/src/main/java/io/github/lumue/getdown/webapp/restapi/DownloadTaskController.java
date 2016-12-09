@@ -2,15 +2,16 @@ package io.github.lumue.getdown.webapp.restapi;
 
 
 import io.github.lumue.getdown.core.download.DownloadService;
+import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,16 +43,25 @@ public class DownloadTaskController{
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	Resources<Resource<DownloadTask>> post(@PathVariable("url") List<String> urls) {
-		return Resources.wrap(urls.stream()
-				.map(u->downloadService.addDownload(u))
+	Resources<Resource<DownloadTask>> post(@RequestBody Resources<Resource<DownloadTask>> downloadTasks) {
+		return Resources.wrap(
+				downloadTasks.getContent().stream()
+				.map(u->downloadService.addDownload(u.getContent()))
 				.collect(Collectors.toList())
 		);
 	}
 
 	@RequestMapping(value="/{key}", method = RequestMethod.GET)
-	Resource<DownloadTask> getOne(@PathVariable("key") String id){
-		return new Resource<>(this.taskRepository.get(id));
+	ResponseEntity<Resource<DownloadTask>> getOne(@PathVariable("key") String id){
+		DownloadTask downloadTask = this.taskRepository.get(id);
+		if(downloadTask==null)
+		{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		Resource<DownloadTask> downloadTaskResource = new Resource<>(downloadTask);
+		return ResponseEntity.ok(downloadTaskResource);
+
 	}
+
 
 }

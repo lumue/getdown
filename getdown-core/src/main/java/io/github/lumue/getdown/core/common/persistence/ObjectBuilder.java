@@ -1,8 +1,9 @@
 package io.github.lumue.getdown.core.common.persistence;
 
 public interface ObjectBuilder<T> {
-	ObjectBuilder<T> withKey(String keyValue);
+	ObjectBuilder<T> withHandle(String keyValue);
 	T build();
 
 
+	boolean hasHandle();
 }

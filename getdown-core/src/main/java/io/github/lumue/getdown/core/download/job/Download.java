@@ -7,6 +7,7 @@ import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.common.util.Observable;
 import io.github.lumue.getdown.core.common.util.ObservableTemplate;
 import io.github.lumue.getdown.core.common.util.Observer;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -324,12 +325,15 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		}
 
 		@Override
-		public DownloadBuilder withKey(String keyValue) {
+		public DownloadBuilder withHandle(String keyValue) {
 			this.handle=keyValue;
 			return this;
 		}
 
-
+		@Override
+		public boolean hasHandle() {
+			return !StringUtils.isEmpty(handle);
+		}
 
 		public DownloadBuilder withDownloadPath(String downloadPath) {
 			this.downloadPath=downloadPath;

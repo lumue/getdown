@@ -1,0 +1,12 @@
+{
+  "content": [
+	{
+	  "sourceUrl": "https://www.youtube.com/watch?v=nwP80FmSpOw",
+	  "targetLocation": "test1"
+	},
+	{
+	  "sourceUrl": "https://www.youtube.com/watch?v=nwP80FmSpOw",
+	  "targetLocation": "test2"
+	}
+	]
+}

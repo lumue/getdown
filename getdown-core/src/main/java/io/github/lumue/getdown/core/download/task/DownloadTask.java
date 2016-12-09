@@ -1,21 +1,26 @@
 package io.github.lumue.getdown.core.download.task;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
 /**
- * a request to download something to somewgere
+ * a request to download something to somewhere
  *
  * Created by lm on 06.12.16.
  */
 public class DownloadTask implements HasIdentity<String>, Serializable{
 
-	private final String id;
+
+	private static final long serialVersionUID = 1651793106903747882L;
+
+	private final String handle;
 
 	private final String sourceUrl;
 
@@ -28,22 +33,22 @@ public class DownloadTask implements HasIdentity<String>, Serializable{
 
 	@JsonCreator
 	private DownloadTask(
-			String id,
-			String sourceUrl,
-			LocalDateTime creationTime,
-			String targetLocation) {
-		this(id, sourceUrl,creationTime);
+			@JsonProperty("handle") String handle,
+			@JsonProperty("sourceUrl") String sourceUrl,
+			@JsonProperty("creationTime") LocalDateTime creationTime,
+			@JsonProperty("targetLocation") String targetLocation) {
+		this(handle, sourceUrl,creationTime);
 		this.targetLocation = targetLocation;
 	}
 
-	private DownloadTask(String id, String sourceUrl, LocalDateTime creationTime) {
-		this.id=id;
-		this.creationTime=creationTime;
+	private DownloadTask(String handle, String sourceUrl, LocalDateTime creationTime) {
+		this.handle = handle;
+		this.creationTime=creationTime!=null?creationTime:LocalDateTime.now();
 		this.sourceUrl=sourceUrl;
 	}
 
 	private DownloadTask(DownloadTaskBuilder builder) {
-		id = builder.id;
+		handle = builder.id;
 		sourceUrl = builder.sourceUrl;
 		creationTime = LocalDateTime.now();
 		setTargetLocation(builder.targetLocation);
@@ -52,9 +57,6 @@ public class DownloadTask implements HasIdentity<String>, Serializable{
 
 
 
-	public String getId() {
-		return id;
-	}
 
 	public String getSourceUrl() {
 		return sourceUrl;
@@ -74,7 +76,7 @@ public class DownloadTask implements HasIdentity<String>, Serializable{
 
 	@Override
 	public String getHandle() {
-		return getId();
+		return handle;
 	}
 
 	public void setPriority(Long priority) {
@@ -91,6 +93,13 @@ public class DownloadTask implements HasIdentity<String>, Serializable{
 		return new DownloadTaskBuilder();
 	}
 
+	public DownloadTaskBuilder copy() {
+		return builder().withHandle(getHandle())
+				.withPriority(getPriority())
+				.withSourceUrl(getSourceUrl())
+				.withTargetLocation(getTargetLocation());
+	}
+
 	public static final class DownloadTaskBuilder implements ObjectBuilder<DownloadTask> {
 		private String id;
 		private String sourceUrl;
@@ -100,10 +109,6 @@ public class DownloadTask implements HasIdentity<String>, Serializable{
 		private DownloadTaskBuilder() {
 		}
 
-		public DownloadTaskBuilder withId(String val) {
-			id = val;
-			return this;
-		}
 
 		public DownloadTaskBuilder withSourceUrl(String val) {
 			sourceUrl = val;
@@ -122,13 +127,18 @@ public class DownloadTask implements HasIdentity<String>, Serializable{
 		}
 
 		@Override
-		public DownloadTaskBuilder withKey(String keyValue) {
+		public DownloadTaskBuilder withHandle(String keyValue) {
 			this.id=keyValue;
 			return this;
 		}
 
 		public DownloadTask build() {
 			return new DownloadTask(this);
+		}
+
+		@Override
+		public boolean hasHandle() {
+			return !StringUtils.isEmpty(this.id);
 		}
 	}
 }

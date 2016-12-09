@@ -2,7 +2,7 @@
 
 ## Parse Video ID from URL
 
-The Video at `https://www.youtube.com/watch?v=S6P3ZLOUgXk` has the id `S6P3ZLOUgXk`
+The Video at `https://www.youtube.com/watch?v=S6P3ZLOUgXk` has the handle `S6P3ZLOUgXk`
  
 ## Get Metadata for Video ID
 
@@ -15,7 +15,7 @@ The response will look like this:
 	<?xml version='1.0' encoding='UTF-8'?>
 	<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gd='http://schemas.google.com/g/2005'
 	xmlns:yt='http://gdata.youtube.com/schemas/2007' xmlns:media='http://search.yahoo.com/mrss/'>
-	<id>http://gdata.youtube.com/feeds/api/videos/S6P3ZLOUgXk</id>
+	<handle>http://gdata.youtube.com/feeds/api/videos/S6P3ZLOUgXk</handle>
 	<published>2013-06-25T15:48:00.000Z</published>
 	<updated>2015-01-24T09:36:21.000Z</updated>
 	<category scheme='http://schemas.google.com/g/2005#kind' term='http://gdata.youtube.com/schemas/2007#video' />

@@ -1,6 +1,9 @@
 package io.github.lumue.getdown.core.download;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -55,13 +58,23 @@ public class DownloadService {
 		this.workPathManager = workPathManager;
 	}
 
+
+	public DownloadTask addDownload(DownloadTask u) {
+		return createDownloadTask(u.copy());
+	}
+
 	public DownloadTask addDownload(final String url) {
 		String processedUrl=preprocessUrl(url);
 
-		DownloadTask task = downloadTaskRepository.create(DownloadTask
+		DownloadTask.DownloadTaskBuilder builder = DownloadTask
 				.builder()
 				.withSourceUrl(processedUrl)
-				.withTargetLocation(downloadPath));
+				.withTargetLocation(downloadPath);
+		return createDownloadTask(builder);
+	}
+
+	private DownloadTask createDownloadTask(DownloadTask.DownloadTaskBuilder builder) {
+		DownloadTask task = downloadTaskRepository.create(builder);
 		try {
 			workPathManager.createPath(task.getHandle());
 		} catch (IOException e) {
@@ -90,8 +103,8 @@ public class DownloadService {
 		DownloadJob job = YoutubedlDownloadJob.builder()
 				.withUrl(task.getSourceUrl())
 				.withDownloadPath(workPathManager.getPath(handle).toString())
-				.withTargetPath(downloadPath)
-				.withKey(task.getHandle())
+				.withTargetPath(downloadPath+ File.separator+task.getTargetLocation())
+				.withHandle(task.getHandle())
 				.build();
 		job.addObserver( o ->
 				eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))
@@ -161,12 +174,14 @@ public class DownloadService {
 
 
 	@PostConstruct
-	public void resumeWaitingJobsFromRepo(){
-
+	public void init() throws IOException {
+		if(!Files.exists(Paths.get(this.downloadPath)))
+			Files.createDirectory(Paths.get(this.downloadPath));
 	}
 
 	public void removeAll() {
 		LOGGER.debug("removing all downloads");
 		this.streamDownloads().forEach(job->removeDownload(job.getHandle()));
 	}
+
 }

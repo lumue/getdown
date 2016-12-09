@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -132,9 +133,24 @@ public class YoutubedlDownloadJob extends Download {
 				LOGGER.info(movingmsg);
 				try {
 					message(movingmsg);
-					Files.move(Paths.get(getDownloadPath()), Paths.get(getTargetPath()));
+					Path target = Paths.get(getTargetPath());
+					if(!Files.exists(target))
+						Files.createDirectory(target);
+					Files.list(Paths.get(getDownloadPath()))
+							.filter(p->!Files.isDirectory(p))
+							.forEach(p -> {
+								try {
+									Files.move(p, target.resolve(p.getFileName()));
+								} catch (IOException e) {
+									String msg = "error moving files for download "+getName()+" to " + getTargetPath();
+									error(new RuntimeException(msg+":"+e.getClass().getSimpleName(),e));
+									LOGGER.error(msg,e);
+									throw new RuntimeException("msg", e);
+								}
+							});
 					String movedmsg = "moved files for download "+getName()+" to " + getTargetPath();
 					message(movedmsg);
+					finish();
 					LOGGER.info(movedmsg);
 				} catch (IOException e) {
 					String msg = "error moving files for download "+getName()+" to " + getTargetPath();

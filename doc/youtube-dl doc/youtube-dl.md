@@ -187,15 +187,15 @@ Filesystem Options:
  -a, --batch-file FILE
  File containing URLs to download (’-’ for stdin)
 
---id Use only video ID in file name
+--handle Use only video ID in file name
 
 -o, --output TEMPLATE
  Output filename template. Use %(title)s to get the title, %(uploader)s for the uploader name, %(uploader\_id)s for the uploader nickname if different, %(autonumber)s to get an automatically
- incremented number, %(ext)s for the filename extension, %(format)s for the format description (like "22 - 1280x720" or "HD"), %(format\_id)s for the unique id of the format (like YouTube’s
- itags: "137"), %(upload\_date)s for the upload date (YYYYMMDD), %(extractor)s for the provider (youtube, metacafe, etc), %(id)s for the video id, %(playlist\_title)s, %(playlist\_id)s, or
+ incremented number, %(ext)s for the filename extension, %(format)s for the format description (like "22 - 1280x720" or "HD"), %(format\_id)s for the unique handle of the format (like YouTube’s
+ itags: "137"), %(upload\_date)s for the upload date (YYYYMMDD), %(extractor)s for the provider (youtube, metacafe, etc), %(handle)s for the video handle, %(playlist\_title)s, %(playlist\_id)s, or
  %(playlist)s (=title if present, ID otherwise) for the playlist the video is in, %(playlist\_index)s for the position in the playlist. %(height)s and %(width)s for the width and height of the
  video format. %(resolution)s for a textual description of the resolution of the video format. %% for a literal percent. Use - to output to stdout. Can also be used to download to a differâ
- ent directory, for example with -o ’/my/downloads/%(uploader)s /%(title)s-%(id)s.%(ext)s’ .
+ ent directory, for example with -o ’/my/downloads/%(uploader)s /%(title)s-%(handle)s.%(ext)s’ .
 
 --autonumber-size NUMBER
  Specify the number of digits in %(autonumber)s when it is present in output filename template or --auto-number option is given
@@ -281,8 +281,8 @@ Verbosity / Simulation Options:
 -e, --get-title
  Simulate, quiet but print title
 
---get-id
- Simulate, quiet but print id
+--get-handle
+ Simulate, quiet but print handle
 
 --get-thumbnail
  Simulate, quiet but print thumbnail URL
@@ -517,7 +517,7 @@ The basic usage is not to set any template arguments when downloading a single f
  replaced when downloading each video. The special sequences have the format %(NAME)s. To clarify, that is a percent symbol followed by a name in parentheses, followed by a lowercase S. Allowed
  names are:
 
-Â· id: Video identifier
+Â· handle: Video identifier
 
 Â· title: Video title
 
@@ -541,7 +541,7 @@ The basic usage is not to set any template arguments when downloading a single f
 
 Â· upload\_date: Video upload date (YYYYMMDD)
 
-Â· uploader\_id: Nickname or id of the video uploader
+Â· uploader\_id: Nickname or handle of the video uploader
 
 Â· location: Physical location where the video was filmed
 
@@ -603,7 +603,7 @@ The basic usage is not to set any template arguments when downloading a single f
 
 Â· autonumber: Five-digit number that will be increased with each download, starting at zero
 
-Â· playlist: Name or id of the playlist that contains the video
+Â· playlist: Name or handle of the playlist that contains the video
 
 Â· playlist\_index: Index of the video in the playlist padded with leading zeros according to the total length of the playlist
 
@@ -625,7 +625,7 @@ Available for the media that is a track or a part of a music album: - track: Tit
 Each aforementioned sequence when referenced in output template will be replaced by the actual value corresponding to the sequence name. Note that some of the sequences are not guaranteed to be
  present since they depend on the metadata obtained by particular extractor, such sequences will be replaced with NA.
 
-For example for -o %(title)s-%(id)s.%(ext)s and mp4 video with title youtube-dl test video and id BaW\_jenozKcj this will result in a youtube-dl test video-BaW\_jenozKcj.mp4 file created in the current
+For example for -o %(title)s-%(handle)s.%(ext)s and mp4 video with title youtube-dl test video and handle BaW\_jenozKcj this will result in a youtube-dl test video-BaW\_jenozKcj.mp4 file created in the current
  directory.
 
 Output template can also contain arbitrary hierarchical path, e.g. -o ’%(playlist)s/%(playlist\_index)s - %(title)s.%(ext)s’ that will result in downloading each video in a directory corresponding to
@@ -633,14 +633,14 @@ Output template can also contain arbitrary hierarchical path, e.g. -o ’%(playl
 
 To specify percent literal in output template use %%. To output to stdout use -o -.
 
-The current default template is %(title)s-%(id)s.%(ext)s.
+The current default template is %(title)s-%(handle)s.%(ext)s.
 
 In some cases, you don’t want special characters such as ä¸, spaces, or &, such as when transferring the downloaded filename to a Windows system or the filename through an 8bit-unsafe channel. In
  these cases, add the --restrict-filenames flag to get a shorter title:
 
 Output template and Windows batch files
- If you are using output template inside a Windows batch file then you must escape plain percent characters (%) by doubling, so that -o "%(title)s-%(id)s.%(ext)s" should become
- -o "%%(title)s-%%(id)s.%%(ext)s". However you should not touch %’s that are not plain characters, e.g. environment variables for expansion should stay intact: -o "C:HOMEPATH% top%(title)s.%%(ext)s".
+ If you are using output template inside a Windows batch file then you must escape plain percent characters (%) by doubling, so that -o "%(title)s-%(handle)s.%(ext)s" should become
+ -o "%%(title)s-%%(handle)s.%%(ext)s". However you should not touch %’s that are not plain characters, e.g. environment variables for expansion should stay intact: -o "C:HOMEPATH% top%(title)s.%%(ext)s".
 
 Output template examples
  Note on Windows you may need to use double quotes instead of single.
@@ -796,7 +796,7 @@ If you have installed youtube-dl with a package manager, pip, setup.py or a tarb
 I’m getting an error when trying to use output template:
  error: using output template conflicts with using title, video ID or auto number
 
-Make sure you are not using -o with any of these options -t, --title, --id, -A or --auto-number set in command line or in a configuration file. Remove the latter if any.
+Make sure you are not using -o with any of these options -t, --title, --handle, -A or --auto-number set in command line or in a configuration file. Remove the latter if any.
 
 Do I always have to pass -citw?
  By default, youtube-dl intends to have the best options (incidentally, if you have a convincing case that these should be different, please file an issue where you explain that (https://yt-
@@ -884,7 +884,7 @@ What is this binary file? Where has the code gone?
  clone the git repository, as laid out above. If you modify the code, you can run it by executing the \_\_main\_\_.py file. To recompile the executable, run make youtube-dl.
 
 The exe throws an error due to missing MSVCR100.dll
- To run the exe you need to install first the Microsoft Visual C++ 2010 Redistributable Package (x86) (https://www.microsoft.com/en-US/download/details.aspx?id=5555).
+ To run the exe you need to install first the Microsoft Visual C++ 2010 Redistributable Package (x86) (https://www.microsoft.com/en-US/download/details.aspx?handle=5555).
 
 On Windows, how should I set up ffmpeg and youtube-dl? Where should
  I put the exe files?
@@ -898,7 +898,7 @@ From then on, after restarting your shell, you will be able to access both youtu
  directory you’re in.
 
 How do I put downloads into a specific folder?
- Use the -o to specify an output template (\#output-template), for example -o "/home/user/videos/%(title)s-%(id)s.%(ext)s". If you want this for all of your downloads, put the option into your configuâ
+ Use the -o to specify an output template (\#output-template), for example -o "/home/user/videos/%(title)s-%(handle)s.%(ext)s". If you want this for all of your downloads, put the option into your configuâ
  ration file (\#configuration).
 
 How do I download a video starting with a -?
@@ -1015,12 +1015,12 @@ cd youtube-dl
 from .common import InfoExtractor
 
 class YourExtractorIE(InfoExtractor):
- \_VALID\_URL = r’https?://(?:www.)?yourextractor.com/watch/(?P\<id\>[0-9]+)’
+ \_VALID\_URL = r’https?://(?:www.)?yourextractor.com/watch/(?P\<handle\>[0-9]+)’
  \_TEST = {
  ’url’: ’http://yourextractor.com/watch/42’,
  ’md5’: ’TODO: md5 sum of the first 10241 bytes of the video file (use --test)’,
  ’info\_dict’: {
- ’id’: ’42’,
+ ’handle’: ’42’,
  ’ext’: ’mp4’,
  ’title’: ’Video title goes here’,
  ’thumbnail’: ’re:\^https?://.\*.jpg\$’,
@@ -1040,10 +1040,10 @@ def \_real\_extract(self, url):
  title = self.\_html\_search\_regex(r’\<h1\>(.+?)\</h1\>’, webpage, ’title’)
 
 return {
- ’id’: video\_id,
+ ’handle’: video\_id,
  ’title’: title,
  ’description’: self.\_og\_search\_description(webpage),
- ’uploader’: self.\_search\_regex(r’\<div[\^\>]+id="uploader"[\^\>]\*\>([\^\<]+)\<’, webpage, ’uploader’, fatal=False),
+ ’uploader’: self.\_search\_regex(r’\<div[\^\>]+handle="uploader"[\^\>]\*\>([\^\<]+)\<’, webpage, ’uploader’, fatal=False),
  \# TODO more properties (see youtube\_dl/extractor/common.py)
  }
 
@@ -1083,14 +1083,14 @@ Mandatory and optional metafields
  For extraction to work youtube-dl relies on metadata your extractor extracts and provides to youtube-dl expressed by information dictionary (https://github.com/rg3/youtube-dl/blob/masâ
  ter/youtube\_dl/extractor/common.py\#L75-L257) or simply info dict. Only the following meta fields in info dict are considered mandatory for successful extraction process by youtube-dl:
 
-Â· id (media identifier)
+Â· handle (media identifier)
 
 Â· title (media title)
 
 Â· url (media download URL) or formats
 
 In fact only the last option is technically mandatory (i.e. if you can’t figure out the download location of the media the extraction does not make any sense). But by convention youtube-dl also
- treats id and title to be mandatory. Thus aforementioned metafields are the critical data the extraction does not make any sense without and if any of them fail to be extracted then extractor is conâ
+ treats handle and title to be mandatory. Thus aforementioned metafields are the critical data the extraction does not make any sense without and if any of them fail to be extracted then extractor is conâ
  sidered completely broken.
 
 Any field (https://github.com/rg3/youtube-dl/blob/master/youtube\_dl/extractor/common.py\#L149-L257) apart from the aforementioned ones are considered optional. That means that extraction should be
@@ -1125,7 +1125,7 @@ The latter will break extraction process with KeyError if summary disappears fro
 Similarly, you should pass fatal=False when extracting optional data from a webpage with \_search\_regex, \_html\_search\_regex or similar methods, for instance:
 
 description = self.\_search\_regex(
- r’\<span[\^\>]+id="title"[\^\>]\*\>([\^\<]+)\<’,
+ r’\<span[\^\>]+handle="title"[\^\>]\*\>([\^\<]+)\<’,
  webpage, ’description’, fatal=False)
 
 With fatal set to False if \_search\_regex fails to extract description it will emit a warning and continue extraction.
@@ -1133,7 +1133,7 @@ With fatal set to False if \_search\_regex fails to extract description it will 
 You can also pass default=\<some fallback value\>, for example:
 
 description = self.\_search\_regex(
- r’\<span[\^\>]+id="title"[\^\>]\*\>([\^\<]+)\<’,
+ r’\<span[\^\>]+handle="title"[\^\>]\*\>([\^\<]+)\<’,
  webpage, ’description’, default=None)
 
 On failure this code will silently continue the extraction with description set to None. That is useful for metafields that are known to may or may not be present.
