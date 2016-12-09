@@ -69,7 +69,7 @@ public class DownloadService {
 		DownloadTask.DownloadTaskBuilder builder = DownloadTask
 				.builder()
 				.withSourceUrl(processedUrl)
-				.withTargetLocation(downloadPath);
+				.withTargetLocation("");
 		return createDownloadTask(builder);
 	}
 
