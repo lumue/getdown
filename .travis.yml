@@ -21,6 +21,9 @@ before_install:
   - npm install -g bower
   - npm install -g gulp
 
+before_script:
+  - gradle npmInstall
+
 script:
   - gradle docker
 
