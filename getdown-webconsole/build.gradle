@@ -2,22 +2,24 @@ processResources.dependsOn 'bowerInstall'
 
 jar.dependsOn 'gulp'
 
-task installTools( type: Exec){
+task npmInstall( type: Exec){
 	workingDir '.'
 	executable = 'npm'
 	args = ['install']
 }
 
+
 // Install the bower components for front-end library management
-task bowerInstall( type: Exec){
+task bowerInstall( type: Exec, dependsOn: npmInstall){
 	workingDir '.'
-	commandLine "node_modules/bower/bin/bower", 'install'
+	commandLine "bower", 'install','-f'
 }
 
 task gulp(type: Exec, dependsOn: bowerInstall){
 	workingDir '.'
 	executable='gulp'
 }
+
 
 
 clean.doFirst {
