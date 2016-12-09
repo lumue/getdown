@@ -8,8 +8,8 @@ package io.github.lumue.getdown.core.download.job;
 @SuppressWarnings("serial")
 public class MockDownloadJob extends Download implements DownloadJob{
 
-	public MockDownloadJob() {
-		super("", "", "","",0L);
+	MockDownloadJob() {
+		super("", "", "","",0L,"");
 	}
 
 	@Override
@@ -19,6 +19,11 @@ public class MockDownloadJob extends Download implements DownloadJob{
 
 	@Override
 	public void run() {
+	}
+
+	@Override
+	public void postProcess() {
+
 	}
 
 	@Override

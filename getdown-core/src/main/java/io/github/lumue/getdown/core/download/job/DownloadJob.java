@@ -24,17 +24,17 @@ public interface DownloadJob extends HasIdentity<String>,Serializable,Observable
 
 	String getName();
 
+	String getDownloadPath();
 
-
-	void setDownloadPath(String downloadPath);
+	String getTargetPath();
 
 	void prepare();
 
 	void run();
 
+	void postProcess();
 
 	void cancel();
-
 
 	/**
 	 * sort order
@@ -49,6 +49,5 @@ public interface DownloadJob extends HasIdentity<String>,Serializable,Observable
 	enum DownloadJobState {
 		WAITING,PREPARING,RUNNING, ERROR, FINISHED, CANCELLED, PREPARED;
 	}
-
 
 }

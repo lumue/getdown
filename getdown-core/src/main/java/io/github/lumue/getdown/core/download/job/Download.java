@@ -24,6 +24,8 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 
 	private Long index=System.currentTimeMillis();
 
+	private final String targetPath;
+
 
 	@Override
 	public int hashCode() {
@@ -114,7 +116,10 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		return handle;
 	}
 
-
+	@Override
+	public String getTargetPath() {
+		return targetPath;
+	}
 
 	public String getUrl() {
 		return url;
@@ -132,17 +137,18 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 	protected Download(
 			@JsonProperty("url") String url,
 			@JsonProperty("handle") String handle,
-			@JsonProperty("state") DownloadJob.DownloadJobState downloadJobState,
+			@JsonProperty("state") DownloadJobState downloadJobState,
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
 			String name,
 			String host,
-			Long index) {
+			Long index, String targetPath) {
 		super();
 		this.url = url;
 		this.handle = handle;
 		this.downloadJobState = downloadJobState;
 		this.name = name;
 		this.host = host;
+		this.targetPath = targetPath;
 		this.contentLocation = contentLocation;
 		this.downloadProgress = downloadProgress;
 		this.index=index;
@@ -153,13 +159,14 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 			String url,
 			String host,
 			String handle,
-			Long index) {
+			Long index, String targetPath) {
 		super();
 		this.name = name;
 		this.host = host;
 		this.url = url;
 		this.handle = handle;
 		this.index=index;
+		this.targetPath=targetPath;
 	}
 
 
@@ -289,12 +296,12 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 
 
 	public abstract static class DownloadBuilder implements ObjectBuilder<DownloadJob> {
-		protected String outputFilename;
 		protected String url;
 		protected String host;
 		protected String name;
 		protected String handle= UUID.randomUUID().toString();
 		protected Long index=System.currentTimeMillis();
+		protected String targetPath;
 
 		public DownloadBuilder withIndex(long index){
 			this.index=index;
@@ -303,10 +310,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 
 		protected String downloadPath;
 
-		public DownloadBuilder withOutputFilename(String outputFilename) {
-			this.outputFilename = outputFilename;
-			return this;
-		}
+
 
 		public DownloadBuilder withName(String name) {
 			this.name = name;
@@ -327,8 +331,13 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 
 
 
-		public ObjectBuilder<DownloadJob> withDownloadPath(String downloadPath) {
+		public DownloadBuilder withDownloadPath(String downloadPath) {
 			this.downloadPath=downloadPath;
+			return this;
+		}
+
+		public DownloadBuilder withTargetPath(String targetPath) {
+			this.targetPath=targetPath;
 			return this;
 		}
 	}

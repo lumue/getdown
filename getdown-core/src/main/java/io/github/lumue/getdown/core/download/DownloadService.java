@@ -90,6 +90,7 @@ public class DownloadService {
 		DownloadJob job = YoutubedlDownloadJob.builder()
 				.withUrl(task.getSourceUrl())
 				.withDownloadPath(workPathManager.getPath(handle).toString())
+				.withTargetPath(downloadPath)
 				.withKey(task.getHandle())
 				.build();
 		job.addObserver( o ->

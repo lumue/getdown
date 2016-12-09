@@ -28,11 +28,13 @@ public class ApplicationConfiguration {
 	@Bean
 	public AsyncDownloadJobRunner downloadJobRunner(
 			@Value("${getdown.jobrunner.threads.prepare}") Integer threadsPrepare,
-			@Value("${getdown.jobrunner.threads.download}") Integer threadsDownload) {
+			@Value("${getdown.jobrunner.threads.download}") Integer threadsDownload,
+			@Value("${getdown.jobrunner.threads.postprocess}") Integer threadsPostprocess) {
 
 		return new AsyncDownloadJobRunner(
 				threadsPrepare,
-				threadsDownload);
+				threadsDownload,
+				threadsPrepare);
 	}
 
 

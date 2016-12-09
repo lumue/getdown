@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.github.lumue.getdown.core.download.job.DownloadState.*;
@@ -36,8 +38,9 @@ public class YoutubedlDownloadJob extends Download {
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
 			@JsonProperty("name") String name,
 			@JsonProperty("host") String host,
-			@JsonProperty("index") Long index) {
-		super(url,handle,downloadJobState,downloadProgress,name,host,index);
+			@JsonProperty("index") Long index,
+			@JsonProperty("targetPath") String targetPath) {
+		super(url,handle,downloadJobState,downloadProgress,name,host,index, targetPath);
 	}
 
 	private YoutubedlDownloadJob(String handle,
@@ -45,8 +48,9 @@ public class YoutubedlDownloadJob extends Download {
 	                             String url,
 	                             String host,
 	                             String downloadPath,
-	                             Long index) {
-		super(name, url, host, handle,index);
+	                             Long index,
+	                             String targetPath) {
+		super(name, url, host, handle,index,targetPath);
 		setDownloadPath(downloadPath);
 	}
 
@@ -117,6 +121,18 @@ public class YoutubedlDownloadJob extends Download {
 
 		} catch (Throwable t) {
 			handleError(t);
+		}
+	}
+
+	@Override
+	public void postProcess() {
+		LOGGER.info("moving downloaded files from "+getDownloadPath()+" to "+getTargetPath());
+		try {
+			message("moving downloaded files from "+getDownloadPath()+" to "+getTargetPath());
+			Files.move(Paths.get(getDownloadPath()), Paths.get(getTargetPath()));
+		}
+		catch(IOException e){
+			throw new RuntimeException("error moving files",e);
 		}
 	}
 
@@ -210,7 +226,7 @@ public class YoutubedlDownloadJob extends Download {
 
 		@Override
 		public DownloadJob build() {
-			return new YoutubedlDownloadJob(this.handle,this.name, this.url, this.host,this.downloadPath,this.index);
+			return new YoutubedlDownloadJob(this.handle,this.name, this.url, this.host,this.downloadPath,this.index,this.targetPath);
 		}
 
 	}

@@ -23,6 +23,8 @@ public class AsyncDownloadJobRunner implements Runnable {
 
 	private final ScheduledThreadPoolExecutor prepareExecutor;
 
+	private final ScheduledThreadPoolExecutor postprocessExecutor;
+
 	private final AtomicBoolean shouldRun = new AtomicBoolean(false);
 
 
@@ -45,10 +47,12 @@ public class AsyncDownloadJobRunner implements Runnable {
 
 	public AsyncDownloadJobRunner(
 			int maxThreadsPrepare,
-			int maxThreadsDownload) {
+			int maxThreadsDownload,
+			int maxThreadsPostprocess) {
 		super();
 		this.downloadExecutor = executor(maxThreadsDownload);
 		this.prepareExecutor = executor(maxThreadsPrepare);
+		this.postprocessExecutor = executor(maxThreadsPostprocess);
 		this.jobRunner = executor(1);
 	}
 
@@ -60,12 +64,14 @@ public class AsyncDownloadJobRunner implements Runnable {
 		if (!job.isPrepared()) {
 			CompletableFuture.runAsync(job::prepare, prepareExecutor)
 					.thenRunAsync(job, downloadExecutor)
+					.thenRunAsync(job::postProcess,postprocessExecutor)
 					.thenRun(() -> {
 						running.remove(job);
 						done.add(job);
 					});
 		} else
 			CompletableFuture.runAsync(job, downloadExecutor)
+					.thenRunAsync(job::postProcess,postprocessExecutor)
 					.thenRun(() -> {
 						running.remove(job);
 						done.add(job);
