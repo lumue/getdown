@@ -12,4 +12,4 @@ EXPOSE 8001
 VOLUME ["/getdown"]
 VOLUME ["/downloads"]
 
-ENTRYPOINT ["java","-Dgetdown.path.home=/getdown", "-Dgetdown.path.download=/downloads","-jar","/app.jar"]
+ENTRYPOINT ["java","-Xms20M","-Xmx100m","-Dgetdown.path.home=/getdown", "-Dgetdown.path.download=/downloads","-jar","/app.jar"]
