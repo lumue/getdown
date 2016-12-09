@@ -9,7 +9,8 @@ bin/
 *.jfr
 Downloads/
 log/
-
+getdown-testvideo/client_secrets.json
+getdown-testvideo/build
 .gradle
 
 # Ignore Gradle GUI config

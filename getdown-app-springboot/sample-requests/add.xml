@@ -18,17 +18,12 @@
     </list>
   </option>
   <option name="parameters">
-    <list>
-      <KeyValuePair>
-        <option name="key" value="url" />
-        <option name="value" value="https://de.xhamster.com/movies/6686339/was_eine_kleine_drecksau.html" />
-      </KeyValuePair>
-    </list>
+    <list />
   </option>
-  <option name="parametersEnabled" value="true" />
-  <option name="haveTextToSend" value="false" />
+  <option name="parametersEnabled" value="false" />
+  <option name="haveTextToSend" value="true" />
   <option name="haveFileToSend" value="false" />
   <option name="isFileUpload" value="false" />
-  <option name="textToSend" value="" />
+  <option name="textToSend" value="https://www.youtube.com/watch?v=nwP80FmSpOw" />
   <option name="filesToSend" value="" />
 </RestClientRequest>

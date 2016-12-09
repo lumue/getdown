@@ -126,14 +126,24 @@ public class YoutubedlDownloadJob extends Download {
 
 	@Override
 	public void postProcess() {
-		LOGGER.info("moving downloaded files from "+getDownloadPath()+" to "+getTargetPath());
-		try {
-			message("moving downloaded files from "+getDownloadPath()+" to "+getTargetPath());
-			Files.move(Paths.get(getDownloadPath()), Paths.get(getTargetPath()));
-		}
-		catch(IOException e){
-			throw new RuntimeException("error moving files",e);
-		}
+		getDownloadProgress().ifPresent(downloadProgress -> {
+			if (FINISHED.equals(downloadProgress.getState())) {
+				String movingmsg = "moving downloaded files for download "+getName()+" to " + getTargetPath();
+				LOGGER.info(movingmsg);
+				try {
+					message(movingmsg);
+					Files.move(Paths.get(getDownloadPath()), Paths.get(getTargetPath()));
+					String movedmsg = "moved files for download "+getName()+" to " + getTargetPath();
+					message(movedmsg);
+					LOGGER.info(movedmsg);
+				} catch (IOException e) {
+					String msg = "error moving files for download "+getName()+" to " + getTargetPath();
+					error(new RuntimeException(msg+":"+e.getClass().getSimpleName(),e));
+					LOGGER.error(msg,e);
+					throw new RuntimeException("msg", e);
+				}
+			}
+		});
 	}
 
 	private void handlePrepared(YdlDownloadTask ydlDownloadTask, SingleInfoJsonMetadataAccessor singleInfoJsonMetadataAccessor) {
