@@ -16,6 +16,11 @@
       "description": "Description for getdown.jobrunner.threads.download."
     },
     {
+      "name": "getdown.jobrunner.threads.postprocess",
+      "type": "java.lang.Integer",
+      "description": "Description for getdown.jobrunner.threads.download."
+    },
+    {
       "name": "getdown.jobrunner.threads.prepare",
       "type": "java.lang.Integer",
       "description": "Description for getdown.jobrunner.threads.prepare."
@@ -32,6 +37,11 @@
     },
     {
       "name": "getdown.path.download",
+      "type": "java.lang.String",
+      "description": "Description for getdown.path.download."
+    },
+    {
+      "name": "getdown.path.media",
       "type": "java.lang.String",
       "description": "Description for getdown.path.download."
     },

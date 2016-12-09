@@ -15,6 +15,7 @@ dependencies {
 	compile "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
 	compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
 	compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jackson_version"
+	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
 	compile "org.slf4j:slf4j-api:$slf4j_version"
 
 	compile 'io.reactivex:rxjava-file-utils:0.1.4'
