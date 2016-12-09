@@ -11,6 +11,7 @@ services:
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
   directories:
     - $HOME/.gradle/caches/
@@ -26,7 +27,5 @@ script:
 
 after_success:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker tag -f lumue/getdown:master-SNAPSHOT lumue/getdown:latest
-  - docker push lumue/getdown:master-SNAPSHOT
-  - docker push lumue/getdown:latest
+  - docker push lumue/getdown:download-tasks-SNAPSHOT
   
