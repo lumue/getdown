@@ -10,7 +10,7 @@ task npmInstall( type: Exec){
 
 
 // Install the bower components for front-end library management
-task bowerInstall( type: Exec){
+task bowerInstall( type: Exec, dependsOn: npmInstall){
 	workingDir '.'
 	commandLine "bower", 'install'
 }
