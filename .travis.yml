@@ -16,8 +16,8 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-before_install:
-  - gradle installTools
+before_script:
+  - npm install -g bower
 
 script:
   - gradle docker
