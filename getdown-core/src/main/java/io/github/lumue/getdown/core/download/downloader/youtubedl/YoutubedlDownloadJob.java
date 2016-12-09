@@ -138,9 +138,11 @@ public class YoutubedlDownloadJob extends Download {
 						Files.createDirectory(target);
 					Files.list(Paths.get(getDownloadPath()))
 							.filter(p->!Files.isDirectory(p))
-							.forEach(p -> {
+							.map(p->new Path[]{p,target.resolve(p.getFileName())})
+							.filter(pa ->!Files.exists(pa[1]))
+							.forEach(pa -> {
 								try {
-									Files.move(p, target.resolve(p.getFileName()));
+									Files.move(pa[0],pa[1]);
 								} catch (IOException e) {
 									String msg = "error moving files for download "+getName()+" to " + getTargetPath();
 									error(new RuntimeException(msg+":"+e.getClass().getSimpleName(),e));
