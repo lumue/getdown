@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.github.lumue.getdown.core.download.job.DownloadState.*;
@@ -96,7 +97,7 @@ public class YoutubedlDownloadJob extends Download {
 
 
 	@Override
-	public void run() {
+	public void executeDownload() {
 		progress(new DownloadProgress());
 		try {
 			getDownloadTask().executeAsync();
@@ -143,6 +144,7 @@ public class YoutubedlDownloadJob extends Download {
 							.forEach(pa -> {
 								try {
 									Files.move(pa[0],pa[1]);
+									Files.setPosixFilePermissions(pa[1], PosixFilePermissions.fromString("rw-rw-rw-"));
 								} catch (IOException e) {
 									String msg = "error moving files for download "+getName()+" to " + getTargetPath();
 									error(new RuntimeException(msg+":"+e.getClass().getSimpleName(),e));
