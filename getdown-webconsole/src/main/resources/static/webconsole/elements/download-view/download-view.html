@@ -33,7 +33,7 @@
 
 		<!-- Main Content -->
 		<div class="content">
-			<download-list-widget title="running" downloads="{{active}}"
+			<download-list-widget title="running" downloads="[[active]]"
 			                      on-cancel="_handleCancel"
 			                      on-delete="_handleDelete"
 			                      on-restart="_handleRestart">
@@ -88,10 +88,6 @@
 						notify: true
 					},
 					failed: {
-						type: Array,
-						notify: true
-					},
-					finished: {
 						type: Array,
 						notify: true
 					},
