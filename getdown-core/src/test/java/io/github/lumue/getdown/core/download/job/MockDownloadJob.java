@@ -18,7 +18,7 @@ public class MockDownloadJob extends Download implements DownloadJob{
 	}
 
 	@Override
-	public void run() {
+	public void executeDownload() {
 	}
 
 	@Override

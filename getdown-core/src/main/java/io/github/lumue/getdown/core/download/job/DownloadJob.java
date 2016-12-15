@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.util.Observable;
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
-public interface DownloadJob extends HasIdentity<String>,Serializable,Observable,Runnable {
+public interface DownloadJob extends HasIdentity<String>,Serializable,Observable {
 
 	@Override
 	String getHandle();
@@ -30,7 +30,7 @@ public interface DownloadJob extends HasIdentity<String>,Serializable,Observable
 
 	void prepare();
 
-	void run();
+	void executeDownload();
 
 	void postProcess();
 

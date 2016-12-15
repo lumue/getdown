@@ -63,14 +63,14 @@ public class AsyncDownloadJobRunner implements Runnable {
 		running.add(job);
 		if (!job.isPrepared()) {
 			CompletableFuture.runAsync(job::prepare, prepareExecutor)
-					.thenRunAsync(job, downloadExecutor)
+					.thenRunAsync(job::executeDownload, downloadExecutor)
 					.thenRunAsync(job::postProcess,postprocessExecutor)
 					.thenRun(() -> {
 						running.remove(job);
 						done.add(job);
 					});
 		} else
-			CompletableFuture.runAsync(job, downloadExecutor)
+			CompletableFuture.runAsync(job::executeDownload, downloadExecutor)
 					.thenRunAsync(job::postProcess,postprocessExecutor)
 					.thenRun(() -> {
 						running.remove(job);

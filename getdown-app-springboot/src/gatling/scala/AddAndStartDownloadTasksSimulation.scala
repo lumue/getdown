@@ -10,7 +10,7 @@ class AddAndStartDownloadTasksSimulation extends Simulation {
 
 
 	val scn: ScenarioBuilder = scenario("AddAndStartDownloadsFromFeederSimulation")
-		.repeat(100, "count") {
+		.repeat(10, "count") {
 			exec( session =>{
 				session.set("username",
 										session.get("username")
@@ -37,6 +37,6 @@ class AddAndStartDownloadTasksSimulation extends Simulation {
 
 
 	setUp(
-		scn.inject(atOnceUsers(10))
+		scn.inject(atOnceUsers(5))
 	).protocols(httpConf)
 }
