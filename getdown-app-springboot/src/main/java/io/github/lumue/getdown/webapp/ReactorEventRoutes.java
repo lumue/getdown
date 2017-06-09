@@ -21,6 +21,7 @@ import static reactor.bus.selector.Selectors.$;
 @Lazy(false)
 public class ReactorEventRoutes {
 
+	public static final String THROTTELED_DOWNLOADS = "throtteled-downloads";
 	private final DownloadWebsocketController websocketController;
 
 	private final DownloadTaskRepository downloadJobRepository;
@@ -36,7 +37,7 @@ public class ReactorEventRoutes {
 		this.websocketController = websocketController;
 		this.downloadJobRepository = downloadJobRepository;
 		this.eventbus = eventbus;
-		this.throttlingDownloadJobEventTap = new ThrottlingDownloadJobEventTap(eventbus, "throtteled-downloads", 1000);
+		this.throttlingDownloadJobEventTap = new ThrottlingDownloadJobEventTap(eventbus, THROTTELED_DOWNLOADS, 5000);
 	}
 
 	/**
@@ -44,6 +45,7 @@ public class ReactorEventRoutes {
 	 */
 	@PostConstruct
 	public void setup(){
-		this.eventbus.on($("downloads"),websocketController);
+		this.eventbus.on($("downloads"),throttlingDownloadJobEventTap);
+		this.eventbus.on($(THROTTELED_DOWNLOADS),websocketController);
 	}
 }

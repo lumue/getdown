@@ -1,6 +1,5 @@
 package io.github.lumue.getdown.core.download.job;
 
-import static reactor.bus.selector.Selectors.$;
 import io.github.lumue.getdown.core.common.util.ContentFilterEventTap;
 import reactor.bus.EventBus;
 
