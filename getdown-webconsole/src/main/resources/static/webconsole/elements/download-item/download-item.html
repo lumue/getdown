@@ -54,21 +54,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		</style>
 		<div class="item">
 
-			<img class="avatar" src="{{icon}}">
+			<img class="avatar" src="[[icon]]">
 
 			<div class="pad">
-				<div class="primary">{{download.name}}</div>
+				<div class="primary">[[download.name]]</div>
 				<div class="secondary">
-					<span>{{download.state}}</span>
-					<span>{{download.progress}}</span>&nbsp;/
-					<span>{{download.size}}</span>
+					<span>[[download.state]]</span>
+					<span>[[download.progress]]</span>&nbsp;/
+					<span>[[download.size]]</span>
 					<paper-progress style="width: 100%"
-					                value="{{_progressPercentage}}"
+					                value="[[_progressPercentage]]"
 					                id="paper_progress">
-						{{_progressPercentage}}
+						[[_progressPercentage]]
 					</paper-progress>
 					<div>
-						<span>{{download.message}}</span>
+						<span>[[download.message]]</span>
 					</div>
 				</div>
 			</div>

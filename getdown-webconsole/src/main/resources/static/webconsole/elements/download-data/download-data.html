@@ -144,6 +144,7 @@
 					if(event && event.detail){
 
 						var d=event.detail
+						this.async(function(){
 						var found=false
 
 						for (var i = 0; i < this.downloads.length && !found; i++) {
@@ -159,6 +160,7 @@
 						//should not be necessary
 						this.notifyPath("downloads",this.downloads.slice())
 
+					})
 					}
 				},
 				_handleHostUpdate: function(host){

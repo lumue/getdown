@@ -3,7 +3,7 @@
 <dom-module id="download-view">
 	<template>
 
-		<style>
+		<style is="custom-style">
 			:host {
 				display: block;
 			}
@@ -13,62 +13,77 @@
 				height: 100%;
 			}
 
+			paper-scroll-header-panel {
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				background-color: var(--paper-grey-200, #eee);;
+			}
+
 
 		</style>
 
-		<download-data id="data"
-		               active="{{active}}"
-		               waiting="{{waiting}}"
-		               finished="{{finished}}"
-		               failed="{{failed}}"
-		               canceled="{{canceled}}">
-		</download-data>
+		<!-- Main Area -->
+		<paper-scroll-header-panel  fixed>
 
-		<paper-toolbar id="toolbar">
-			<paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
-			<span class="title">downloads</span>
-			<paper-icon-button icon="refresh" on-tap="refresh"></paper-icon-button>
-			<paper-icon-button icon="add" on-tap="_toggleAddDownload">+</paper-icon-button>
-		</paper-toolbar>
+			<download-data id="data"
+			               active="{{active}}"
+			               waiting="{{waiting}}"
+			               finished="{{finished}}"
+			               failed="{{failed}}"
+			               canceled="{{canceled}}">
+			</download-data>
 
-		<!-- Main Content -->
-		<div class="content">
-			<download-list-widget title="running" downloads="[[active]]"
-			                      on-cancel="_handleCancel"
-			                      on-delete="_handleDelete"
-			                      on-restart="_handleRestart">
+			<paper-toolbar id="toolbar">
+				<paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+				<span class="title">downloads</span>
+				<paper-icon-button icon="refresh" on-tap="refresh"></paper-icon-button>
+				<paper-icon-button icon="add" on-tap="_toggleAddDownload">+</paper-icon-button>
+			</paper-toolbar>
 
-			</download-list-widget>
-			<download-list-widget title="waiting" downloads="{{waiting}}"
-			                      on-cancel="_handleCancel"
-			                      on-delete="_handleDelete"
-			                      on-restart="_handleRestart">
+			<!-- Main Content -->
+			<div class="content">
+				<download-list-widget title="running" downloads="[[active]]"
+				                      on-cancel="_handleCancel"
+				                      on-delete="_handleDelete"
+				                      on-restart="_handleRestart">
 
-			</download-list-widget>
-			<download-list-widget title="finished" downloads="{{finished}}"
-			                      on-cancel="_handleCancel"
-			                      on-delete="_handleDelete"
-			                      on-restart="_handleRestart">
+				</download-list-widget>
+				<download-list-widget title="waiting" downloads="[[waiting]]"
+				                      on-cancel="_handleCancel"
+				                      on-delete="_handleDelete"
+				                      on-restart="_handleRestart">
 
-			</download-list-widget>
-			<download-list-widget title="canceled" downloads="{{canceled}}"
-			                      on-cancel="_handleCancel"
-			                      on-delete="_handleDelete"
-			                      on-restart="_handleRestart">
+				</download-list-widget>
+				<download-list-widget title="finished" downloads="[[finished]]"
+				                      on-cancel="_handleCancel"
+				                      on-delete="_handleDelete"
+				                      on-restart="_handleRestart">
 
-			</download-list-widget>
-			<download-list-widget title="failed" downloads="{{failed}}"
-			                      on-cancel="_handleCancel"
-			                      on-delete="_handleDelete"
-			                      on-restart="_handleRestart">
+				</download-list-widget>
+				<download-list-widget title="canceled" downloads="[[canceled]]"
+				                      on-cancel="_handleCancel"
+				                      on-delete="_handleDelete"
+				                      on-restart="_handleRestart">
 
-			</download-list-widget>
-		</div>
+				</download-list-widget>
+				<download-list-widget title="failed" downloads="[[failed]]"
+				                      on-cancel="_handleCancel"
+				                      on-delete="_handleDelete"
+				                      on-restart="_handleRestart">
+
+				</download-list-widget>
+			</div>
+
+		</paper-scroll-header-panel>
 
 		<add-download-dialog id="adddialog" url="{{newurl}}"
 		                     on-cancel="_cancelAddDownload"
 		                     on-confirm="_confirmAddDownload">
 		</add-download-dialog>
+
 
 	</template>
 	<script>
