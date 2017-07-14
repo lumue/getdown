@@ -130,12 +130,14 @@
 					return _.chain(downloads)
 							.filter(function(d){
 								var c=d.state
-								if(state!="WAITING")
-									return state == c
+								if(state!=="WAITING")
+									return state === c
 								else
-									return state==c || "PREPARING"==c || "PREPARED"==c
+									return state===c || "PREPARING"===c || "PREPARED"===c
 							})
 							.value()
+
+
 				},
 				_logresponse  :function(request) {
 					console.log(request.detail.response);
@@ -144,11 +146,10 @@
 					if(event && event.detail){
 
 						var d=event.detail
-						this.async(function(){
 						var found=false
 
 						for (var i = 0; i < this.downloads.length && !found; i++) {
-							if(this.downloads[i].handle == d.handle){
+							if(this.downloads[i].handle === d.handle){
 								this.set('downloads.#'+i, d);
 								found=true
 							}
@@ -160,7 +161,7 @@
 						//should not be necessary
 						this.notifyPath("downloads",this.downloads.slice())
 
-					})
+
 					}
 				},
 				_handleHostUpdate: function(host){

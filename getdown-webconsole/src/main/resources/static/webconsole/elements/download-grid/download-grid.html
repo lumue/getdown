@@ -16,21 +16,21 @@
 	</style>
 	<template>
 
-		<vaadin-grid id="grid" items="[[downloads]]" style="height: auto;">
+		<vaadin-grid id="grid" items="[[downloads]]" size="40">
 			<vaadin-grid-column>
+				<template class="header">
+					<vaadin-grid-sorter path="name">Name</vaadin-grid-sorter>
+				</template>
 				<template>[[item.name]]</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column>
+				<template class="header"><vaadin-grid-sorter path="state">State</vaadin-grid-sorter></template>
 				<template>[[item.state]]</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column>
-				<template>[[item.progress]]</template>
-			</vaadin-grid-column>
-			<vaadin-grid-column>
-				<template>[[item.size]]</template>
-			</vaadin-grid-column>
-			<vaadin-grid-column>
+				<template class="header">Progress</template>
 				<template>
+					<span>[[item.progress]]/[[item.size]]</span>
 					<paper-progress style="width: 100%"
 					                value="[[_percentage(item.progress,item.size)]]"
 					                id="paper_progress">
@@ -38,11 +38,17 @@
 					</paper-progress>
 				</template>
 			</vaadin-grid-column>
-			<div>
-				<vaadin-grid-column>
-					<template>[[item.message]]</template>
-				</vaadin-grid-column>
-			</div>
+			<vaadin-grid-column>
+				<template class="header">Last message</template>
+				<template>[[item.message]]</template>
+			</vaadin-grid-column>
+			<vaadin-grid-column>
+				<template>
+					<iron-icon icon="cancel" on-tap="_handleCancelTap" hidden$="{{_hideCancel}}"></iron-icon>
+					<iron-icon icon="refresh" on-tap="_handleRestartTap" hidden$="{{_hideRefresh}}"></iron-icon>
+					<iron-icon icon="delete" on-tap="_handleDeleteTap" hidden$="{{_hideDelete}}"></iron-icon>
+				</template>
+			</vaadin-grid-column>
 		</vaadin-grid>
 
 	</template>
@@ -54,7 +60,27 @@
 			properties: {
 				downloads: {
 					type: Array
-				}
+				},
+				icon: {
+					type: String,
+					notify: true,
+					computed: '_computeDownloadIconUrl(download)'
+				},
+				_hideCancel: {
+					type: Boolean,
+					computed: '_computeHideCancel(download)',
+					notify: true
+				},
+				_hideRefresh: {
+					type: Boolean,
+					computed: '_computeHideRefresh(download)',
+					notify: true
+				},
+				_hideDelete: {
+					type: Boolean,
+					computed: '_computeHideDelete(download)',
+					notify: true
+				},
 			},
 			_percentage: function (progress,size) {
 				return (progress / size) * 100
