@@ -63,6 +63,7 @@ public class YoutubedlDownloadJob extends Download {
 		preparing();
 		try {
 			getDownloadTask().prepare();
+
 		} catch (Exception e) {
 			handleError(e);
 		}
