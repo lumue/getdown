@@ -1,5 +1,8 @@
 
 
+task wrapper(type: Wrapper) {
+	gradleVersion = '4.2'
+}
 
 allprojects {
 
@@ -73,9 +76,6 @@ allprojects {
 		resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 	}
 
-	task wrapper(type: Wrapper) {
-		gradleVersion = '4.2'
-	}
 }
 
 
