@@ -10,9 +10,11 @@ import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.download.YdlFileDownload;
 import io.github.lumue.ydlwrapper.metadata.single_info_json.SingleInfoJsonMetadataAccessor;
 import io.github.lumue.ydlwrapper.metadata.statusmessage.YdlStatusMessage;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,8 +30,8 @@ import static io.github.lumue.getdown.core.download.job.DownloadState.*;
 public class YoutubedlDownloadJob extends Download {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
-	private transient AtomicReference<YdlDownloadTask> downloadTask=new AtomicReference<>(null);
-	private boolean forceMp4OnYoutube=true;
+	private transient AtomicReference<YdlDownloadTask> downloadTask = new AtomicReference<>(null);
+	private boolean forceMp4OnYoutube = true;
 
 
 	@JsonCreator
@@ -42,23 +44,23 @@ public class YoutubedlDownloadJob extends Download {
 			@JsonProperty("host") String host,
 			@JsonProperty("index") Long index,
 			@JsonProperty("targetPath") String targetPath) {
-		super(url,handle,downloadJobState,downloadProgress,name,host,index, targetPath);
+		super(url, handle, downloadJobState, downloadProgress, name, host, index, targetPath);
 	}
 
 	private YoutubedlDownloadJob(String handle,
-								 String name,
+	                             String name,
 	                             String url,
 	                             String host,
 	                             String downloadPath,
 	                             Long index,
 	                             String targetPath) {
-		super(name, url, host, handle,index,targetPath);
+		super(name, url, host, handle, index, targetPath);
 		setDownloadPath(downloadPath);
 	}
 
 	@Override
 	public void prepare() {
-		if(DownloadJobState.PREPARING.equals(downloadJobState))
+		if (DownloadJobState.PREPARING.equals(downloadJobState))
 			return;
 		preparing();
 		try {
@@ -83,12 +85,12 @@ public class YoutubedlDownloadJob extends Download {
 					.onOutputFileChange(this::handleProgress)
 					.onPrepared(this::handlePrepared);
 
-			if (getUrl().contains("youtube.com") ) {
+			if (getUrl().contains("youtube.com")) {
 				builder.setForceMp4(isForceMp4OnYoutube());
 			}
 
-				result = builder
-						.build();
+			result = builder
+					.build();
 			if (!downloadTask.compareAndSet(null, result)) {
 				return downloadTask.get();
 			}
@@ -103,24 +105,23 @@ public class YoutubedlDownloadJob extends Download {
 		try {
 			getDownloadTask().executeAsync();
 
-				getDownloadProgress().ifPresent(p -> {
-					boolean finished=false;
-					while (!finished) {
-						if (p.getState().equals(FINISHED)
-								|| p.getState().equals(CANCELLED)
-								|| p.getState().equals(ERROR)){
-							finished=true;
-						}
-						else{
-							try {
-								Thread.sleep(500);
-							} catch (InterruptedException e) {
-								LOGGER.error("interrupted waiting for youtube-dl download");
-								cancel();
-							}
+			getDownloadProgress().ifPresent(p -> {
+				boolean finished = false;
+				while (!finished) {
+					if (p.getState().equals(FINISHED)
+							|| p.getState().equals(CANCELLED)
+							|| p.getState().equals(ERROR)) {
+						finished = true;
+					} else {
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							LOGGER.error("interrupted waiting for youtube-dl download");
+							cancel();
 						}
 					}
-				});
+				}
+			});
 
 		} catch (Throwable t) {
 			handleError(t);
@@ -131,40 +132,60 @@ public class YoutubedlDownloadJob extends Download {
 	public void postProcess() {
 		getDownloadProgress().ifPresent(downloadProgress -> {
 			if (FINISHED.equals(downloadProgress.getState())) {
-				String movingmsg = "moving downloaded files for download "+getName()+" to " + getTargetPath();
+				String movingmsg = "moving downloaded files for download " + getName() + " to " + getTargetPath();
 				LOGGER.info(movingmsg);
 				try {
 					message(movingmsg);
 					Path target = Paths.get(getTargetPath());
-					if(!Files.exists(target))
+					if (!Files.exists(target))
 						Files.createDirectory(target);
 					Files.list(Paths.get(getDownloadPath()))
-							.filter(p->!Files.isDirectory(p))
-							.map(p->new Path[]{p,target.resolve(p.getFileName())})
-							.filter(pa ->!Files.exists(pa[1]))
+							.filter(p -> !Files.isDirectory(p))
+							.map(p -> new Path[]{p, target.resolve(p.getFileName())})
+							.map(pa -> {
+										pa[1] = createUniqueFilenam(pa[1]);
+										return pa;
+									}
+							)
 							.forEach(pa -> {
 								try {
-									Files.move(pa[0],pa[1]);
+									Files.move(pa[0], pa[1]);
 									Files.setPosixFilePermissions(pa[1], PosixFilePermissions.fromString("rw-rw-rw-"));
 								} catch (IOException e) {
-									String msg = "error moving files for download "+getName()+" to " + getTargetPath();
-									error(new RuntimeException(msg+":"+e.getClass().getSimpleName(),e));
-									LOGGER.error(msg,e);
+									String msg = "error moving files for download " + getName() + " to " + getTargetPath();
+									error(new RuntimeException(msg + ":" + e.getClass().getSimpleName(), e));
+									LOGGER.error(msg, e);
 									throw new RuntimeException("msg", e);
 								}
 							});
-					String movedmsg = "moved files for download "+getName()+" to " + getTargetPath();
+					String movedmsg = "moved files for download " + getName() + " to " + getTargetPath();
 					message(movedmsg);
 					finish();
 					LOGGER.info(movedmsg);
 				} catch (IOException e) {
-					String msg = "error moving files for download "+getName()+" to " + getTargetPath();
-					error(new RuntimeException(msg+":"+e.getClass().getSimpleName(),e));
-					LOGGER.error(msg,e);
+					String msg = "error moving files for download " + getName() + " to " + getTargetPath();
+					error(new RuntimeException(msg + ":" + e.getClass().getSimpleName(), e));
+					LOGGER.error(msg, e);
 					throw new RuntimeException("msg", e);
 				}
 			}
 		});
+	}
+
+	private Path createUniqueFilenam(final Path basepath) {
+		Path uniquepath=basepath;
+		for(int i=0;Files.exists(uniquepath);i++)
+			uniquepath=appendCountToFile(basepath,i);
+		return uniquepath;
+	}
+
+	private Path appendCountToFile(Path path, int i) {
+		final String pathString = path.toString();
+		boolean isInfoJson= pathString.endsWith(".info.json");
+		String pathWithoutExt= !isInfoJson?FilenameUtils.removeExtension(pathString): pathString.replace(".info.json","");
+		String ext=!isInfoJson?FilenameUtils.getExtension(pathString):"info.json";
+		final String newPath = pathWithoutExt + "_" + Integer.toString(i)+"."+ext;
+		return new File(newPath).toPath();
 	}
 
 	private void handlePrepared(YdlDownloadTask ydlDownloadTask, SingleInfoJsonMetadataAccessor singleInfoJsonMetadataAccessor) {
@@ -215,7 +236,7 @@ public class YoutubedlDownloadJob extends Download {
 
 	@Override
 	public void cancel() {
-		doObserved(()-> {
+		doObserved(() -> {
 			getDownloadTask().cancel();
 			getDownloadProgress().ifPresent(downloadProgress -> {
 				downloadProgress.cancel();
@@ -227,7 +248,6 @@ public class YoutubedlDownloadJob extends Download {
 	}
 
 
-
 	@Override
 	public boolean isPrepared() {
 
@@ -237,7 +257,7 @@ public class YoutubedlDownloadJob extends Download {
 	private void readObject(java.io.ObjectInputStream in)
 			throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
-		downloadTask=new AtomicReference<>(null);
+		downloadTask = new AtomicReference<>(null);
 	}
 
 	public static YoutubedlDownloadJobBuilder builder() {
@@ -257,7 +277,7 @@ public class YoutubedlDownloadJob extends Download {
 
 		@Override
 		public DownloadJob build() {
-			return new YoutubedlDownloadJob(this.handle,this.name, this.url, this.host,this.downloadPath,this.index,this.targetPath);
+			return new YoutubedlDownloadJob(this.handle, this.name, this.url, this.host, this.downloadPath, this.index, this.targetPath);
 		}
 
 	}

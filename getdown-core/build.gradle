@@ -20,6 +20,8 @@ dependencies {
 
 	compile 'io.reactivex:rxjava-file-utils:0.1.4'
 	compile 'io.reactivex:rxjava-reactive-streams:1.2.1'
+
+	compile group: 'commons-io', name: 'commons-io', version: '2.5'
 }
 
 apply from: '../gradle/plantuml.gradle'
