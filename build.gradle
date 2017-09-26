@@ -72,6 +72,10 @@ allprojects {
 	configurations.all {
 		resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 	}
+
+	task wrapper(type: Wrapper) {
+		gradleVersion = '4.2'
+	}
 }
 
 
