@@ -22,10 +22,10 @@ before_install:
   - npm install -g gulp
 
 before_script:
-  - gradle npmInstall
+  - ./gradlew npmInstall
 
 script:
-  - gradle docker
+  - ./gradlew docker
 
 
 after_success:
