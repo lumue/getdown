@@ -1,0 +1,34 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="config-data">
+	<template>
+		<iron-localstorage name="config-host"
+		                   value="{{host}}"
+		                   on-iron-localstorage-load-empty="_initializeDefaultHost">
+		</iron-localstorage>
+	</template>
+
+	<script>
+		(function () {
+			'use strict';
+
+			Polymer({
+				is: 'config-data',
+
+				properties: {
+					host: {
+						type: String,
+						notify: true
+					}
+				},
+
+				// initializes default if nothing has been stored
+				_initializeDefaultHost: function () {
+					this.host = "http://" + window.location.host
+				}
+
+			});
+		})();
+	</script>
+</dom-module>
+

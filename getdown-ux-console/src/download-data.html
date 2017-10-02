@@ -1,0 +1,202 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/stomp-client/stomp-client.html">
+
+<link rel="import" href="config-data.html">
+
+<dom-module id="download-data">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+
+		<config-data
+				host="{{host}}"
+		>
+		</config-data>
+
+		<stomp-client id="ws"
+		              url="{{host}}/ws"
+		              topic="/downloads/jobStateChange"
+		              on-message="_handleJobChange">
+		</stomp-client>
+
+		<iron-ajax id="ajaxall"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="GET"
+		           last-response="{{downloads}}"
+		           debounce-duration="3000"
+		           url="{{host}}/download/list"
+		           on-response="_logresponse">
+		</iron-ajax>
+
+		<iron-ajax id="ajaxadd"
+		           handle-as="json"
+		           content-type="application/json"
+		           url="{{host}}/download"
+		           method="POST"
+		           debounce-duration="3000"
+		           on-response="_logresponse">
+		</iron-ajax>
+
+
+		<iron-ajax id="ajaxremove"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="DELETE"
+		           debounce-duration="3000"
+		           on-response="_handleDeleteResponse">
+		</iron-ajax>
+
+		<iron-ajax id="ajaxpost"
+		           handle-as="json"
+		           content-type="application/json"
+		           method="POST"
+		           debounce-duration="3000"
+		           on-response="_logresponse">
+		</iron-ajax>
+
+
+	</template>
+	<script>
+
+		class DownloadData extends Polymer.Element {
+
+			static get is() {
+				return 'download-data';
+			}
+
+			static get properties() {
+				return {
+
+					active: {
+						type: Array,
+						computed: '_filterByState(downloads,"RUNNING")',
+						notify: true
+					},
+					waiting: {
+						type: Array,
+						computed: '_filterByState(downloads,"WAITING")',
+						notify: true
+					},
+					failed: {
+						type: Array,
+						computed: '_filterByState(downloads,"ERROR")',
+						notify: true
+					},
+					finished: {
+						type: Array,
+						computed: '_filterByState(downloads,"FINISHED")',
+						notify: true
+					},
+					canceled: {
+						type: Array,
+						computed: '_filterByState(downloads,"CANCELLED")',
+						notify: true
+					},
+					downloads: {
+						type: Array,
+						notify: true
+					},
+					host: {
+						type: String,
+						notify: true
+					}
+
+				}
+			}
+
+			static get observers() {
+				return [
+					'_handleHostUpdate(host)'
+				]
+			}
+
+			reload() {
+				this.$.ajaxall.generateRequest();
+			}
+			
+			addDownload(url) {
+				this.$.ajaxadd.body = url
+				this.$.ajaxadd.generateRequest()
+			}
+			
+			removeDownload(handle) {
+				this.$.ajaxremove.url = this.host + "/download/" + handle
+				this.$.ajaxremove.generateRequest()
+			}
+			
+			cancelDownload(handle) {
+				this.$.ajaxpost.url = this.host + "/download/" + handle + "/cancel"
+				this.$.ajaxpost.generateRequest()
+			}
+			
+			restartDownload(handle) {
+				this.$.ajaxpost.url = this.host + "/download/" + handle + "/restart"
+				this.$.ajaxpost.generateRequest()
+			}
+			
+			_filterByState(downloads, state) {
+				if (!downloads || !state)
+					return []
+
+				return _.chain(downloads)
+					.filter(function (d) {
+						const c = d.state
+						if (state !== "WAITING")
+							return state === c
+						else
+							return state === c || "PREPARING" === c || "PREPARED" === c
+					})
+					.value()
+
+
+			}
+			
+			_logresponse(request) {
+				console.log(request.detail.response);
+			}
+			
+			_handleJobChange(event) {
+				if (event && event.detail) {
+
+					const d = event.detail
+					let found = false
+
+					for (let i = 0; i < this.downloads.length && !found; i++) {
+						if (this.downloads[i].handle === d.handle) {
+							this.set('downloads.#' + i, d);
+							found = true
+						}
+					}
+
+					if (!found)
+						this.push('downloads', d)
+
+					//should not be necessary
+					this.notifyPath("downloads", this.downloads.slice())
+
+
+				}
+			}
+			
+			_handleHostUpdate(host) {
+				if (host) {
+					this.reload();
+					this.$.ws.connect();
+				}
+			}
+			
+			_handleDeleteResponse(request) {
+				this.reload();
+			}
+		}
+
+		window.customElements.define(DownloadData.is, DownloadData);
+
+		
+	</script>
+</dom-module>

@@ -1,0 +1,53 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="redux-store.html">
+
+<dom-module id="url-input">
+	<template>
+		<style include="shared-styles">
+			:host {
+				display: block;
+			}
+		</style>
+
+		<div>
+			<paper-input id="urlInput" label="URL" type="text"  >
+			</paper-input>
+
+			<paper-button on-tap="addTapped">Add</paper-button>
+		</div>
+	</template>
+
+	<script>
+		class UrlInput extends GetdownConsole.ReduxMixin(Polymer.Element){
+
+			static get is() {
+				return 'url-input';
+			}
+
+
+			static get actions(){
+				return {
+					addTask(url) {
+						return {
+							type: 'ADD_TASK',
+							url: url
+						}
+					}
+				}
+			}
+
+			addTapped(event){
+				const field=this.$.urlInput
+				if(field.value){
+					this.dispatch('addTask',field.value)
+				}
+			}
+		}
+
+		window.customElements.define(UrlInput.is, UrlInput);
+	</script>
+</dom-module>

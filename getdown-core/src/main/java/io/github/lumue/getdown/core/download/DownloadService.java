@@ -59,11 +59,11 @@ public class DownloadService {
 	}
 
 
-	public DownloadTask addDownload(DownloadTask u) {
+	public DownloadTask addDownloadTask(DownloadTask u) {
 		return createDownloadTask(u.copy());
 	}
 
-	public DownloadTask addDownload(final String url) {
+	public DownloadTask addDownloadTask(final String url) {
 		String processedUrl=preprocessUrl(url);
 
 		DownloadTask.DownloadTaskBuilder builder = DownloadTask
@@ -71,6 +71,13 @@ public class DownloadService {
 				.withSourceUrl(processedUrl)
 				.withTargetLocation("");
 		return createDownloadTask(builder);
+	}
+
+	public DownloadTask removeDownloadTask(final DownloadTask task) {
+
+		downloadTaskRepository.remove(task.getHandle());
+		eventbus.notify("tasks-removed", Event.wrap(Objects.requireNonNull(task)));
+		return task;
 	}
 
 	private DownloadTask createDownloadTask(DownloadTask.DownloadTaskBuilder builder) {
@@ -81,7 +88,7 @@ public class DownloadService {
 			downloadTaskRepository.remove(task.getHandle());
 			throw new RuntimeException(e);
 		}
-		eventbus.notify("tasks", Event.wrap(Objects.requireNonNull(task)));
+		eventbus.notify("tasks-created", Event.wrap(Objects.requireNonNull(task)));
 		return task;
 	}
 

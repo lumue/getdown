@@ -1,0 +1,42 @@
+<script src="../node_modules/redux/dist/redux.min.js"></script>
+
+<script>
+(function() {
+
+	function tasksReducer(state={tasks:[]},action)
+	{
+		switch (action.type) {
+
+			case 'ADD_TASK':
+				const items=state.tasks.slice(0)
+				items.push({sourceUrl: action.url,state:'NEW'})
+				return Object.assign({}, state, {
+					tasks: items
+				})
+
+			case 'TASK_UPDATE_RECEIVED':
+			case 'TASK_ADD_RECEIVED':
+				return state
+
+			case 'TASK_DELETE_RECEIVED':
+				return state
+
+			default:
+				return state
+		}
+	}
+
+	function configReducer(state = {apiUrl: '/api/'}, action) {
+		switch (action.type) {
+			case 'UPDATE_APIURL':
+				return Object.assign({}, state, {
+					apiUrl: action.apiUrl
+				})
+			default:
+				return state
+		}
+	}
+
+	GetdownConsole.rootReducer = Redux.combineReducers({tasksReducer,configReducer})
+}());
+</script>

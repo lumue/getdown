@@ -39,7 +39,7 @@ public class DownloadJsonRpcController {
 
 		LOGGER.debug("adding and starting download job for " + url);
 
-		DownloadTask download = downloadService.addDownload(url);
+		DownloadTask download = downloadService.addDownloadTask(url);
 		DownloadJob job=downloadService.startDownload(download.getHandle());
 
 		LOGGER.debug("download job for " + url + " added and started");

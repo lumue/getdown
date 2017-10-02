@@ -1,0 +1,31 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="url-input.html">
+<link rel="import" href="task-list.html">
+
+<dom-module id="download-view">
+	<template>
+		<style include="shared-styles">
+			:host {
+				display: block;
+
+				padding: 10px;
+			}
+		</style>
+
+		<div class="card">
+			<url-input></url-input>
+			<task-list></task-list>
+		</div>
+	</template>
+
+	<script>
+		class DownloadView extends Polymer.Element {
+			static get is() {
+				return 'download-view';
+			}
+		}
+
+		window.customElements.define(DownloadView.is, DownloadView);
+	</script>
+</dom-module>

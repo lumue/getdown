@@ -2,18 +2,15 @@ package io.github.lumue.getdown.webapp.restapi;
 
 
 import io.github.lumue.getdown.core.download.DownloadService;
-import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -46,7 +43,7 @@ public class DownloadTaskController{
 	Resources<Resource<DownloadTask>> post(@RequestBody Resources<Resource<DownloadTask>> downloadTasks) {
 		return Resources.wrap(
 				downloadTasks.getContent().stream()
-				.map(u->downloadService.addDownload(u.getContent()))
+				.map(u->downloadService.addDownloadTask(u.getContent()))
 				.collect(Collectors.toList())
 		);
 	}
