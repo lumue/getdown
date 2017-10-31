@@ -15,8 +15,7 @@
 			}
 
 			case 'TASKS_ADDED': {
-				const items = state.tasks.slice(0)
-				items.push(action.tasks)
+				const items = state.tasks.concat(action.tasks)
 				return Object.assign({}, state, {
 					tasks: items
 				})
