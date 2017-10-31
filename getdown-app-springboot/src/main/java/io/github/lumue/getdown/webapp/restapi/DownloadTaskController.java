@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tasks")
+@CrossOrigin
 public class DownloadTaskController{
 
 	private final DownloadTaskRepository taskRepository;
@@ -40,10 +42,10 @@ public class DownloadTaskController{
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	Resources<Resource<DownloadTask>> post(@RequestBody Resources<Resource<DownloadTask>> downloadTasks) {
+	Resources<Resource<DownloadTask>> post(@RequestBody List<String> urls) {
 		return Resources.wrap(
-				downloadTasks.getContent().stream()
-				.map(u->downloadService.addDownloadTask(u.getContent()))
+				urls.stream()
+				.map(downloadService::addDownloadTask)
 				.collect(Collectors.toList())
 		);
 	}

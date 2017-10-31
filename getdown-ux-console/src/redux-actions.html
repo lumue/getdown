@@ -8,9 +8,13 @@
 		function addTasks(urls){
 			return dispatch =>{
 				postTask()
-				fetch("/api/tasks", {
+				fetch("http://localhost:8001/api/tasks", {
 					method: "POST",
-					body: urls
+					headers: {
+						'Accept': 'application/json, text/plain, */*',
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(urls)
 				})
 					.then(response => response.json())
 					.then(json=> dispatch(tasksAdded(json)))
@@ -26,7 +30,7 @@
 		function receiveTasks(json) {
 			return {
 				type: 'RECEIVE_TASKS',
-				tasks: json.data.children.map(child => child.data),
+				tasks: json.content,
 				receivedAt: Date.now()
 			}
 		}
@@ -34,7 +38,7 @@
 		function tasksAdded(json) {
 			return {
 				type: 'TASKS_ADDED',
-				tasks: json.data.children.map(child => child.data),
+				tasks: json.content,
 				receivedAt: Date.now()
 			}
 		}
@@ -42,15 +46,15 @@
 		function fetchTasks() {
 			return dispatch => {
 				dispatch(requestTasks())
-				return fetch('/api/tasks')
+				return fetch('http://localhost:8001/api/tasks')
 					.then(response => response.json())
 					.then(json => dispatch(receiveTasks( json)))
 			}
 		}
 
 		GetdownConsole.actions = {
-			addTasks,
 			fetchTasks,
+			addTasks
 		}
 
 	}());

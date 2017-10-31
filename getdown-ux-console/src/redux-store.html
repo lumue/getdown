@@ -9,20 +9,16 @@
 
 
 
-
-	import * as Redux from "redux"
-
 	(function() {
 
-		const composeEnhancers = typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-			? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
-			: Redux.compose;
+		const state={
+			tasksReducer:{tasks:[],isAdding:false,isFetching:false},
+			configReducer:{apiUrl: '/api/'}
+		}
 
-		const enhancer = composeEnhancers(
-			applyMiddleware(GetdownConsole.middleware),
-		);
+		const enhancer = Redux.compose(Redux.applyMiddleware(...GetdownConsole.middleware))
 
-		const store = Redux.createStore(GetdownConsole.rootReducer, enhancer);
+		const store = Redux.createStore(GetdownConsole.rootReducer,state, enhancer);
 
 		const reduxMixin = PolymerRedux(store);
 

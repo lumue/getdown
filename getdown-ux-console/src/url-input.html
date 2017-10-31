@@ -32,7 +32,7 @@
 			addTapped(event){
 				const field=this.$.urlInput
 				if(field.value){
-					this.dispatch('addTask',field.value)
+					this.dispatch('addTasks',[field.value])
 				}
 			}
 		}
