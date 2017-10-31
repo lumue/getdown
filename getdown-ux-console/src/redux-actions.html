@@ -1,0 +1,57 @@
+<script>
+	(function() {
+
+		function postTask(){
+			return {type: 'POST_TASK'}
+		}
+
+		function addTasks(urls){
+			return dispatch =>{
+				postTask()
+				fetch("/api/tasks", {
+					method: "POST",
+					body: urls
+				})
+					.then(response => response.json())
+					.then(json=> dispatch(tasksAdded(json)))
+			}
+		}
+
+		function requestTasks() {
+			return {
+				type: 'REQUEST_TASKS'
+			}
+		}
+
+		function receiveTasks(json) {
+			return {
+				type: 'RECEIVE_TASKS',
+				tasks: json.data.children.map(child => child.data),
+				receivedAt: Date.now()
+			}
+		}
+
+		function tasksAdded(json) {
+			return {
+				type: 'TASKS_ADDED',
+				tasks: json.data.children.map(child => child.data),
+				receivedAt: Date.now()
+			}
+		}
+
+		function fetchTasks() {
+			return dispatch => {
+				dispatch(requestTasks())
+				return fetch('/api/tasks')
+					.then(response => response.json())
+					.then(json => dispatch(receiveTasks( json)))
+			}
+		}
+
+		GetdownConsole.actions = {
+			addTasks,
+			fetchTasks,
+		}
+
+	}());
+</script>

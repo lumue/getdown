@@ -29,17 +29,6 @@
 			}
 
 
-			static get actions(){
-				return {
-					addTask(url) {
-						return {
-							type: 'ADD_TASK',
-							url: url
-						}
-					}
-				}
-			}
-
 			addTapped(event){
 				const field=this.$.urlInput
 				if(field.value){

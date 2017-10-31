@@ -1,14 +1,40 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 
-<!--<link rel="import" href="my-redux-actions.html">-->
-<!--<link rel="import" href="my-redux-middleware.html">-->
+<link rel="import" href="redux-actions.html">
+<link rel="import" href="redux-middleware.html">
 <link rel="import" href="redux-reducers.html">
 <!--<link rel="import" href="my-redux-selectors.html">-->
 <script>
+
+
+
+
+	import * as Redux from "redux"
+
 	(function() {
-		GetdownConsole.reduxStore = Redux.createStore(GetdownConsole.rootReducer)
-		GetdownConsole.ReduxMixin = PolymerRedux(GetdownConsole.reduxStore)
+
+		const composeEnhancers = typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+			? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+			: Redux.compose;
+
+		const enhancer = composeEnhancers(
+			applyMiddleware(GetdownConsole.middleware),
+		);
+
+		const store = Redux.createStore(GetdownConsole.rootReducer, enhancer);
+
+		const reduxMixin = PolymerRedux(store);
+
+		/* @mixinFunction */
+		const actionsMixin = (superClass) => {
+			return class extends reduxMixin(superClass) {
+				static get actions() {
+					return GetdownConsole.actions
+				}
+			}
+		}
+		GetdownConsole.ReduxMixin = Polymer.dedupingMixin(actionsMixin)
 	}())
 </script>
 
