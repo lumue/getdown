@@ -16,7 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
 	<title>Getdown</title>
-	<meta name="description" content="My App description">
+	<meta name="description" content="webconsole for getdown">
 
 	<!--
 	  The `<base>` tag below is present to support two advanced deployment options:
@@ -83,13 +83,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 			});
 		}
 
-		const GetdownConsole = {}
+		const GetdownConsole = {reducers:{},actions:{}}
 	</script>
 
 	<!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
 	<script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 	<!-- Load your application shell -->
-	<link rel="import" href="src/my-app.html">
+	<link rel="import" href="src/getdown-app.html">
 
 	<!-- Add any global styles for body, document, etc. -->
 	<style>
@@ -103,7 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	</style>
 </head>
 <body>
-<my-app></my-app>
+<getdown-app></getdown-app>
 <noscript>
 	Please enable JavaScript to view this website.
 </noscript>

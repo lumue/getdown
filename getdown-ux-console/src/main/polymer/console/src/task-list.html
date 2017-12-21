@@ -1,0 +1,58 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="redux-store.html">
+<link rel="import" href="url-input.html">
+
+<dom-module id="task-list">
+	<template>
+		<style include="shared-styles">
+			:host {
+				display: block;
+
+				padding: 10px;
+			}
+		</style>
+
+		<url-input></url-input>
+		<vaadin-grid id="grid" items="[[tasks]]" size="40">
+			<vaadin-grid-selection-column auto-select>
+			</vaadin-grid-selection-column>
+			<vaadin-grid-column>
+				<template class="header">
+					<vaadin-grid-sorter path="sourceUrl">Url</vaadin-grid-sorter>
+				</template>
+				<template>[[item.sourceUrl]]</template>
+			</vaadin-grid-column>
+			<vaadin-grid-column>
+				<template class="header"><vaadin-grid-sorter path="state">State</vaadin-grid-sorter></template>
+				<template>[[item.state]]</template>
+			</vaadin-grid-column>
+		</vaadin-grid>
+
+	</template>
+
+
+	<script>
+		class TaskList extends GetdownConsole.ReduxMixin(Polymer.Element) {
+
+			static get is() {
+				return 'task-list';
+			}
+
+			static get properties() {
+				return {
+					tasks:{
+						type: Array,
+						statePath: 'tasksReducer.tasks'
+					}
+				}
+			}
+		}
+
+		window.customElements.define(TaskList.is, TaskList);
+	</script>
+</dom-module>

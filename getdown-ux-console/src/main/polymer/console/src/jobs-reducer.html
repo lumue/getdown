@@ -1,0 +1,44 @@
+<script src="../node_modules/redux/dist/redux.js"></script>
+
+<script>
+
+(function() {
+
+	function jobsReducer(state={jobs:[],isAdding:false,isFetching:false},action)
+	{
+		switch (action.type) {
+
+			case 'POST_JOB': {
+				return Object.assign({}, state, {
+					isAdding: true
+				})
+			}
+
+			case 'JOBS_ADDED': {
+				const items = state.jobs.concat(action.jobs)
+				return Object.assign({}, state, {
+					jobs: items
+				})
+			}
+
+			case 'REQUEST_JOBS': {
+				return Object.assign({}, state, {
+					isFetching: true
+				})
+			}
+			case 'RECEIVE_JOBS': {
+				return Object.assign({}, state, {
+					isFetching: false,
+					jobs: action.jobs,
+					lastUpdated: action.receivedAt
+				})
+			}
+			default:
+				return state
+		}
+	}
+
+
+	GetdownConsole.reducers.jobsReducer=jobsReducer
+}());
+</script>

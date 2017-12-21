@@ -1,0 +1,59 @@
+<script>
+	(function() {
+
+		function postJob(){
+			return {type: 'POST_JOB'}
+		}
+
+		function addJob(urls){
+			return dispatch =>{
+				postJob()
+				fetch("http://localhost:8001/api/jobs", {
+					method: "POST",
+					headers: {
+						'Accept': 'application/json, text/plain, */*',
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(urls)
+				})
+					.then(response => response.json())
+					.then(json=> dispatch(jobsAdded(json)))
+			}
+		}
+
+		function requestJobs() {
+			return {
+				type: 'REQUEST_JOBS'
+			}
+		}
+
+		function receiveJobs(json) {
+			return {
+				type: 'RECEIVE_JOBS',
+				jobs: json.content,
+				receivedAt: Date.now()
+			}
+		}
+
+		function jobsAdded(json) {
+			return {
+				type: 'JOBS_ADDED',
+				jobs: json.content,
+				receivedAt: Date.now()
+			}
+		}
+
+		function fetchJobs() {
+			return dispatch => {
+				dispatch(requestJobs())
+				return fetch('http://localhost:8001/api/jobs')
+					.then(response => response.json())
+					.then(json => dispatch(receiveJobs( json)))
+			}
+		}
+
+		GetdownConsole.actions.fetchJobs=fetchJobs
+		GetdownConsole.actions.addJob=addJob
+
+	}());
+</script>

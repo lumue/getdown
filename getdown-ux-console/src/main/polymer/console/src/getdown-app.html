@@ -20,12 +20,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="my-icons.html">
+<link rel="import" href="app-icons.html">
 
 <link rel="lazy-import" href="download-view.html">
 <link rel="lazy-import" href="my-view404.html">
 
-<dom-module id="my-app">
+<dom-module id="getdown-app">
   <template>
     <style>
       :host {
@@ -106,8 +106,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
 
-    class MyApp extends Polymer.Element {
-      static get is() { return 'my-app'; }
+    class GetdownApp extends Polymer.Element {
+      static get is() { return 'getdown-app'; }
 
       static get properties() {
         return {
@@ -156,6 +156,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     }
 
-    window.customElements.define(MyApp.is, MyApp);
+    window.customElements.define(GetdownApp.is, GetdownApp);
   </script>
 </dom-module>

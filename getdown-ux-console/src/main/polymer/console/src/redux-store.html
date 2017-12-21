@@ -1,9 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 
-<link rel="import" href="redux-actions.html">
+<link rel="import" href="tasks-reducer.html">
+<link rel="import" href="jobs-reducer.html">
+<link rel="import" href="task-actions.html">
+<link rel="import" href="job-actions.html">
 <link rel="import" href="redux-middleware.html">
-<link rel="import" href="redux-reducers.html">
 <!--<link rel="import" href="my-redux-selectors.html">-->
 <script>
 
@@ -13,12 +15,15 @@
 
 		const state={
 			tasksReducer:{tasks:[],isAdding:false,isFetching:false},
+			jobsReducer:{jobs:[],isAdding:false,isFetching:false},
 			configReducer:{apiUrl: '/api/'}
 		}
 
+		const rootReducer=Redux.combineReducers(GetdownConsole.reducers)
+
 		const enhancer = Redux.compose(Redux.applyMiddleware(...GetdownConsole.middleware))
 
-		const store = Redux.createStore(GetdownConsole.rootReducer,state, enhancer);
+		const store = Redux.createStore(rootReducer,state, enhancer);
 
 		const reduxMixin = PolymerRedux(store);
 

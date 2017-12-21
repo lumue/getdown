@@ -3,6 +3,8 @@
 
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="redux-store.html">
 
 <dom-module id="url-input">
@@ -11,13 +13,30 @@
 			:host {
 				display: block;
 			}
+
+            paper-button.indigo {
+                background-color: var(--paper-indigo-500);
+                color: white;
+                --paper-button-raised-keyboard-focus: {
+                    background-color: var(--paper-pink-a200) !important;
+                    color: white !important;
+                };
+				height: 2.5em;
+				min-width: 3em;
+	            align-self: center;
+			}
+
+
+
 		</style>
 
-		<div>
-			<paper-input id="urlInput" label="URL" type="text"  >
+		<style is="custom-style" include="iron-flex"></style>
+
+		<div class="horizontal layout" >
+			<paper-input class="flex" id="urlInput" label="URL" type="text"  >
 			</paper-input>
 
-			<paper-button on-tap="addTapped">Add</paper-button>
+			<paper-button class="indigo" on-tap="addTapped">Add</paper-button>
 		</div>
 	</template>
 

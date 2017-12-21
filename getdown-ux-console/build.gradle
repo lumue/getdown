@@ -1,0 +1,63 @@
+
+plugins {
+	id "com.moowork.node" version "1.2.0"
+}
+
+
+apply plugin: 'java'
+
+def polymerAppDir="${projectDir}/src/main/polymer/console"
+def polymerScript="${polymerAppDir}/node_modules/polymer-cli/bin/polymer.js"
+def polymerBuildDir = "${polymerAppDir}/build/default"
+def generatedWebResourcesDir = "${projectDir}/generated-web-resources"
+
+sourceSets {
+	main {
+		output.dir(generatedWebResourcesDir, builtBy: 'generateWebResources')
+	}
+}
+
+//a task that generates the resources:
+task generateWebResources(type: Copy,dependsOn: 'polymerBuild'){
+	doFirst{
+		file("${generatedWebResourcesDir}/static/console").mkdir()
+	}
+	into "${generatedWebResourcesDir}/static/console"
+	from polymerBuildDir
+}
+
+generateWebResources.dependsOn('polymerBuild')
+
+node {
+	version = '8.7.0'
+	npmVersion = '5.4.2'
+	distBaseUrl = 'https://nodejs.org/dist'
+	nodeModulesDir = file(polymerAppDir)
+}
+
+task polymerInstall(type: NodeTask, dependsOn: npmInstall) {
+	script=file(polymerScript)
+	execOverrides {
+		it.workingDir = polymerAppDir
+		it.args=[polymerScript,"install"]
+	}
+
+}
+
+task polymerBuild(type: NodeTask, dependsOn: polymerInstall) {
+	script=file(polymerScript)
+	execOverrides {
+		it.workingDir = polymerAppDir
+		it.args=[polymerScript,"build"]
+	}
+
+}
+
+
+clean.doFirst {
+	delete "${polymerAppDir}/bower_components"
+	delete "${polymerAppDir}/node_modules"
+	delete "${polymerAppDir}/etc"
+	delete "${polymerAppDir}/build"
+	delete generatedWebResourcesDir
+}

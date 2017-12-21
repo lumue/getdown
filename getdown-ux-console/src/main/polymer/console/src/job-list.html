@@ -5,17 +5,17 @@
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="redux-store.html">
 
-<dom-module id="task-list">
+<dom-module id="job-list">
 	<template>
 		<style include="shared-styles">
-			:host {
-				display: block;
+            :host {
+                display: block;
 
-				padding: 10px;
-			}
+                padding: 10px;
+            }
 		</style>
 
-		<vaadin-grid id="grid" items="[[tasks]]" size="40">
+		<vaadin-grid id="grid" items="[[jobs]]" size="40">
 			<vaadin-grid-column>
 				<template class="header">
 					<vaadin-grid-sorter path="sourceUrl">Url</vaadin-grid-sorter>
@@ -32,22 +32,22 @@
 
 
 	<script>
-		class TaskList extends GetdownConsole.ReduxMixin(Polymer.Element) {
+		class JobList extends GetdownConsole.ReduxMixin(Polymer.Element) {
 
 			static get is() {
-				return 'task-list';
+				return 'job-list';
 			}
 
 			static get properties() {
 				return {
-					tasks:{
+					jobs:{
 						type: Array,
-						statePath: 'tasksReducer.tasks'
+						statePath: 'jobsReducer.jobs'
 					}
 				}
 			}
 		}
 
-		window.customElements.define(TaskList.is, TaskList);
+		window.customElements.define(JobList.is, JobList);
 	</script>
 </dom-module>

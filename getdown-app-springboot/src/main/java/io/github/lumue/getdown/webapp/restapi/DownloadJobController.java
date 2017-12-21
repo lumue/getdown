@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -43,11 +44,9 @@ public class DownloadJobController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	Resources<Resource<DownloadJob>> post(@RequestBody Resources<Resource<DownloadTask>> downloadTasks) {
+	Resources<Resource<DownloadJob>> post(@RequestBody List<String> taskHandles) {
 		return Resources.wrap(
-				downloadTasks.getContent().stream()
-						.map(r -> r.getContent())
-						.map(t -> t.getHandle())
+				taskHandles.stream()
 						.map(s -> downloadService.startDownload(s))
 						.collect(Collectors.toList())
 		);

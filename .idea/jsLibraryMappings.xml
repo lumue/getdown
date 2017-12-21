@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="file://$PROJECT_DIR$/getdown-ux-console" libraries="{getdown/getdown-ux-console/node_modules}" />
-    <file url="file://$PROJECT_DIR$/getdown-ux-console/src/redux-middleware.html" libraries="{getdown/getdown-webconsole/node_modules}" />
+    <file url="file://$PROJECT_DIR$/getdown-ux-console/src/main/polymer/console/src/redux-middleware.html" libraries="{getdown/getdown-webconsole/node_modules}" />
     <file url="file://$PROJECT_DIR$/getdown-webconsole" libraries="{getdown/getdown-webconsole/node_modules}" />
-    <file url="PROJECT" libraries="{getdown/getdown-ux-console/node_modules, redux-thunk, ux-console_bower_components}" />
+    <file url="PROJECT" libraries="{redux-thunk, ux-console_bower_components}" />
   </component>
 </project>

@@ -4,7 +4,7 @@
 
 <link rel="import" href="config-data.html">
 
-<dom-module id="download-data">
+<dom-module id="jobs-data">
 	<style>
 		:host {
 			display: none;
@@ -27,16 +27,16 @@
 		           handle-as="json"
 		           content-type="application/json"
 		           method="GET"
-		           last-response="{{downloads}}"
+		           last-response="{{jobs}}"
 		           debounce-duration="3000"
-		           url="{{host}}/download/list"
+		           url="{{host}}/job/list"
 		           on-response="_logresponse">
 		</iron-ajax>
 
 		<iron-ajax id="ajaxadd"
 		           handle-as="json"
 		           content-type="application/json"
-		           url="{{host}}/download"
+		           url="{{host}}/job"
 		           method="POST"
 		           debounce-duration="3000"
 		           on-response="_logresponse">
@@ -63,10 +63,10 @@
 	</template>
 	<script>
 
-		class DownloadData extends Polymer.Element {
+		class JobsData extends Polymer.Element {
 
 			static get is() {
-				return 'download-data';
+				return 'job-data';
 			}
 
 			static get properties() {
@@ -74,30 +74,30 @@
 
 					active: {
 						type: Array,
-						computed: '_filterByState(downloads,"RUNNING")',
+						computed: '_filterByState(jobs,"RUNNING")',
 						notify: true
 					},
 					waiting: {
 						type: Array,
-						computed: '_filterByState(downloads,"WAITING")',
+						computed: '_filterByState(jobs,"WAITING")',
 						notify: true
 					},
 					failed: {
 						type: Array,
-						computed: '_filterByState(downloads,"ERROR")',
+						computed: '_filterByState(jobs,"ERROR")',
 						notify: true
 					},
 					finished: {
 						type: Array,
-						computed: '_filterByState(downloads,"FINISHED")',
+						computed: '_filterByState(jobs,"FINISHED")',
 						notify: true
 					},
 					canceled: {
 						type: Array,
-						computed: '_filterByState(downloads,"CANCELLED")',
+						computed: '_filterByState(jobs,"CANCELLED")',
 						notify: true
 					},
-					downloads: {
+					jobs: {
 						type: Array,
 						notify: true
 					},
@@ -119,31 +119,31 @@
 				this.$.ajaxall.generateRequest();
 			}
 			
-			addDownload(url) {
+			addJob(url) {
 				this.$.ajaxadd.body = url
 				this.$.ajaxadd.generateRequest()
 			}
 			
-			removeDownload(handle) {
+			removeJob(handle) {
 				this.$.ajaxremove.url = this.host + "/download/" + handle
 				this.$.ajaxremove.generateRequest()
 			}
 			
-			cancelDownload(handle) {
+			cancelJob(handle) {
 				this.$.ajaxpost.url = this.host + "/download/" + handle + "/cancel"
 				this.$.ajaxpost.generateRequest()
 			}
 			
-			restartDownload(handle) {
+			restartJob(handle) {
 				this.$.ajaxpost.url = this.host + "/download/" + handle + "/restart"
 				this.$.ajaxpost.generateRequest()
 			}
 			
-			_filterByState(downloads, state) {
-				if (!downloads || !state)
+			_filterByState(jobs, state) {
+				if (!jobs || !state)
 					return []
 
-				return _.chain(downloads)
+				return _.chain(jobs)
 					.filter(function (d) {
 						const c = d.state
 						if (state !== "WAITING")
@@ -166,18 +166,18 @@
 					const d = event.detail
 					let found = false
 
-					for (let i = 0; i < this.downloads.length && !found; i++) {
-						if (this.downloads[i].handle === d.handle) {
-							this.set('downloads.#' + i, d);
+					for (let i = 0; i < this.jobs.length && !found; i++) {
+						if (this.jobs[i].handle === d.handle) {
+							this.set('jobs.#' + i, d);
 							found = true
 						}
 					}
 
 					if (!found)
-						this.push('downloads', d)
+						this.push('jobs', d)
 
 					//should not be necessary
-					this.notifyPath("downloads", this.downloads.slice())
+					this.notifyPath("jobs", this.jobs.slice())
 
 
 				}
@@ -195,7 +195,7 @@
 			}
 		}
 
-		window.customElements.define(DownloadData.is, DownloadData);
+		window.customElements.define(JobsData.is, JobsData);
 
 		
 	</script>
