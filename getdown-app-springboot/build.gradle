@@ -16,7 +16,7 @@ ext['tomcat.version'] = '8.5.2'
 
 apply plugin: "com.github.lkishalmi.gatling"
 gatling {
-	toolVersion = '2.2.2'
+	toolVersion = '2.3.0'
 	jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
 	logLevel ='DEBUG'
 }
@@ -40,7 +40,6 @@ dependencies {
 
 	compile project(':getdown-core')
 	compile project(':getdown-webconsole')
-	compile project(':getdown-ux-console')
 
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
@@ -150,7 +149,7 @@ task dockerTagLatest(type: Exec){
 
 	workingDir stageDir
 	executable = 'docker'
-	args= ['tag','-f', "lumue/getdown:${project.version}", 'lumue/getdown:latest']
+	args= ['tag', "lumue/getdown:${project.version}", 'lumue/getdown:latest']
 
 }
 
