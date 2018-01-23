@@ -114,7 +114,7 @@ public class DownloadService {
 				.withHandle(task.getHandle())
 				.build();
 		job.addObserver( o ->
-				eventbus.notify("downloads", Event.wrap(Objects.requireNonNull(o))
+				eventbus.notify("downloads-progress", Event.wrap(Objects.requireNonNull(o))
 				));
 		return job;
 	}
