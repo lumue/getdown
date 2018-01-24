@@ -47,7 +47,7 @@ public class DownloadJobController {
 	Resources<Resource<DownloadJob>> post(@RequestBody List<String> taskHandles) {
 		return Resources.wrap(
 				taskHandles.stream()
-						.map(s -> downloadService.startDownload(s))
+						.map(downloadService::startDownload)
 						.collect(Collectors.toList())
 		);
 	}
