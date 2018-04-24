@@ -1,23 +1,43 @@
+
+plugins {
+	id "com.moowork.node" version "1.2.0"
+}
+
+def polymerAppDir="${projectDir}/src/main/resources/static/webconsole"
+def bowerScript="${projectDir}/node_modules/bower/bin/bower"
+def gulpScript="${projectDir}/node_modules/gulp/bin/gulp.js"
+
 processResources.dependsOn 'bowerInstall'
 
 jar.dependsOn 'gulp'
 
-task npmInstall( type: Exec){
-	workingDir '.'
-	executable = 'npm'
-	args = ['install']
-}
 
+node {
+	version = '9.7.1'
+	npmVersion = 'latest'
+	distBaseUrl = 'https://nodejs.org/dist'
+	nodeModulesDir = file(projectDir)
+	download = true
+}
 
 // Install the bower components for front-end library management
-task bowerInstall( type: Exec, dependsOn: npmInstall){
-	workingDir '.'
-	commandLine "bower", 'install'
+
+task bowerInstall(type: NodeTask, dependsOn: npmInstall) {
+	script=file(bowerScript)
+	execOverrides {
+		it.workingDir = projectDir
+		it.args=[bowerScript,"install"]
+	}
+
 }
 
-task gulp(type: Exec, dependsOn: bowerInstall){
-	workingDir '.'
-	executable='gulp'
+
+task gulp(type: NodeTask, dependsOn: bowerInstall){
+	script=file(gulpScript)
+	execOverrides {
+		it.workingDir = projectDir
+		it.args=[gulpScript]
+	}
 }
 
 

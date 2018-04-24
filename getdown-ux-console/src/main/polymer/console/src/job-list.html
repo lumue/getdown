@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
@@ -16,15 +17,32 @@
 		</style>
 
 		<vaadin-grid id="grid" items="[[jobs]]" size="40">
+			<vaadin-grid-selection-column auto-select>
+			</vaadin-grid-selection-column>
 			<vaadin-grid-column>
 				<template class="header">
-					<vaadin-grid-sorter path="sourceUrl">Url</vaadin-grid-sorter>
+					<vaadin-grid-sorter path="name">Name</vaadin-grid-sorter>
 				</template>
-				<template>[[item.sourceUrl]]</template>
+				<template>[[item.name]]</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column>
 				<template class="header"><vaadin-grid-sorter path="state">State</vaadin-grid-sorter></template>
 				<template>[[item.state]]</template>
+			</vaadin-grid-column>
+			<vaadin-grid-column>
+				<template class="header">Progress</template>
+				<template>
+					<span>[[item.progress]]/[[item.size]]</span>
+					<paper-progress style="width: 100%"
+					                value="[[_percentage(item.progress,item.size)]]"
+					                id="paper_progress">
+						[[_percentage(item.progress,item.size)]]
+					</paper-progress>
+				</template>
+			</vaadin-grid-column>
+			<vaadin-grid-column>
+				<template class="header">Last message</template>
+				<template>[[item.message]]</template>
 			</vaadin-grid-column>
 		</vaadin-grid>
 

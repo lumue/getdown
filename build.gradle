@@ -70,7 +70,11 @@ allprojects {
 	}
 
 
-
+	idea {
+		module {
+			outputDir file("out/production/classes")
+		}
+	}
 
 	configurations.all {
 		resolutionStrategy.cacheChangingModulesFor 0, 'seconds'

@@ -29,10 +29,11 @@ task generateWebResources(type: Copy,dependsOn: 'polymerBuild'){
 generateWebResources.dependsOn('polymerBuild')
 
 node {
-	version = '8.7.0'
-	npmVersion = '5.4.2'
+	version = '9.7.1'
+	npmVersion = 'latest'
 	distBaseUrl = 'https://nodejs.org/dist'
 	nodeModulesDir = file(polymerAppDir)
+	download = true
 }
 
 task polymerInstall(type: NodeTask, dependsOn: npmInstall) {

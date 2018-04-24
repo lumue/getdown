@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+    <module name="getdown-app-springboot_main" />
+    <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="io.github.lumue.getdown.app.springboot.application.*" />
         <option name="ENABLED" value="true" />
@@ -8,7 +9,8 @@
     </extension>
     <option name="SPRING_BOOT_MAIN_CLASS" value="io.github.lumue.getdown.webapp.Application" />
     <option name="VM_PARAMETERS" value="-Xms20M -Xmx100m" />
-    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
     <additionalParameters>
       <param>
         <option name="enabled" value="true" />
@@ -16,8 +18,6 @@
         <option name="value" value="$PROJECT_DIR$/work" />
       </param>
     </additionalParameters>
-    <module name="getdown-app-springboot_main" />
-    <envs />
     <method />
   </configuration>
 </component>
