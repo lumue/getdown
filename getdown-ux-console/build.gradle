@@ -20,9 +20,9 @@ sourceSets {
 //a task that generates the resources:
 task generateWebResources(type: Copy,dependsOn: 'polymerBuild'){
 	doFirst{
-		file("${generatedWebResourcesDir}/static/console").mkdir()
+		file("${generatedWebResourcesDir}/static").mkdir()
 	}
-	into "${generatedWebResourcesDir}/static/console"
+	into "${generatedWebResourcesDir}/static"
 	from polymerBuildDir
 }
 
@@ -49,7 +49,7 @@ task polymerBuild(type: NodeTask, dependsOn: polymerInstall) {
 	script=file(polymerScript)
 	execOverrides {
 		it.workingDir = polymerAppDir
-		it.args=[polymerScript,"build"]
+		it.args=[polymerScript,"build","--"]
 	}
 
 }
