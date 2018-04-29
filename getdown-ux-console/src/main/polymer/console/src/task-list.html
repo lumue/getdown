@@ -17,8 +17,8 @@
 			}
 		</style>
 
-		<url-input></url-input>
-		<vaadin-grid id="grid" items="[[tasks]]" size="40">
+
+		<vaadin-grid id="grid" items="[[tasks]]"   size="40">
 			<vaadin-grid-selection-column auto-select>
 			</vaadin-grid-selection-column>
 			<vaadin-grid-column>
@@ -50,6 +50,11 @@
 						statePath: 'tasksReducer.tasks'
 					}
 				}
+			}
+
+			connectedCallback(){
+				super.connectedCallback()
+				this.dispatch('fetchTasks')
 			}
 		}
 

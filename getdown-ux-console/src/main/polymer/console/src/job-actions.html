@@ -5,7 +5,7 @@
 			return {type: 'POST_JOB'}
 		}
 
-		function addJob(urls){
+		function addJob(handles){
 			return dispatch =>{
 				postJob()
 				fetch("http://localhost:8001/api/jobs", {
@@ -14,7 +14,7 @@
 						'Accept': 'application/json, text/plain, */*',
 						'Content-Type': 'application/json'
 					},
-					body: JSON.stringify(urls)
+					body: JSON.stringify(handles)
 				})
 					.then(response => response.json())
 					.then(json=> dispatch(jobsAdded(json)))
