@@ -3,8 +3,10 @@
 
 <link rel="import" href="tasks-reducer.html">
 <link rel="import" href="jobs-reducer.html">
+<link rel="import" href="config-reducer.html">
 <link rel="import" href="task-actions.html">
 <link rel="import" href="job-actions.html">
+<link rel="import" href="config-actions.html">
 <link rel="import" href="redux-middleware.html">
 <!--<link rel="import" href="my-redux-selectors.html">-->
 <script>
@@ -13,10 +15,18 @@
 
 	(function() {
 
+		let protocol = (localStorage.protocol)?localStorage.protocol:location.protocol;
+		let hostname = (localStorage.hostname)?localStorage.hostname:location.hostname;
+		let apiPort = (localStorage.port)?localStorage.port:location.port;
+
+		localStorage.protocol=protocol;
+		localStorage.hostname=hostname;
+		localStorage.port=apiPort;
+
 		const state={
 			tasksReducer:{tasks:[],isAdding:false,isFetching:false},
 			jobsReducer:{jobs:[],isAdding:false,isFetching:false},
-			configReducer:{apiUrl: '/api/'}
+			configReducer:{apiHost:protocol+"//"+ hostname,apiPort: apiPort,apiPath: '/api'}
 		}
 
 		const rootReducer=Redux.combineReducers(GetdownConsole.reducers)
@@ -36,6 +46,10 @@
 			}
 		}
 		GetdownConsole.ReduxMixin = Polymer.dedupingMixin(actionsMixin)
+		GetdownConsole.state=state
+		GetdownConsole.apiLocation=function(){
+			return GetdownConsole.state.configReducer.apiHost+":"+GetdownConsole.state.configReducer.apiPort+GetdownConsole.state.configReducer.apiPath
+		}
 	}())
 </script>
 

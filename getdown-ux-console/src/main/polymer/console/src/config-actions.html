@@ -1,0 +1,21 @@
+<script>
+	(function() {
+
+
+
+		function updateApiLocation(host,port) {
+			localStorage.port=port;
+			localStorage.hostname=host;
+			return {
+				type: 'UPDATE_API',
+				apiHost: host,
+				apiPort: port
+			}
+		}
+
+
+
+		GetdownConsole.actions.updateApiLocation=updateApiLocation
+
+	}());
+</script>

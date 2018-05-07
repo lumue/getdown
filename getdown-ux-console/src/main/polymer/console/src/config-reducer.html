@@ -1,0 +1,28 @@
+<script src="../node_modules/redux/dist/redux.js"></script>
+
+<script>
+
+(function() {
+
+
+
+	function configReducer(state={apiHost:"",apiPort:"",apiPath: ""},action)
+	{
+		switch (action.type) {
+
+
+			case 'UPDATE_API': {
+				return Object.assign({}, state, {
+					apiHost:action.apiHost,
+					apiLocation:action.apiLocation
+				})
+			}
+			default:
+				return state
+		}
+	}
+
+
+	GetdownConsole.reducers.configReducer=configReducer
+}());
+</script>

@@ -21,7 +21,7 @@
     "paper-input": "^2.0.2",
     "paper-button": "^2.0.0",
     "vaadin-grid": "^5.0.3",
-    "paper-styles": "^2.0.0",
+    "paper-styles": "^2.1.0",
     "paper-progress": "^2.0.1",
     "vaadin-material-theme": "vaadin/vaadin-material-theme#^0.3.0",
     "iron-icons": "^2.1.1"

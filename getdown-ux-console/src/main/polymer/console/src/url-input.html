@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
-
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-text-field.html">
+<link rel="import" href="../bower_components/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
@@ -33,8 +33,8 @@
 		<style is="custom-style" include="iron-flex"></style>
 
 		<div class="horizontal layout" >
-			<paper-input class="flex" id="urlInput" label="URL" type="text"  >
-			</paper-input>
+			<vaadin-text-field class="flex" id="urlInput" label="URL" type="text"  >
+			</vaadin-text-field>
 
 			<paper-button class="indigo" on-tap="addTapped">+</paper-button>
 		</div>
