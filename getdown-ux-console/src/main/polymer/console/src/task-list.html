@@ -1,8 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-checkbox.html">
+<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="redux-store.html">
 <link rel="import" href="url-input.html">
@@ -15,10 +19,20 @@
 
 				padding: 10px;
 			}
+
+			.toolbar{
+				display: flex;
+				flex-direction: row-reverse
+			}
+
 		</style>
 
+		<div class="toolbar">
+			<paper-icon-button icon="delete" on-tap="handleDelete"></paper-icon-button>
+			<paper-icon-button icon="file-download" on-tap="handleDownload"></paper-icon-button>
+		</div>
 
-		<vaadin-grid id="grid" items="[[tasks]]"   size="40">
+		<vaadin-grid id="grid" items="[[tasks]]"   size="20">
 			<vaadin-grid-selection-column auto-select>
 			</vaadin-grid-selection-column>
 			<vaadin-grid-column>
@@ -55,6 +69,14 @@
 			connectedCallback(){
 				super.connectedCallback()
 				this.dispatch('fetchTasks')
+			}
+
+			handleDelete(){
+				this.dispatch('removeTasks',this.$.grid.selectedItems)
+			}
+
+			handleDownload(){
+				this.dispatch('addJob',this.$.grid.selectedItems)
 			}
 		}
 

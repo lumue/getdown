@@ -32,9 +32,10 @@ public class YoutubedlDownloadJob extends Download {
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlDownloadJob.class);
 	private transient AtomicReference<YdlDownloadTask> downloadTask = new AtomicReference<>(null);
 	private boolean forceMp4OnYoutube = true;
+	private String pathToYdl = "/usr/bin/youtube-dl";
 
 
-	@JsonCreator
+@JsonCreator
 	private YoutubedlDownloadJob(
 			@JsonProperty("url") String url,
 			@JsonProperty("handle") String handle,
@@ -74,11 +75,12 @@ public class YoutubedlDownloadJob extends Download {
 	private YdlDownloadTask getDownloadTask() {
 		YdlDownloadTask result = downloadTask.get();
 		if (result == null) {
+			
 			YdlDownloadTask.YdlDownloadTaskBuilder builder = YdlDownloadTask.builder()
 					.setUrl(getUrl())
 					.setOutputFolder(getDownloadPath())
 					.setWriteInfoJson(true)
-					.setPathToYdl("/usr/bin/youtube-dl")
+					.setPathToYdl(pathToYdl)
 					.onStdout(this::handleMessage)
 					.onStateChanged(this::handleProgress)
 					.onNewOutputFile(this::handleProgress)

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/jobs")
+@CrossOrigin
 public class DownloadJobController {
 
 
@@ -44,9 +45,10 @@ public class DownloadJobController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	Resources<Resource<DownloadJob>> post(@RequestBody List<String> taskHandles) {
+	Resources<Resource<DownloadJob>> post(@RequestBody List<DownloadTask> tasks) {
 		return Resources.wrap(
-				taskHandles.stream()
+				tasks.stream()
+						.map(DownloadTask::getHandle)
 						.map(downloadService::startDownload)
 						.collect(Collectors.toList())
 		);

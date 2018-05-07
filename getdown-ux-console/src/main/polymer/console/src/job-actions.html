@@ -5,7 +5,7 @@
 			return {type: 'POST_JOB'}
 		}
 
-		function addJob(handles){
+		function addJobs(handles){
 			return dispatch =>{
 				postJob()
 				fetch("http://localhost:8001/api/jobs", {
@@ -53,7 +53,7 @@
 		}
 
 		GetdownConsole.actions.fetchJobs=fetchJobs
-		GetdownConsole.actions.addJob=addJob
+		GetdownConsole.actions.addJob=addJobs
 
 	}());
 </script>

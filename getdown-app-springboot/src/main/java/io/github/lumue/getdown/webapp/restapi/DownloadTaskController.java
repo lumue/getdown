@@ -50,6 +50,15 @@ public class DownloadTaskController{
 		);
 	}
 
+	@RequestMapping(method = RequestMethod.DELETE)
+	Resources<Resource<DownloadTask>> delete(@RequestBody List<DownloadTask> tasks) {
+		return Resources.wrap(
+				tasks.stream()
+						.map(downloadService::removeDownloadTask)
+						.collect(Collectors.toList())
+		);
+	}
+
 	@RequestMapping(value="/{key}", method = RequestMethod.GET)
 	ResponseEntity<Resource<DownloadTask>> getOne(@PathVariable("key") String id){
 		DownloadTask downloadTask = this.taskRepository.get(id);

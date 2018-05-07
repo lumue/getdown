@@ -1,13 +1,18 @@
 <script src="../node_modules/redux/dist/redux.js"></script>
-
+<script src="../node_modules/lodash/lodash.min.js"></script>
 <script>
 
+
+
 (function() {
+
+	function compareTasks(a,b){
+		return a.handle===b.handle
+	}
 
 	function tasksReducer(state={tasks:[],isAdding:false,isFetching:false},action)
 	{
 		switch (action.type) {
-
 			case 'POST_TASK': {
 				return Object.assign({}, state, {
 					isAdding: true
@@ -16,6 +21,13 @@
 
 			case 'TASKS_ADDED': {
 				const items = state.tasks.concat(action.tasks)
+				return Object.assign({}, state, {
+					tasks: items
+				})
+			}
+
+			case 'TASKS_REMOVED': {
+				const items = _.differenceWith(state.tasks,action.tasks,compareTasks )
 				return Object.assign({}, state, {
 					tasks: items
 				})
