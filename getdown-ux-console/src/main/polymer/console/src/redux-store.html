@@ -1,6 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
-
 <link rel="import" href="tasks-reducer.html">
 <link rel="import" href="jobs-reducer.html">
 <link rel="import" href="config-reducer.html">
@@ -15,18 +14,17 @@
 
 	(function() {
 
-		let protocol = (localStorage.protocol)?localStorage.protocol:location.protocol;
-		let hostname = (localStorage.hostname)?localStorage.hostname:location.hostname;
+		let protocol = location.protocol;
+		let hostname = (localStorage.hostname)?localStorage.hostname:protocol+"//"+location.hostname;
 		let apiPort = (localStorage.port)?localStorage.port:location.port;
 
-		localStorage.protocol=protocol;
 		localStorage.hostname=hostname;
 		localStorage.port=apiPort;
 
 		const state={
 			tasksReducer:{tasks:[],isAdding:false,isFetching:false},
 			jobsReducer:{jobs:[],isAdding:false,isFetching:false},
-			configReducer:{apiHost:protocol+"//"+ hostname,apiPort: apiPort,apiPath: '/api'}
+			configReducer:{apiHost: hostname,apiPort: apiPort,apiPath: '/api'}
 		}
 
 		const rootReducer=Redux.combineReducers(GetdownConsole.reducers)

@@ -1,30 +1,46 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/vaadin-progress-bar/vaadin-progress-bar.html">
 <link rel="import" href="../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
-<link rel="import" href="shared-styles.html">
 <link rel="import" href="redux-store.html">
 
 <dom-module id="job-list">
 	<template>
-		<style include="shared-styles">
+		<style is="custom-style" >
             :host {
                 display: block;
 
                 padding: 10px;
+	            --material-body-font-size: 11px;
+
             }
+
+            .toolbar{
+	            display: flex;
+	            flex-direction: row-reverse
+            }
+
+
 		</style>
 
-		<vaadin-grid id="grid" items="[[jobs]]" size="40">
+		<div class="toolbar">
+			<paper-icon-button icon="cancel" on-tap="_handleCancelTap" hidden$="[[_hideCancel]]"></paper-icon-button>
+			<paper-icon-button icon="refresh" on-tap="_handleRestartTap" hidden$="[[_hideRefresh]]"></paper-icon-button>
+			<paper-icon-button icon="delete" on-tap="_handleDeleteTap" hidden$="[[_hideDelete]]"></paper-icon-button>
+		</div>
+
+
+
+		<vaadin-grid id="grid" items="[[jobs]]"  selected-items="{{_selectedItems}}" size="40">
 			<vaadin-grid-selection-column auto-select>
 			</vaadin-grid-selection-column>
 			<vaadin-grid-column resizable>
 				<template class="header">
 					<vaadin-grid-sorter path="name">Name</vaadin-grid-sorter>
 				</template>
-				<template>[[item.name]]</template>
+				<template >[[item.name]]</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column>
 				<template class="header"><vaadin-grid-sorter path="state">State</vaadin-grid-sorter></template>
@@ -33,12 +49,11 @@
 			<vaadin-grid-column>
 				<template class="header">Progress</template>
 				<template>
-					<span>[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]%</span>
-					<paper-progress style="width: 100%"
-					                value="[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]"
+					<span>[[_percentage(item.size,item.progress)]]%</span>
+					<vaadin-progress-bar style="width: 100%"
+					                value="[[_percentage(item.size,item.progress)]]" max="100"
 					                id="paper_progress">
-						[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]
-					</paper-progress>
+					</vaadin-progress-bar>
 				</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column resizable>
@@ -62,6 +77,29 @@
 					jobs:{
 						type: Array,
 						statePath: 'jobsReducer.jobs'
+					},
+					_hideCancel:{
+						type: Boolean,
+						computed: 'isSelectionEmpty(_selectedItems)',
+						notify: true,
+						reflectToAttribute: true
+					},
+					_hideRefresh:{
+						type: Boolean,
+						computed: 'isSelectionEmpty(_selectedItems)',
+						notify: true,
+						reflectToAttribute: true
+					},
+					_hideDelete:{
+						type: Boolean,
+						computed: 'isSelectionEmpty(_selectedItems)',
+						notify: true,
+						reflectToAttribute: true
+					},
+					_selectedItems:{
+						type:Array,
+						notify: true,
+						value: []
 					}
 				}
 			}
@@ -73,6 +111,12 @@
 
 			_percentage(gw,pw){
 				return Math.round(((pw/gw)*100)*100)/100
+			}
+
+			isSelectionEmpty(items){
+				return !items
+						||
+						(!items.length>0)
 			}
 
 

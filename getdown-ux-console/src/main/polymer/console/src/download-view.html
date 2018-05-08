@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/vaadin-split-layout/vaadin-split-layout.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="task-list.html">
 <link rel="import" href="job-list.html">
@@ -9,15 +10,23 @@
 		<style include="shared-styles">
 			:host {
 				display: block;
-
+				height: 100%;
 				padding: 10px;
 			}
 		</style>
 
-		<div class="card">
-			<url-input></url-input>
-			<task-list ></task-list>
-			<job-list></job-list>
+
+
+		<div class="card" style="height: 100%">
+
+			<vaadin-split-layout orientation="vertical">
+				<div>
+					<task-list></task-list>
+				</div>
+				<div>
+					<job-list></job-list>
+				</div>
+			</vaadin-split-layout>
 		</div>
 	</template>
 

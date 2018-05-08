@@ -2,6 +2,10 @@
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/vaadin-material-theme/vaadin-text-field.html">
 <link rel="import" href="../bower_components/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="../bower_components/vaadin-form-layout/vaadin-form-item.html">
+<link rel="import" href="../bower_components/vaadin-form-layout/vaadin-form-layout.html">
+<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-button.html">
+<link rel="import" href="../bower_components/vaadin-button/vaadin-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
@@ -14,44 +18,46 @@
 				display: block;
 			}
 
-            paper-button.indigo {
-                background-color: var(--paper-indigo-500);
-                color: white;
-                --paper-button-raised-keyboard-focus: {
-                    background-color: var(--paper-pink-a200) !important;
-                    color: white !important;
-                };
+			paper-button.indigo {
+				background-color: var(--paper-indigo-500);
+				color: white;
+				--paper-button-raised-keyboard-focus: {
+					background-color: var(--paper-pink-a200) !important;
+					color: white !important;
+				};
 				height: 2.5em;
 				min-width: 3em;
-	            align-self: center;
+				align-self: center;
 			}
-
 
 
 		</style>
 
 		<style is="custom-style" include="iron-flex"></style>
+		<h3 style="margin: 0px;">Add download source</h3>
+		<div class="horizontal layout">
+			<vaadin-form-layout>
+				<vaadin-text-field style="width: 100%;" id="urlInput" label="URL" type="text"></vaadin-text-field>
+				<div style="display: flex;flex-direction: row-reverse;">
+					<vaadin-button on-click="addTapped">Add</vaadin-button>
+				</div>
+			</vaadin-form-layout>
 
-		<div class="horizontal layout" >
-			<vaadin-text-field class="flex" id="urlInput" label="URL" type="text"  >
-			</vaadin-text-field>
-
-			<paper-button class="indigo" on-tap="addTapped">+</paper-button>
 		</div>
 	</template>
 
 	<script>
-		class UrlInput extends GetdownConsole.ReduxMixin(Polymer.Element){
+		class UrlInput extends GetdownConsole.ReduxMixin(Polymer.Element) {
 
 			static get is() {
 				return 'url-input';
 			}
 
 
-			addTapped(event){
-				const field=this.$.urlInput
-				if(field.value){
-					this.dispatch('addTasks',[field.value])
+			addTapped(event) {
+				const field = this.$.urlInput
+				if (field.value) {
+					this.dispatch('addTasks', [field.value])
 				}
 			}
 		}

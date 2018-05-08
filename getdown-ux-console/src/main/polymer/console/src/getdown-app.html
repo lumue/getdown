@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
@@ -21,13 +22,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="app-icons.html">
-
+<link rel="import" href="job-eventsource.html">
 <link rel="lazy-import" href="download-view.html">
 <link rel="lazy-import" href="config-view.html">
 <link rel="lazy-import" href="my-view404.html">
 
 <dom-module id="getdown-app">
   <template>
+	  <custom-style>
+		  <style>
+			  html {
+
+				  --material-display2-font-size: 40px;
+				  --material-display1-font-size: 30px;
+				  --material-headline-font-size: 20px;
+				  --material-title-font-size: 17px;
+				  --material-subhead-font-size: 15px;
+				  --material-body-font-size: 11px;
+				  --material-small-font-size: 8px;
+				  --material-caption-font-size: 11px;
+				  --material-icon-font-size: 24px;
+			  }
+		  </style>
+	  </custom-style>
+
     <style>
       :host {
         --app-primary-color: #f99126;
@@ -66,6 +84,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-weight: bold;
       }
     </style>
+
+	  <job-eventsource ></job-eventsource>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route

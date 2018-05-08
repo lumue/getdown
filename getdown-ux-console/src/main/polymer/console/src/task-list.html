@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/vaadin-dialog/vaadin-dialog.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="redux-store.html">
@@ -25,14 +26,25 @@
 				flex-direction: row-reverse
 			}
 
+			vaadin-dialog[part="content"] {
+				width: 800px;
+			}
+
 		</style>
 
+		<vaadin-dialog id="addUrlDialog">
+			<template>
+				<url-input></url-input>
+			</template>
+		</vaadin-dialog>
+
 		<div class="toolbar">
-			<paper-icon-button icon="delete" on-tap="handleDelete"></paper-icon-button>
-			<paper-icon-button icon="file-download" on-tap="handleDownload"></paper-icon-button>
+			<paper-icon-button icon="add" on-tap="_handleAdd" ></paper-icon-button>
+			<paper-icon-button icon="delete" on-tap="_handleDelete" hidden$="[[hideDeleteButton]]"></paper-icon-button>
+			<paper-icon-button icon="file-download" on-tap="_handleDownload" hidden$="[[hideDownloadButton]]"></paper-icon-button>
 		</div>
 
-		<vaadin-grid id="grid" items="[[tasks]]"   size="20">
+		<vaadin-grid id="grid" items="[[tasks]]" selected-items="{{_selectedItems}}" size="20">
 			<vaadin-grid-selection-column auto-select>
 			</vaadin-grid-selection-column>
 			<vaadin-grid-column>
@@ -62,21 +74,51 @@
 					tasks:{
 						type: Array,
 						statePath: 'tasksReducer.tasks'
+					},
+					hideDeleteButton:{
+						type: Boolean,
+						computed: 'isSelectionEmpty(_selectedItems)',
+						notify: true,
+						reflectToAttribute: true
+					},
+					hideDownloadButton:{
+						type: Boolean,
+						computed: 'isSelectionEmpty(_selectedItems)',
+						notify: true,
+						reflectToAttribute: true
+					},
+					_selectedItems:{
+						type:Array,
+						notify: true,
+						value: []
 					}
+
 				}
 			}
+
+
 
 			connectedCallback(){
 				super.connectedCallback()
 				this.dispatch('fetchTasks')
 			}
 
-			handleDelete(){
-				this.dispatch('removeTasks',this.$.grid.selectedItems)
+			_handleDelete(){
+				this.dispatch('removeTasks',this._selectedItems)
 			}
 
-			handleDownload(){
-				this.dispatch('addJob',this.$.grid.selectedItems)
+			_handleDownload(){
+				this.dispatch('addJob',this._selectedItems)
+			}
+
+			_handleAdd(){
+				this.$.addUrlDialog.opened=true;
+			}
+
+			isSelectionEmpty(items){
+				return !items
+						||
+						(!items.length>0)
 			}
 		}
 

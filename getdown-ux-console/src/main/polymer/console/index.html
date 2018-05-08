@@ -71,21 +71,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		const GetdownConsole = {reducers:{},actions:{}}
 	</script>
 
+	<link rel="import" href="bower_components/polymer/lib/elements/custom-style.html">
 	<!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
 	<script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 	<!-- Load your application shell -->
 	<link rel="import" href="src/getdown-app.html">
-
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,400,400italic,500,500italic,700,700italic" crossorigin="anonymous">
 	<!-- Add any global styles for body, document, etc. -->
 	<style>
         body {
             margin: 0;
             font-family: 'Roboto', 'Noto', sans-serif;
-            line-height: 1.5;
+            line-height: 1.1;
             min-height: 100vh;
             background-color: #eeeeee;
+
         }
 	</style>
+
+	<custom-style>
+		<style>
+			html {
+
+				--material-display2-font-size: 40px;
+				--material-display1-font-size: 30px;
+				--material-headline-font-size: 20px;
+				--material-title-font-size: 17px;
+				--material-subhead-font-size: 15px;
+				--material-body-font-size: 11px;
+				--material-small-font-size: 8px;
+				--material-caption-font-size: 11px;
+				--material-icon-font-size: 24px;
+			}
+		</style>
+	</custom-style>
 </head>
 <body>
 

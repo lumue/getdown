@@ -1,11 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../bower_components/vaadin-form-layout/vaadin-form-item.html">
 <link rel="import" href="../bower_components/vaadin-form-layout/vaadin-form-layout.html">
 <link rel="import" href="../bower_components/vaadin-material-theme/vaadin-text-field.html">
 <link rel="import" href="../bower_components/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-button.html">
+<link rel="import" href="../bower_components/vaadin-button/vaadin-button.html">
 <link rel="import" href="../bower_components/paper-styles/shadow.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="shared-styles.html">
@@ -21,15 +22,6 @@
 				padding: 10px;
 			}
 
-			paper-button.indigo {
-				background-color: var(--paper-indigo-500);
-				color: white;
-				--paper-button-raised-keyboard-focus: {
-					background-color: var(--paper-pink-a200) !important;
-					color: white !important;
-				};
-			}
-
 			vaadin-form-layout.with-text-fields > vaadin-text-field {
 				margin-top: .5em;
 				margin-bottom: .5em;
@@ -40,21 +32,19 @@
 			<style is="custom-style" include="paper-material-styles"></style>
 		</custom-style>
 
-		<vaadin-form-layout class="with-text-fields">
+		<div class="paper-material" elevation="1" style="width: 90%;">
+			<vaadin-form-layout class="with-text-fields">
+				<vaadin-text-field id="hostInput"  col-span="2" label="API Host" value="[[host]]" ></vaadin-text-field>
+				<br/>
+				<vaadin-text-field id="portInput" label="API Port" value="[[port]]"></vaadin-text-field>
+				<br/>
+				<div style="display: flex;flex-direction: row-reverse;">
+					<vaadin-button on-click="handleApply">Apply</vaadin-button>
+				</div>
+			</vaadin-form-layout>
 
-			<div class="paper-material" elevation="1" style="padding: 10px;">
-				<vaadin-form-item>
-					<vaadin-text-field id="hostInput" label="API Host" value="[[host]]"></vaadin-text-field>
-				</vaadin-form-item>
-				<vaadin-form-item>
-					<vaadin-text-field id="portInput" label="API Port" value="[[port]]"></vaadin-text-field>
-				</vaadin-form-item>
-				<vaadin-form-item>
-					<paper-button class="indigo" on-tap="handleApply">Apply</paper-button>
-				</vaadin-form-item>
-			</div>
+		</div>
 
-		</vaadin-form-layout>
 
 	</template>
 

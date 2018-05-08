@@ -21,6 +21,24 @@
 				})
 			}
 
+			case 'JOBS_UPDATED': {
+				const items = state.jobs.splice()
+				action.jobs.forEach(d=> {
+					let found = false;
+					for (let i = 0; i < items.length && !found; i++) {
+						if (items[i].handle === d.handle) {
+							items[i]=d;
+							found = true
+						}
+					}
+					if(!found)
+						items.push(d);
+				})
+				return Object.assign({}, state, {
+					jobs: items
+				})
+			}
+
 			case 'REQUEST_JOBS': {
 				return Object.assign({}, state, {
 					isFetching: true
