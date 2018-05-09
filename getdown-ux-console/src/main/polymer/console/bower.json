@@ -28,7 +28,8 @@
     "vaadin-button": "vaadin/vaadin-button#^2.0.0",
     "vaadin-progress-bar": "vaadin/vaadin-progress-bar#^1.0.0",
     "vaadin-dialog": "vaadin/vaadin-dialog#^2.0.0",
-    "sse-client": "^0.0.4"
+    "sse-client": "^0.0.4",
+    "vaadin-form-layout": "vaadin/vaadin-form-layout#^2.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"
