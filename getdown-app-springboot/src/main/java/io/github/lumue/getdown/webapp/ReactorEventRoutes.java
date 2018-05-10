@@ -1,6 +1,7 @@
 package io.github.lumue.getdown.webapp;
 
 import io.github.lumue.getdown.webapp.restapi.DownloadJobController;
+import io.github.lumue.getdown.webapp.restapi.DownloadTaskController;
 import io.github.lumue.getdown.webapp.websocket.DownloadWebsocketController;
 import io.github.lumue.getdown.core.download.job.ThrottlingDownloadJobEventTap;
 import io.github.lumue.getdown.webapp.websocket.TaskWebsocketController;
@@ -35,16 +36,19 @@ public class ReactorEventRoutes {
 
 	private final DownloadJobController downloadJobController;
 	
+	private final DownloadTaskController downloadTaskController;
+	
 	@Autowired
 	public ReactorEventRoutes(DownloadWebsocketController websocketController,
 	                          TaskWebsocketController taskWebsocketController,
 	                          EventBus eventbus,
-	                          DownloadJobController downloadJobController) {
+	                          DownloadJobController downloadJobController, DownloadTaskController downloadTaskController) {
 		this.downloadWebsocketController = websocketController;
 		this.taskWebsocketController = taskWebsocketController;
 		this.eventbus = eventbus;
 		this.throttlingDownloadJobEventTap = new ThrottlingDownloadJobEventTap(eventbus, THROTTELED_DOWNLOADS, 5000);
 		this.downloadJobController = downloadJobController;
+		this.downloadTaskController = downloadTaskController;
 	}
 
 	/**
@@ -56,5 +60,6 @@ public class ReactorEventRoutes {
 		this.eventbus.on($(THROTTELED_DOWNLOADS), downloadWebsocketController);
 		this.eventbus.on($(THROTTELED_DOWNLOADS), downloadJobController);
 		this.eventbus.on(R("tasks-(.+)"), downloadWebsocketController);
+		this.eventbus.on(R("tasks-(.+)"), downloadTaskController);
 	}
 }

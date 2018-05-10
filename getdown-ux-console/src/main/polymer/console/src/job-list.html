@@ -49,11 +49,12 @@
 			<vaadin-grid-column>
 				<template class="header">Progress</template>
 				<template>
-					<span>[[_percentage(item.size,item.progress)]]%</span>
-					<vaadin-progress-bar style="width: 100%"
-					                value="[[_percentage(item.size,item.progress)]]" max="100"
+					<span>[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]%</span>
+					<paper-progress style="width: 100%"
+					                value="[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]"
 					                id="paper_progress">
-					</vaadin-progress-bar>
+						[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]
+					</paper-progress>
 				</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column resizable>

@@ -1,6 +1,8 @@
 package io.github.lumue.getdown.core.download.task;
 
-public abstract class ValidateTaskJob implements Runnable {
+import io.github.lumue.getdown.core.common.util.Observable;
+
+public abstract class ValidateTaskJob implements Runnable, Observable {
 	
 	private final DownloadTask task;
 	
@@ -11,4 +13,6 @@ public abstract class ValidateTaskJob implements Runnable {
 	public DownloadTask getTask() {
 		return task;
 	}
+	
+	public abstract ValidateTaskJob removeObservers();
 }

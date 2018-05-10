@@ -1,5 +1,9 @@
 package io.github.lumue.getdown.core.download.downloader.youtubedl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.github.lumue.getdown.core.common.util.Observable;
+import io.github.lumue.getdown.core.common.util.ObservableTemplate;
+import io.github.lumue.getdown.core.common.util.Observer;
 import io.github.lumue.getdown.core.download.task.DownloadFormat;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import io.github.lumue.getdown.core.download.task.ValidateTaskJob;
@@ -21,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public class YoutubedlValidateTaskJob extends ValidateTaskJob {
+public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlValidateTaskJob.class);
 	private transient AtomicReference<YdlDownloadTask> ydlTaskReference = new AtomicReference<>(null);
@@ -29,14 +33,24 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob {
 	
 	private String pathToYdl = "/usr/bin/youtube-dl";
 	
+	@JsonIgnore
+	private  ObservableTemplate observableTemplate=new ObservableTemplate(this);
+	
+	
 	public YoutubedlValidateTaskJob(DownloadTask task) {
 		super(task);
 	}
 	
 	@Override
+	public ValidateTaskJob removeObservers() {
+		observableTemplate=new ObservableTemplate(this);
+		return this;
+	}
+	
+	@Override
 	public void run() {
 		try {
-			getTask().validating();
+			setValidatingState();
 			getYdlTask().prepare();
 			getYdlTask().getYdlDownloadTaskMetadata().ifPresent(
 					ydlInfoJson -> {
@@ -51,14 +65,33 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob {
 										f -> f.getFormatId().equals(formatId)
 								).collect(Collectors.toList());
 						getTask().setSelectedFormats(selectedFormats);
+						getTask().setExpectedSize(selectedFormats.stream().mapToLong(f->f.getExpectedSize()).sum());
 					}
 			);
 			
-			getTask().validated();
+			setValidatedState();
 		} catch (Exception e) {
-			getTask().invalid();
+			setInvalidState();
 			LOGGER.error("error validating task ", e);
 		}
+	}
+	
+	private void setInvalidState() {
+		observableTemplate.doObserved(()->
+				getTask().invalid()
+		);
+	}
+	
+	private void setValidatedState() {
+		observableTemplate.doObserved(()->
+		getTask().validated()
+		);
+	}
+	
+	private void setValidatingState() {
+		observableTemplate.doObserved(()->
+			getTask().validating()
+		);
 	}
 	
 	private List<DownloadFormat> toFormatsFromRequested(List<RequestedFormat> requestedFormats) {
@@ -155,5 +188,16 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob {
 	}
 	
 	private void handlePrepared(YdlDownloadTask ydlDownloadTask, SingleInfoJsonMetadataAccessor singleInfoJsonMetadataAccessor) {
+	}
+	
+	@Override
+	public Observable addObserver(Observer<?> observer) {
+		return observableTemplate.addObserver(observer);
+		
+	}
+	
+	@Override
+	public Observable removeObserver(Observer<?> observer) {
+		return observableTemplate.removeObserver(observer);
 	}
 }

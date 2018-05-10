@@ -23,6 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="app-icons.html">
 <link rel="import" href="job-eventsource.html">
+<link rel="import" href="task-eventsource.html">
 <link rel="lazy-import" href="download-view.html">
 <link rel="lazy-import" href="config-view.html">
 <link rel="lazy-import" href="my-view404.html">
@@ -85,7 +86,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-	  <job-eventsource ></job-eventsource>
+	<job-eventsource ></job-eventsource>
+    <task-eventsource ></task-eventsource>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route

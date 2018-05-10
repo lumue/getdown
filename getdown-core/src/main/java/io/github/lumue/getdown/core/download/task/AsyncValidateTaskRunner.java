@@ -1,12 +1,15 @@
 package io.github.lumue.getdown.core.download.task;
 
+import io.github.lumue.getdown.core.common.util.Observer;
 import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlValidateTaskJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.bus.Event;
 import reactor.bus.EventBus;
 
 import javax.annotation.PostConstruct;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -22,7 +25,9 @@ public class AsyncValidateTaskRunner implements Runnable {
 
 	private final AtomicBoolean shouldRun = new AtomicBoolean(false);
 
-
+	private final EventBus eventBus;
+	
+	private final DownloadTaskRepository taskRepository;
 
 	//queue capacity can be small.. running a job should be virtually nonblocking, since prepare an download are implemented as async operations
 	private final BlockingQueue<ValidateTaskJob> taskQueue = new PriorityBlockingQueue<>(10, new Comparator<ValidateTaskJob>() {
@@ -38,9 +43,11 @@ public class AsyncValidateTaskRunner implements Runnable {
 
 
 	public AsyncValidateTaskRunner(
-			int maxThreadsPrepare) {
+			int maxThreadsPrepare, EventBus eventBus, DownloadTaskRepository taskRepository) {
 		super();
 		this.prepareExecutor = executor(maxThreadsPrepare);
+		this.eventBus = eventBus;
+		this.taskRepository = taskRepository;
 		this.jobRunner = executor(1);
 	}
 
@@ -54,7 +61,12 @@ public class AsyncValidateTaskRunner implements Runnable {
 	public void submitTask(final DownloadTask task) {
 		String jobUrl = task.getSourceUrl();
 		AsyncValidateTaskRunner.LOGGER.debug("queueing task " + jobUrl + " for validation");
-		taskQueue.add(new YoutubedlValidateTaskJob(task));
+		final YoutubedlValidateTaskJob validateTaskJob = new YoutubedlValidateTaskJob(task);
+		validateTaskJob.addObserver((Observer<YoutubedlValidateTaskJob>) observable -> {
+			eventBus.notify("tasks-state", Event.wrap(Objects.requireNonNull(observable.getTask())));
+			taskRepository.update(observable.getTask());
+		});
+		taskQueue.add(validateTaskJob);
 	}
 
 

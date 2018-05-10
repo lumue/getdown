@@ -83,7 +83,6 @@ public class DownloadService {
 	public void validateTask(DownloadTask task){
 		task=downloadTaskRepository.get(task.getHandle());
 		validateTaskRunner.submitTask(task);
-		eventbus.notify("tasks-validating", Event.wrap(Objects.requireNonNull(task)));
 	}
 
 	public DownloadTask removeDownloadTask(final DownloadTask task) {

@@ -1,0 +1,63 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/sse-client/sse-client.html">
+<link rel="import" href="redux-store.html">
+
+<dom-module id="task-eventsource">
+	<template>
+		<style is="custom-style" >
+			:host {
+				display: none;
+
+			}
+
+
+
+		</style>
+		<sse-client id="eventSource" url="[[apiHost]]:[[apiPort]][[apiPath]]/tasks/events" on-message="_handleEvent" ></sse-client>
+
+	</template>
+
+
+	<script>
+		class TaskEventsource extends GetdownConsole.ReduxMixin(Polymer.Element) {
+
+			static get is() {
+				return 'task-eventsource';
+			}
+
+			static get properties() {
+				return {
+					apiHost:{
+						type: String,
+						statePath: 'configReducer.apiHost'
+					},
+					apiPort:{
+						type: String,
+						statePath: 'configReducer.apiPort'
+					},
+					apiPath:{
+						type: String,
+						statePath: 'configReducer.apiPath'
+					}
+				}
+			}
+
+			connectedCallback(){
+				super.connectedCallback()
+				this.$.eventSource.connect()
+			}
+
+			disconnectedCallback(){
+				super.disconnectedCallback()
+				this.$.eventSource.close()
+			}
+
+			_handleEvent(data){
+				this.dispatch('tasksUpdated',[data.detail.payload])
+			}
+
+		}
+
+		window.customElements.define(TaskEventsource.is, TaskEventsource);
+	</script>
+</dom-module>

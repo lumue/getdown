@@ -39,8 +39,8 @@ public class ApplicationConfiguration {
 	}
 	
 	@Bean
-	public AsyncValidateTaskRunner validateTaskRunner(@Value("${getdown.jobrunner.threads.prepare}") Integer threadsPrepare){
-		return new AsyncValidateTaskRunner(threadsPrepare);
+	public AsyncValidateTaskRunner validateTaskRunner(@Value("${getdown.jobrunner.threads.prepare}") Integer threadsPrepare, EventBus eventBus,DownloadTaskRepository taskRepository){
+		return new AsyncValidateTaskRunner(threadsPrepare, eventBus, taskRepository);
 	}
 
 

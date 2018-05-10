@@ -45,6 +45,23 @@
 					lastUpdated: action.receivedAt
 				})
 			}
+			case 'TASKS_UPDATED': {
+				const items = state.tasks.splice()
+				action.tasks.forEach(d=> {
+					let found = false;
+					for (let i = 0; i < items.length && !found; i++) {
+						if (items[i].handle === d.handle) {
+							items[i]=d;
+							found = true
+						}
+					}
+					if(!found)
+						items.push(d);
+				})
+				return Object.assign({}, state, {
+					tasks: items
+				})
+			}
 			default:
 				return state
 		}

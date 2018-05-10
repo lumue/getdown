@@ -54,6 +54,18 @@
 				<template>[[item.sourceUrl]]</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column>
+				<template class="header">
+					<vaadin-grid-sorter path="name">Name</vaadin-grid-sorter>
+				</template>
+				<template>[[item.name]]</template>
+			</vaadin-grid-column>
+			<vaadin-grid-column>
+				<template class="header">
+					<vaadin-grid-sorter path="expectedSize">Size</vaadin-grid-sorter>
+				</template>
+				<template>[[item.expectedSize]]</template>
+			</vaadin-grid-column>
+			<vaadin-grid-column>
 				<template class="header"><vaadin-grid-sorter path="state">State</vaadin-grid-sorter></template>
 				<template>[[item.state]]</template>
 			</vaadin-grid-column>

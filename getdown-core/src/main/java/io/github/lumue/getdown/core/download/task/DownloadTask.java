@@ -51,7 +51,8 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 			@JsonProperty("handle") String handle,
 			@JsonProperty("sourceUrl") String sourceUrl,
 			@JsonProperty("creationTime") LocalDateTime creationTime,
-			TaskState state, @JsonProperty("targetLocation") String targetLocation) {
+			@JsonProperty("state") TaskState state,
+			@JsonProperty("targetLocation") String targetLocation) {
 		this(state, handle, sourceUrl, creationTime);
 		this.targetLocation = targetLocation;
 	}

@@ -63,6 +63,14 @@
 			}
 		}
 
+		function tasksUpdated(json) {
+			return {
+				type: 'TASKS_UPDATED',
+				tasks: json,
+				receivedAt: Date.now()
+			}
+		}
+
 		function tasksRemoved(json) {
 			return {
 				type: 'TASKS_REMOVED',
@@ -83,6 +91,7 @@
 		GetdownConsole.actions.fetchTasks=fetchTasks
 		GetdownConsole.actions.addTasks=addTasks
 		GetdownConsole.actions.removeTasks=removeTasks
+		GetdownConsole.actions.tasksUpdated=tasksUpdated
 
 	}());
 </script>
