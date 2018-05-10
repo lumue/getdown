@@ -4,6 +4,7 @@ import io.github.lumue.getdown.core.common.persistence.jdkserializable.JdkSerial
 import io.github.lumue.getdown.core.download.DownloadService;
 import io.github.lumue.getdown.core.download.files.WorkPathManager;
 import io.github.lumue.getdown.core.download.job.*;
+import io.github.lumue.getdown.core.download.task.AsyncValidateTaskRunner;
 import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,15 +27,20 @@ public class ApplicationConfiguration {
 	}
 
 	@Bean
-	public AsyncDownloadJobRunner downloadJobRunner(
+	public AsyncJobRunner downloadJobRunner(
 			@Value("${getdown.jobrunner.threads.prepare}") Integer threadsPrepare,
 			@Value("${getdown.jobrunner.threads.download}") Integer threadsDownload,
 			@Value("${getdown.jobrunner.threads.postprocess}") Integer threadsPostprocess) {
 
-		return new AsyncDownloadJobRunner(
+		return new AsyncJobRunner(
 				threadsPrepare,
 				threadsDownload,
 				threadsPrepare);
+	}
+	
+	@Bean
+	public AsyncValidateTaskRunner validateTaskRunner(@Value("${getdown.jobrunner.threads.prepare}") Integer threadsPrepare){
+		return new AsyncValidateTaskRunner(threadsPrepare);
 	}
 
 
@@ -43,12 +49,13 @@ public class ApplicationConfiguration {
 	@Bean
 	public DownloadService downloadService(
 			DownloadTaskRepository downloadTaskRepository,
-			AsyncDownloadJobRunner downloadJobRunner,
+			AsyncJobRunner downloadJobRunner,
 			@Value("${getdown.path.media}") String downloadPath,
 			EventBus eventbus,
 			UrlProcessor urlProcessor,
-			WorkPathManager workPathManager) {
-		return new DownloadService(downloadTaskRepository, downloadJobRunner, downloadPath, eventbus, urlProcessor, workPathManager);
+			WorkPathManager workPathManager,
+			AsyncValidateTaskRunner validateTaskRunner) {
+		return new DownloadService(downloadTaskRepository, downloadJobRunner, validateTaskRunner,downloadPath, eventbus, urlProcessor, workPathManager);
 	}
 
 	@Bean

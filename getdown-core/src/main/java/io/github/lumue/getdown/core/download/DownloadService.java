@@ -9,9 +9,10 @@ import java.util.stream.Stream;
 
 import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownloadJob;
 import io.github.lumue.getdown.core.download.files.WorkPathManager;
-import io.github.lumue.getdown.core.download.job.AsyncDownloadJobRunner;
+import io.github.lumue.getdown.core.download.job.AsyncJobRunner;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.job.UrlProcessor;
+import io.github.lumue.getdown.core.download.task.AsyncValidateTaskRunner;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class DownloadService {
 
 	private final static Logger LOGGER=LoggerFactory.getLogger(DownloadService.class);
 
-	private final AsyncDownloadJobRunner downloadJobRunner;
+	private final AsyncJobRunner downloadJobRunner;
 
 	private final String downloadPath;
 
@@ -44,9 +45,12 @@ public class DownloadService {
 	private final DownloadTaskRepository downloadTaskRepository;
 
 	private final WorkPathManager workPathManager;
+	
+	private final AsyncValidateTaskRunner validateTaskRunner;
 
 	public DownloadService(DownloadTaskRepository downloadTaskRepository,
-	                       AsyncDownloadJobRunner downloadJobRunner,
+	                       AsyncJobRunner downloadJobRunner,
+	                       AsyncValidateTaskRunner validateTaskRunner,
 	                       String downloadPath,
 	                       EventBus eventbus, UrlProcessor urlProcessor, WorkPathManager workPathManager) {
 		super();
@@ -56,6 +60,7 @@ public class DownloadService {
 		this.eventbus = eventbus;
 		this.urlProcessor = urlProcessor;
 		this.workPathManager = workPathManager;
+		this.validateTaskRunner=validateTaskRunner;
 	}
 
 
@@ -70,7 +75,15 @@ public class DownloadService {
 				.builder()
 				.withSourceUrl(processedUrl)
 				.withTargetLocation("");
-		return createDownloadTask(builder);
+		final DownloadTask downloadTask = createDownloadTask(builder);
+		validateTask(downloadTask);
+		return downloadTask;
+	}
+	
+	public void validateTask(DownloadTask task){
+		task=downloadTaskRepository.get(task.getHandle());
+		validateTaskRunner.submitTask(task);
+		eventbus.notify("tasks-validating", Event.wrap(Objects.requireNonNull(task)));
 	}
 
 	public DownloadTask removeDownloadTask(final DownloadTask task) {

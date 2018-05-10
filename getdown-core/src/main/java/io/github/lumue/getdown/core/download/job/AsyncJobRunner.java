@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
  * jobs are added to a queue, and then taken one by one and passed to
  * the prepare and download executors.
  */
-public class AsyncDownloadJobRunner implements Runnable {
+public class AsyncJobRunner implements Runnable {
 
 	private final ScheduledThreadPoolExecutor downloadExecutor;
 
@@ -41,11 +41,11 @@ public class AsyncDownloadJobRunner implements Runnable {
 	});
 
 
-	private static Logger LOGGER = LoggerFactory.getLogger(AsyncDownloadJobRunner.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(AsyncJobRunner.class);
 	private final Executor jobRunner;
 
 
-	public AsyncDownloadJobRunner(
+	public AsyncJobRunner(
 			int maxThreadsPrepare,
 			int maxThreadsDownload,
 			int maxThreadsPostprocess) {
@@ -59,7 +59,7 @@ public class AsyncDownloadJobRunner implements Runnable {
 
 	private void runJob(final DownloadJob job) {
 		String jobUrl = job.getUrl();
-		AsyncDownloadJobRunner.LOGGER.debug("starting " + jobUrl);
+		AsyncJobRunner.LOGGER.debug("starting " + jobUrl);
 		running.add(job);
 		if (!job.isPrepared()) {
 			CompletableFuture.runAsync(job::prepare, prepareExecutor)
@@ -81,7 +81,7 @@ public class AsyncDownloadJobRunner implements Runnable {
 	public void submitJob(final DownloadJob job) {
 		String jobUrl = job.getUrl();
 		job.waiting();
-		AsyncDownloadJobRunner.LOGGER.debug("queueing " + jobUrl + " for execution");
+		AsyncJobRunner.LOGGER.debug("queueing " + jobUrl + " for execution");
 		jobQueue.add(job);
 	}
 

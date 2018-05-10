@@ -4,7 +4,6 @@ package io.github.lumue.getdown.webapp.restapi;
 import io.github.lumue.getdown.core.download.DownloadService;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
-import io.github.lumue.getdown.webapp.webapi.DownloadJobView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.bus.Event;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -78,8 +76,7 @@ public class DownloadJobController implements Consumer<Event<DownloadJob>> {
 	
 	@Override
 	public void accept(Event<DownloadJob> downloadJobEvent) {
-		final DownloadJobView downloadJobView = DownloadJobView.wrap(downloadJobEvent.getData());
-		Message<DownloadJobView> message=MessageBuilder.withPayload(downloadJobView).build();
+		Message<DownloadJob> message=MessageBuilder.withPayload(downloadJobEvent.getData()).build();
 		emitters.forEach(sseEmitter -> {
 			try {
 				sseEmitter.send(message);

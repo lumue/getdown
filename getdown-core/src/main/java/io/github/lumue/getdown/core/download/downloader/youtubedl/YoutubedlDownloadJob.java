@@ -65,14 +65,14 @@ public class YoutubedlDownloadJob extends Download {
 			return;
 		preparing();
 		try {
-			getDownloadTask().prepare();
+			getYdlTask().prepare();
 
 		} catch (Exception e) {
 			handleError(e);
 		}
 	}
 
-	private YdlDownloadTask getDownloadTask() {
+	private YdlDownloadTask getYdlTask() {
 		YdlDownloadTask result = downloadTask.get();
 		if (result == null) {
 			
@@ -105,7 +105,7 @@ public class YoutubedlDownloadJob extends Download {
 	public void executeDownload() {
 		progress(new DownloadProgress());
 		try {
-			getDownloadTask().executeAsync();
+			getYdlTask().executeAsync();
 
 			getDownloadProgress().ifPresent(p -> {
 				boolean finished = false;
@@ -239,7 +239,7 @@ public class YoutubedlDownloadJob extends Download {
 	@Override
 	public void cancel() {
 		doObserved(() -> {
-			getDownloadTask().cancel();
+			getYdlTask().cancel();
 			getDownloadProgress().ifPresent(downloadProgress -> {
 				downloadProgress.cancel();
 				progress(downloadProgress);
@@ -253,7 +253,7 @@ public class YoutubedlDownloadJob extends Download {
 	@Override
 	public boolean isPrepared() {
 
-		return getDownloadTask().isPrepared();
+		return getYdlTask().isPrepared();
 	}
 
 	private void readObject(java.io.ObjectInputStream in)
