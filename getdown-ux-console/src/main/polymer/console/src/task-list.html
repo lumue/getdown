@@ -113,18 +113,17 @@
 				var added=[],removed=[]
 
 				if(!event.detail.path){
-					if(event.detail.value.length==0)
-						this.dispatch('unselectAllTasks')
+					if(event.detail.value.length===0)
+						this.dispatch('unselectAllTasks',event.detail.value)
 					else
-						this.dispatch('selectAllTasks')
+						this.dispatch('selectAllTasks',event.detail.value)
+
+					return
 				}
 
 
-				if(event.detail.path=="selectedItems.length")
-					return;
 
-
-				if(event.detail.path=="selectedItems.splices" &&event.detail.value.indexSplices){
+				if("selectedItems.splices" === event.detail.path &&event.detail.value.indexSplices){
 					
 					const indexSplices=event.detail.value.indexSplices
 					

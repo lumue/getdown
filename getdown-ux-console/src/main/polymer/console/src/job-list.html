@@ -8,19 +8,19 @@
 
 <dom-module id="job-list">
 	<template>
-		<style is="custom-style" >
-            :host {
-                display: block;
+		<style is="custom-style">
+			:host {
+				display: block;
 
-                padding: 10px;
-	            --material-body-font-size: 11px;
+				padding: 10px;
+				--material-body-font-size: 11px;
 
-            }
+			}
 
-            .toolbar{
-	            display: flex;
-	            flex-direction: row-reverse
-            }
+			.toolbar {
+				display: flex;
+				flex-direction: row-reverse
+			}
 
 
 		</style>
@@ -32,29 +32,31 @@
 		</div>
 
 
-
-		<vaadin-grid id="grid" items="[[jobs]]"  selected-items="{{_selectedItems}}" size="40">
+		<vaadin-grid id="grid" items="[[jobs]]" on-selected-items-changed="_selectedItemsChanged" size="40">
 			<vaadin-grid-selection-column auto-select>
 			</vaadin-grid-selection-column>
 			<vaadin-grid-column resizable>
 				<template class="header">
 					<vaadin-grid-sorter path="name">Name</vaadin-grid-sorter>
 				</template>
-				<template >[[item.name]]</template>
+				<template>[[item.name]]</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column>
-				<template class="header"><vaadin-grid-sorter path="state">State</vaadin-grid-sorter></template>
+				<template class="header">
+					<vaadin-grid-sorter path="state">State</vaadin-grid-sorter>
+				</template>
 				<template>[[item.state]]</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column>
 				<template class="header">Progress</template>
 				<template>
 					<span>[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]%</span>
-					<paper-progress style="width: 100%"
-					                value="[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]"
-					                id="paper_progress">
-						[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]
-					</paper-progress>
+					<vaadin-progress-bar style="width: 100%"
+					                     value="[[item.downloadProgress.downloadedSize]]"
+					                     max="[[item.downloadProgress.size]]"
+					                     min="0"
+					                     id="paper_progress">
+					</vaadin-progress-bar>
 				</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column resizable>
@@ -75,49 +77,82 @@
 
 			static get properties() {
 				return {
-					jobs:{
+					jobs: {
 						type: Array,
 						statePath: 'jobsReducer.jobs'
 					},
-					_hideCancel:{
+					_hideCancel: {
 						type: Boolean,
 						computed: 'isSelectionEmpty(_selectedItems)',
 						notify: true,
 						reflectToAttribute: true
 					},
-					_hideRefresh:{
+					_hideRefresh: {
 						type: Boolean,
 						computed: 'isSelectionEmpty(_selectedItems)',
 						notify: true,
 						reflectToAttribute: true
 					},
-					_hideDelete:{
+					_hideDelete: {
 						type: Boolean,
 						computed: 'isSelectionEmpty(_selectedItems)',
 						notify: true,
 						reflectToAttribute: true
 					},
-					_selectedItems:{
-						type:Array,
-						notify: true,
-						value: []
+					_selectedItems: {
+						type: Array,
+						statePath: 'jobsReducer.selectedJobs'
 					}
 				}
 			}
 
-			connectedCallback(){
+			connectedCallback() {
 				super.connectedCallback()
 				this.dispatch('fetchJobs')
 			}
 
-			_percentage(gw,pw){
-				return Math.round(((pw/gw)*100)*100)/100
+			_percentage(gw, pw) {
+				return Math.round(((pw / gw) * 100) * 100) / 100
 			}
 
-			isSelectionEmpty(items){
+			isSelectionEmpty(items) {
 				return !items
 						||
-						(!items.length>0)
+						(!items.length > 0)
+			}
+
+			_selectedItemsChanged(event) {
+
+				console.log('selection changed')
+				var added = [], removed = []
+
+				if (!event.detail.path) {
+					if (event.detail.value.length === 0)
+						this.dispatch('unselectAllJobs', event.detail.value)
+					else
+						this.dispatch('selectAllJobs', event.detail.value)
+
+					return
+				}
+
+
+				if ("selectedItems.splices" === event.detail.path && event.detail.value.indexSplices) {
+
+					const indexSplices = event.detail.value.indexSplices
+
+
+					for (let i = 0; i < indexSplices.length; i++) {
+						const changes = event.detail.value.indexSplices[i]
+						added = added.concat(changes.object)
+						removed = removed.concat(changes.removed)
+					}
+
+					if (added.length > 0)
+						this.dispatch('selectJobs', added)
+
+					if (removed.length > 0)
+						this.dispatch('unselectJobs', removed)
+				}
 			}
 
 
