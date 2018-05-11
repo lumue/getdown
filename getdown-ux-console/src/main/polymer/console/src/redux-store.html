@@ -22,8 +22,8 @@
 		localStorage.port=apiPort;
 
 		const state={
-			tasksReducer:{tasks:[],isAdding:false,isFetching:false},
-			jobsReducer:{jobs:[],isAdding:false,isFetching:false},
+			tasksReducer:{tasks:[],selectedTasks:[],isAdding:false,isFetching:false},
+			jobsReducer:{jobs:[],selectedJobs:[],isAdding:false,isFetching:false},
 			configReducer:{apiHost: hostname,apiPort: apiPort,apiPath: '/api'}
 		}
 

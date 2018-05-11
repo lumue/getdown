@@ -44,7 +44,7 @@
 			<paper-icon-button icon="file-download" on-tap="_handleDownload" hidden$="[[hideDownloadButton]]"></paper-icon-button>
 		</div>
 
-		<vaadin-grid id="grid" items="[[tasks]]" selected-items="{{_selectedItems}}" size="20">
+		<vaadin-grid id="grid" items="[[tasks]]" on-selected-items-changed="_selectedItemsChanged" size="20">
 			<vaadin-grid-selection-column auto-select>
 			</vaadin-grid-selection-column>
 			<vaadin-grid-column>
@@ -101,13 +101,47 @@
 					},
 					_selectedItems:{
 						type:Array,
-						notify: true,
-						value: []
+						statePath: 'tasksReducer.selectedTasks'
 					}
 
 				}
 			}
 
+			_selectedItemsChanged(event){
+				
+				console.log('selection changed')
+				var added=[],removed=[]
+
+				if(!event.detail.path){
+					if(event.detail.value.length==0)
+						this.dispatch('unselectAllTasks')
+					else
+						this.dispatch('selectAllTasks')
+				}
+
+
+				if(event.detail.path=="selectedItems.length")
+					return;
+
+
+				if(event.detail.path=="selectedItems.splices" &&event.detail.value.indexSplices){
+					
+					const indexSplices=event.detail.value.indexSplices
+					
+
+					for(let i=0;i<indexSplices.length;i++){
+						const changes=event.detail.value.indexSplices[i]
+						added=added.concat(changes.object)
+						removed=removed.concat(changes.removed)
+					}
+
+					if(added.length>0)
+						this.dispatch('selectTasks',added)
+					
+					if(removed.length>0)
+						this.dispatch('unselectTasks',removed)
+				}
+			}
 
 
 			connectedCallback(){
