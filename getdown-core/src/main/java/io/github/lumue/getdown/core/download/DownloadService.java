@@ -119,7 +119,7 @@ public class DownloadService {
 	private DownloadJob createDownloadJob(String handle) {
 		DownloadTask task = downloadTaskRepository.get(handle);
 
-		DownloadJob job = YoutubedlDownloadJob.builder()
+		DownloadJob job = YoutubedlDownloadJob.builder(task)
 				.withUrl(task.getSourceUrl())
 				.withDownloadPath(workPathManager.getPath(handle).toString())
 				.withTargetPath(downloadPath+ File.separator+task.getTargetLocation())

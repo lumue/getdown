@@ -23,6 +23,10 @@ dependencies {
 
 	compile group: 'commons-io', name: 'commons-io', version: '2.5'
 
+	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+
+	compile group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
+
 	compile group: 'javax.annotation', name: 'jsr250-api', version: '1.0'
 
 }

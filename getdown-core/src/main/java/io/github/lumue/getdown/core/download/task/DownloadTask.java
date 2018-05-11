@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
-import io.github.lumue.getdown.core.common.util.Observable;
-import io.github.lumue.getdown.core.common.util.Observer;
-import io.github.lumue.getdown.core.download.job.Download;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,19 +40,30 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 	
 	private Long priority = 0L;
 	
-	private List<DownloadFormat> availableFormats;
-	private List<DownloadFormat> selectedFormats;
+	private final List<DownloadFormat> availableFormats= new ArrayList<>();
+	
+	private final List<DownloadFormat> selectedFormats= new ArrayList<>();
 	
 	
 	@JsonCreator
 	private DownloadTask(
 			@JsonProperty("handle") String handle,
+			@JsonProperty("name") String name,
 			@JsonProperty("sourceUrl") String sourceUrl,
 			@JsonProperty("creationTime") LocalDateTime creationTime,
 			@JsonProperty("state") TaskState state,
-			@JsonProperty("targetLocation") String targetLocation) {
+			@JsonProperty("targetLocation") String targetLocation,
+			@JsonProperty("lastValidation") LocalDateTime lastValidation,
+			@JsonProperty("expectedSize") Long expectedSize,
+			@JsonProperty("priority") Long priority,
+			@JsonProperty("availableFormats") List<DownloadFormat> availableFormats,
+			@JsonProperty("selectedFormats") List<DownloadFormat> selectedFormats) {
 		this(state, handle, sourceUrl, creationTime);
 		this.targetLocation = targetLocation;
+		this.lastValidation=lastValidation;
+		this.expectedSize=expectedSize;
+		this.priority=priority;
+		
 	}
 	
 	private DownloadTask(TaskState state, String handle, String sourceUrl, LocalDateTime creationTime) {
@@ -155,14 +164,22 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 	}
 	
 	public void setAvailableFormats(List<DownloadFormat> formats) {
-		this.availableFormats=formats;
+		this.availableFormats.clear();
+		this.availableFormats.addAll(formats);
 	}
 	
-	public void setFormat(DownloadFormat requestedFormat) {
-	}
 	
 	public void setSelectedFormats(List<DownloadFormat> downloadFormats) {
-		this.selectedFormats=downloadFormats;
+		this.selectedFormats.clear();
+		this.selectedFormats.addAll(downloadFormats);
+	}
+	
+	public List<DownloadFormat> getAvailableFormats() {
+		return availableFormats;
+	}
+	
+	public List<DownloadFormat> getSelectedFormats() {
+		return selectedFormats;
 	}
 	
 	

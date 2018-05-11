@@ -7,6 +7,7 @@ import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.common.util.Observable;
 import io.github.lumue.getdown.core.common.util.ObservableTemplate;
 import io.github.lumue.getdown.core.common.util.Observer;
+import io.github.lumue.getdown.core.download.task.DownloadTask;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +19,16 @@ import java.util.UUID;
 /**
  * Base class for DownloadsS
  */
-public abstract class Download implements  java.io.Serializable, DownloadJob {
+public abstract class AbstractDownloadJob implements  java.io.Serializable, DownloadJob {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Download.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDownloadJob.class);
 
 
 	private Long index=System.currentTimeMillis();
 
 	private final String targetPath;
+	
+	private final DownloadTask downloadTask;
 
 
 	@Override
@@ -48,7 +51,7 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Download other = (Download) obj;
+		AbstractDownloadJob other = (AbstractDownloadJob) obj;
 		if (handle == null) {
 			if (other.handle != null) {
 				return false;
@@ -90,8 +93,8 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 	private final String url;
 	@JsonProperty("host")
 	private final String host;
-	@JsonProperty("downloadPath")
-	private String downloadPath;
+	@JsonProperty("workPath")
+	private String workPath;
 	@JsonIgnore
 	private final ObservableTemplate observableTemplate=new ObservableTemplate(this);
 
@@ -135,14 +138,17 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 	}
 
 	@JsonCreator
-	protected Download(
+	protected AbstractDownloadJob(
 			@JsonProperty("url") String url,
 			@JsonProperty("handle") String handle,
 			@JsonProperty("state") DownloadJobState downloadJobState,
 			@JsonProperty("downloadProgress") DownloadProgress downloadProgress,
-			String name,
-			String host,
-			Long index, String targetPath) {
+			@JsonProperty("name") String name,
+			@JsonProperty("host") String host,
+			@JsonProperty("index") Long index,
+			@JsonProperty("targetPath") String targetPath,
+			@JsonProperty("downloadTask") DownloadTask downloadTask,
+			@JsonProperty("workPath") String downloadPath) {
 		super();
 		this.url = url;
 		this.handle = handle;
@@ -150,17 +156,21 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		this.name = name;
 		this.host = host;
 		this.targetPath = targetPath;
+		this.downloadTask = downloadTask;
 		this.contentLocation = contentLocation;
 		this.downloadProgress = downloadProgress;
 		this.index=index;
 	}
 
-	public Download(
+	public AbstractDownloadJob(
 			String name,
 			String url,
 			String host,
 			String handle,
-			Long index, String targetPath) {
+			Long index,
+			String targetPath,
+			DownloadTask downloadTask,
+			String downloadPath) {
 		super();
 		this.name = name;
 		this.host = host;
@@ -168,12 +178,14 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		this.handle = handle;
 		this.index=index;
 		this.targetPath=targetPath;
+		this.downloadTask = downloadTask;
+		this.workPath =downloadPath;
 	}
 
 
 	@Override
 	public String toString() {
-		return "Download{" +
+		return "AbstractDownloadJob{" +
 				"index=" + index +
 				", handle=" + handle +
 				", name='" + name + '\'' +
@@ -223,10 +235,11 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 
 
 	protected void message(String message) {
-		observableTemplate.doObserved(() -> {
-			downloadJobState = DownloadJob.DownloadJobState.RUNNING;
-			Download.this.message = message;
-		});
+		if(!getMessage().isPresent()||!message.equals(getMessage())) {
+			observableTemplate.doObserved(() -> {
+				AbstractDownloadJob.this.message = message;
+			});
+		}
 	}
 
 	protected void doObserved(ObservableTemplate.ObservedStateChange observedStateChange){
@@ -273,29 +286,31 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		observableTemplate.addObserver(observer);
 		return this;
 	}
-
-
-	protected void setContentLocation(ContentLocation contentLocation) {
-		this.contentLocation = contentLocation;
-	}
-
-	public void setDownloadPath(String downloadPath) {
-		this.downloadPath = downloadPath;
+	
+	@Override
+	public Observable removeObservers() {
+		observableTemplate.removeObservers();
+		return this;
 	}
 
 
 
 
-	public String getDownloadPath() {
-		return downloadPath;
+
+
+	public String getWorkPath() {
+		return workPath;
 	}
 
 	public String getHost() {
 		return this.host;
 	}
-
-
-
+	
+	public DownloadTask getDownloadTask() {
+		return downloadTask;
+	}
+	
+	
 	public abstract static class DownloadBuilder implements ObjectBuilder<DownloadJob> {
 		protected String url;
 		protected String host;
@@ -303,7 +318,15 @@ public abstract class Download implements  java.io.Serializable, DownloadJob {
 		protected String handle= UUID.randomUUID().toString();
 		protected Long index=System.currentTimeMillis();
 		protected String targetPath;
-
+		protected DownloadTask downloadTask;
+		
+		public DownloadBuilder(DownloadTask downloadTask) {
+			this.downloadTask=downloadTask;
+			this.name=downloadTask.getName();
+			this.targetPath=downloadTask.getTargetLocation();
+			this.url=downloadTask.getSourceUrl();
+		}
+		
 		public DownloadBuilder withIndex(long index){
 			this.index=index;
 			return this;

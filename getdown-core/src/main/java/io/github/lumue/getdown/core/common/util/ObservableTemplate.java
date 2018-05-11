@@ -11,6 +11,8 @@ import java.util.List;
  *
  */
 public class ObservableTemplate implements Observable{
+	
+	
 
 	private final Observable observable;
 
@@ -42,6 +44,12 @@ public class ObservableTemplate implements Observable{
 	@Override
 	public synchronized Observable removeObserver(Observer<?> observer) {
 		observers.remove(observer);
+		return this;
+	}
+	
+	@Override
+	public synchronized Observable removeObservers() {
+		observers.clear();
 		return this;
 	}
 	

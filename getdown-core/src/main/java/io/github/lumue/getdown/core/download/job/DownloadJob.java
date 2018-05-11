@@ -24,7 +24,7 @@ public interface DownloadJob extends HasIdentity<String>,Serializable,Observable
 
 	String getName();
 
-	String getDownloadPath();
+	String getWorkPath();
 
 	String getTargetPath();
 

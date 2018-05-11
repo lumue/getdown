@@ -12,4 +12,5 @@ package io.github.lumue.getdown.core.common.util;
 public interface Observable {
 	Observable addObserver(Observer<?> observer);
 	Observable removeObserver(Observer<?> observer);
+	Observable removeObservers();
 }
