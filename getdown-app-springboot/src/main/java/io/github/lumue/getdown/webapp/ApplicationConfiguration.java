@@ -35,7 +35,7 @@ public class ApplicationConfiguration {
 		return new AsyncJobRunner(
 				threadsPrepare,
 				threadsDownload,
-				threadsPrepare);
+				threadsPostprocess);
 	}
 	
 	@Bean
@@ -79,7 +79,7 @@ public class ApplicationConfiguration {
 
 
 	@Bean
-	public DownloadTaskRepository downloadTaskRepository(@Value("${getdown.path.repository}") String path)  throws IOException {
+	public DownloadTaskRepository downloadTaskRepository(@Value("${getdown.path.repository}") String path)   {
 		return new JdkSerializableDownloadTaskRepository(path);
 	}
 

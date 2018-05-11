@@ -12,8 +12,10 @@ import org.springframework.hateoas.Resources;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.bus.Event;
+import rx.Emitter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,14 +79,16 @@ public class DownloadJobController implements Consumer<Event<DownloadJob>> {
 	@Override
 	public void accept(Event<DownloadJob> downloadJobEvent) {
 		Message<DownloadJob> message=MessageBuilder.withPayload(downloadJobEvent.getData()).build();
+		List<SseEmitter> failedEmitters=new ArrayList<>();
 		emitters.forEach(sseEmitter -> {
 			try {
 				sseEmitter.send(message);
 			} catch (Throwable e) {
-				sseEmitter.complete();
+				failedEmitters.add(sseEmitter);
 				LOGGER.error("Error sending Message to "+sseEmitter,e);
 			}
 		});
+		failedEmitters.forEach(ResponseBodyEmitter::complete);
 	}
 	
 }
