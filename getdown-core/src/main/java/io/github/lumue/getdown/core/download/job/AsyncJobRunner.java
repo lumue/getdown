@@ -94,15 +94,16 @@ public class AsyncJobRunner implements Runnable {
 	
 	private boolean isAlreadySubmitted(DownloadJob job) {
 		boolean alreadySubmitted = false;
+		final String handle = job.getDownloadTask().getHandle();
 		for (DownloadJob j : running) {
-			if (j.getUrl().equals(job.getUrl())) {
+			if (j.getDownloadTask().getHandle().equals(handle)) {
 				alreadySubmitted = true;
 				break;
 			}
 		}
 		if(!alreadySubmitted)
 			for (DownloadJob j : jobQueue) {
-				if (j.getUrl().equals(job.getUrl())) {
+				if (j.getDownloadTask().getHandle().equals(handle)) {
 					alreadySubmitted = true;
 					break;
 				}
