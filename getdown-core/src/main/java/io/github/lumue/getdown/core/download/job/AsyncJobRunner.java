@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.annotation.PostConstruct;
 
@@ -19,11 +21,12 @@ import javax.annotation.PostConstruct;
  */
 public class AsyncJobRunner implements Runnable {
 	
-	private final ScheduledThreadPoolExecutor downloadExecutor;
 	
-	private final ScheduledThreadPoolExecutor prepareExecutor;
+	private final ThreadPoolTaskExecutor downloadExecutor;
 	
-	private final ScheduledThreadPoolExecutor postprocessExecutor;
+	private final ThreadPoolTaskExecutor prepareExecutor;
+	
+	private final ThreadPoolTaskExecutor postprocessExecutor;
 	
 	private final AtomicBoolean shouldRun = new AtomicBoolean(false);
 	
@@ -50,10 +53,10 @@ public class AsyncJobRunner implements Runnable {
 			int maxThreadsDownload,
 			int maxThreadsPostprocess) {
 		super();
-		this.downloadExecutor = executor(maxThreadsDownload);
-		this.prepareExecutor = executor(maxThreadsPrepare);
-		this.postprocessExecutor = executor(maxThreadsPostprocess);
-		this.jobRunner = executor(1);
+		this.downloadExecutor = executor("download-executor",maxThreadsDownload);
+		this.prepareExecutor = executor("prepare-executor",maxThreadsPrepare);
+		this.postprocessExecutor = executor("postprocess-executor",maxThreadsPostprocess);
+		this.jobRunner = executor("jobrunner-executor",1);
 	}
 	
 	
@@ -117,9 +120,13 @@ public class AsyncJobRunner implements Runnable {
 	}
 	
 	
-	private static ScheduledThreadPoolExecutor executor(Integer threads) {
-		return (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threads);
-		
+	private static ThreadPoolTaskExecutor executor(String name,Integer threads) {
+		final ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+		threadPoolTaskExecutor.setThreadNamePrefix(name);
+		threadPoolTaskExecutor.setThreadGroupName(name);
+		threadPoolTaskExecutor.setCorePoolSize(threads);
+		threadPoolTaskExecutor.setMaxPoolSize(threads);
+		return threadPoolTaskExecutor;
 	}
 	
 	@Override

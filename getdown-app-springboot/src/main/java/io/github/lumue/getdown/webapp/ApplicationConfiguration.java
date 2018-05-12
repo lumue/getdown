@@ -32,8 +32,7 @@ public class ApplicationConfiguration {
 			@Value("${getdown.jobrunner.threads.download}") Integer threadsDownload,
 			@Value("${getdown.jobrunner.threads.postprocess}") Integer threadsPostprocess) {
 
-		return new AsyncJobRunner(
-				threadsPrepare,
+		return new AsyncJobRunner(threadsPrepare,
 				threadsDownload,
 				threadsPostprocess);
 	}

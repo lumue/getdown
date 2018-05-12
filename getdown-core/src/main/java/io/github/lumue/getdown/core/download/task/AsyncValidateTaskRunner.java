@@ -4,6 +4,7 @@ import io.github.lumue.getdown.core.common.util.Observer;
 import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlValidateTaskJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 
@@ -21,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AsyncValidateTaskRunner implements Runnable {
 
 
-	private final ScheduledThreadPoolExecutor prepareExecutor;
+	private final ThreadPoolTaskExecutor prepareExecutor;
 
 	private final AtomicBoolean shouldRun = new AtomicBoolean(false);
 
@@ -45,10 +46,10 @@ public class AsyncValidateTaskRunner implements Runnable {
 	public AsyncValidateTaskRunner(
 			int maxThreadsPrepare, EventBus eventBus, DownloadTaskRepository taskRepository) {
 		super();
-		this.prepareExecutor = executor(maxThreadsPrepare);
+		this.prepareExecutor = executor("validate-task-executor",maxThreadsPrepare);
 		this.eventBus = eventBus;
 		this.taskRepository = taskRepository;
-		this.jobRunner = executor(1);
+		this.jobRunner = executor("validate-job-runner",1);
 	}
 
 
@@ -68,14 +69,18 @@ public class AsyncValidateTaskRunner implements Runnable {
 		});
 		taskQueue.add(validateTaskJob);
 	}
-
-
-
-
-
-	private static ScheduledThreadPoolExecutor executor(Integer threads) {
-		return (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threads);
-
+	
+	
+	
+	
+	
+	private static ThreadPoolTaskExecutor executor(String name, Integer threads) {
+		final ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+		threadPoolTaskExecutor.setThreadNamePrefix(name);
+		threadPoolTaskExecutor.setThreadGroupName(name);
+		threadPoolTaskExecutor.setCorePoolSize(threads);
+		threadPoolTaskExecutor.setMaxPoolSize(threads);
+		return threadPoolTaskExecutor;
 	}
 
 	@Override

@@ -28,7 +28,7 @@ dependencies {
 	compile group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
 
 	compile group: 'javax.annotation', name: 'jsr250-api', version: '1.0'
-
+	compile group: 'org.springframework', name: 'spring-context', version: '4.3.17.RELEASE'
 }
 
 apply from: '../gradle/plantuml.gradle'
