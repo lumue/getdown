@@ -126,6 +126,7 @@ public class AsyncJobRunner implements Runnable {
 		threadPoolTaskExecutor.setThreadGroupName(name);
 		threadPoolTaskExecutor.setCorePoolSize(threads);
 		threadPoolTaskExecutor.setMaxPoolSize(threads);
+		threadPoolTaskExecutor.initialize();
 		return threadPoolTaskExecutor;
 	}
 	
