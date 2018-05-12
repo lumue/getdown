@@ -46,7 +46,7 @@
 		             size="40"
 		             column-reordering-allowed column-resizing multi-sort >
 
-			<vaadin-grid-selection-column auto-select>
+			<vaadin-grid-selection-column width="30px" flex-grow="0" auto-select>
 			</vaadin-grid-selection-column>
 			<vaadin-grid-column resizable>
 				<template class="header">
@@ -72,7 +72,7 @@
 						</vaadin-progress-bar>
 					</template>
 				</vaadin-grid-column>
-				<vaadin-grid-column  width="60px" flex-grow="0">
+				<vaadin-grid-column  width="40px" flex-grow="0">
 					<template>
 						[[_percentage(item.downloadProgress.size,item.downloadProgress.downloadedSize)]]%
 					</template>
