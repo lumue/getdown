@@ -34,7 +34,7 @@
 			}
 
 			case 'TASKS_ALL_SELECTED': {
-				const items=state.tasks
+				const items=state.tasks.slice()
 				return Object.assign({}, state, {
 					selectedTasks: items
 				})
@@ -73,7 +73,7 @@
 				})
 			}
 			case 'TASKS_UPDATED': {
-				const items = state.tasks.splice()
+				const items = state.tasks.slice()
 				action.tasks.forEach(d=> {
 					let found = false;
 					for (let i = 0; i < items.length && !found; i++) {

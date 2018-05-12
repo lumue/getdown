@@ -22,7 +22,7 @@
 			}
 
 			case 'JOBS_UPDATED': {
-				const items = state.jobs.splice()
+				const items = state.jobs.slice()
 				action.jobs.forEach(d=> {
 					let found = false;
 					for (let i = 0; i < items.length && !found; i++) {
@@ -59,7 +59,7 @@
 			}
 
 			case 'JOBS_ALL_SELECTED': {
-				const items=state.jobs
+				const items=state.jobs.slice()
 				return Object.assign({}, state, {
 					selectedJobs: items
 				})
