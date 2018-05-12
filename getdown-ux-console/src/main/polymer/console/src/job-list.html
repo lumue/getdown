@@ -68,6 +68,8 @@
 						                     value="[[item.downloadProgress.downloadedSize]]"
 						                     max="[[item.downloadProgress.size]]"
 						                     min="0"
+						                     theme$="[[_themeForState(item.state)]]"
+						                     indeterminate$="[[_isIndeterminate(item.state)]]"
 						                     id="paper_progress">
 						</vaadin-progress-bar>
 					</template>
@@ -131,6 +133,8 @@
 			}
 
 			_percentage(gw, pw) {
+				if(gw===0)
+					return 0;
 				return Math.round(((pw / gw) * 100) * 100) / 100
 			}
 
@@ -138,6 +142,20 @@
 				return !items
 						||
 						(!items.length > 0)
+			}
+
+			_isIndeterminate(state){
+				if(state==="RUNNING" || state==="FINISHED")
+					return false;
+				return true;
+			}
+
+			_themeForState(state){
+				if(state==="RUNNING" || state==="FINISHED")
+					return "success"
+				if(state==="ERROR")
+					return "error"
+				return "contrast"
 			}
 
 			_selectedItemsChanged(event) {
