@@ -16,7 +16,7 @@ ext['tomcat.version'] = '8.5.2'
 
 apply plugin: "com.github.lkishalmi.gatling"
 gatling {
-	toolVersion = '2.3.0'
+	toolVersion = '2.2.2'
 	jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]
 	logLevel ='DEBUG'
 }

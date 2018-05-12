@@ -21,7 +21,7 @@ class AddAndStartDownloadTasksSimulation extends Simulation {
 			exec(
 				http("add task")
 					.post("/api/tasks")
-					.body(StringBody("{\"content\":[{\"sourceUrl\":\"https://www.youtube.com/watch?v=nwP80FmSpOw\",\"targetLocation\":\"${username}-${count}\"}]}"))
+					.body(StringBody("[\"https://www.youtube.com/watch?v=nwP80FmSpOw\"]"))
 					.asJSON
 					.check(jsonPath("$.content[*].handle").findAll.saveAs("handles"))
 			)

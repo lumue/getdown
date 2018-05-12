@@ -70,7 +70,7 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 		this.ext=ext;
 	}
 	
-	private DownloadTask(TaskState state, String handle, String sourceUrl, LocalDateTime creationTime) {
+	 public DownloadTask(TaskState state, String handle, String sourceUrl, LocalDateTime creationTime) {
 		this.state = state;
 		this.handle = handle;
 		this.creationTime = creationTime != null ? creationTime : LocalDateTime.now();
