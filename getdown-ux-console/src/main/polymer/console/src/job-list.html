@@ -133,7 +133,7 @@
 			}
 
 			_percentage(gw, pw) {
-				if(gw===0)
+				if(gw===0||!gw ||!pw)
 					return 0;
 				return Math.round(((pw / gw) * 100) * 100) / 100
 			}
