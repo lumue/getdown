@@ -1,6 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-checkbox.html">
-<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
@@ -32,6 +30,14 @@
 				width: 800px;
 			}
 
+			vaadin-grid-selection-column[part="label"]{
+				display: none;
+			}
+
+			vaadin-grid#grid{
+					font-size: 10pt !important;
+			}
+
 		</style>
 
 		<vaadin-dialog id="addUrlDialog">
@@ -46,9 +52,13 @@
 			<paper-icon-button icon="file-download" on-tap="_handleDownload" hidden$="[[hideDownloadButton]]"></paper-icon-button>
 		</div>
 
-		<vaadin-grid id="grid" items="[[tasks]]" on-selected-items-changed="_selectedItemsChanged" size="20">
-			<vaadin-grid-selection-column auto-select>
-			</vaadin-grid-selection-column>
+		<vaadin-grid id="grid"
+		             theme="compact"
+		             items="[[tasks]]"
+		             on-selected-items-changed="_selectedItemsChanged"
+		             size="20"
+		             column-reordering-allowed column-resizing multi-sort >
+			<vaadin-grid-selection-column auto-select></vaadin-grid-selection-column>
 			<vaadin-grid-column>
 				<template class="header">
 					<vaadin-grid-sorter path="sourceUrl">Url</vaadin-grid-sorter>
@@ -114,11 +124,11 @@
 				}
 			}
 
-			
-			
+
+
 
 			_selectedItemsChanged(event){
-				
+
 				console.log('selection changed')
 				var added=[],removed=[]
 
@@ -134,9 +144,9 @@
 
 
 				if("selectedItems.splices" === event.detail.path &&event.detail.value.indexSplices){
-					
+
 					const indexSplices=event.detail.value.indexSplices
-					
+
 
 					for(let i=0;i<indexSplices.length;i++){
 						const changes=event.detail.value.indexSplices[i]
@@ -146,7 +156,7 @@
 
 					if(added.length>0)
 						this.dispatch('selectTasks',added)
-					
+
 					if(removed.length>0)
 						this.dispatch('unselectTasks',removed)
 				}

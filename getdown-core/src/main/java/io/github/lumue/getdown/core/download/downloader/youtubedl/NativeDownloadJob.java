@@ -51,7 +51,7 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 	public void executeDownload() {
 		progress(new DownloadProgress());
 		start();
-		getDownloadProgress().ifPresent(dp-> {
+		getDownloadProgress().ifPresent(dp -> {
 			try {
 				dp.start();
 				message("downloading...");
@@ -79,10 +79,16 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 					});
 				}
 				
+				
+				final String finalFilename = getWorkPath() + File.separator + getDownloadTask().getName() + "." + getDownloadTask().getExt();
+				final File finalFile = new File(finalFilename);
+				if (finalFile.exists())
+					FileUtils.deleteQuietly(finalFile);
 				FileUtils.moveFile(
 						new File(getWorkPath() + File.separator + ouputfilename),
-						new File(getWorkPath() + File.separator + getDownloadTask().getName() + "." + getDownloadTask().getExt())
+						finalFile
 				);
+				
 				
 				message("writing info.json");
 				
@@ -94,7 +100,6 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 				error(e);
 			}
 		});
-			
 		
 		
 	}
