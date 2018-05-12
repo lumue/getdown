@@ -6,6 +6,8 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/vaadin-dialog/vaadin-dialog.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-iconset-svg/iron-iconset-svg.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="redux-store.html">
 <link rel="import" href="url-input.html">
@@ -21,7 +23,7 @@
 				padding: 10px;
 			}
 
-			.toolbar{
+			.toolbar {
 				display: flex;
 				flex-direction: row-reverse
 			}
@@ -30,15 +32,25 @@
 				width: 800px;
 			}
 
-			vaadin-grid-selection-column[part="label"]{
+			vaadin-grid-selection-column[part="label"] {
 				display: none;
 			}
 
-			vaadin-grid#grid{
-					font-size: 10pt !important;
+			vaadin-grid#grid {
+				font-size: 9pt !important;
 			}
 
 		</style>
+
+		<iron-iconset-svg name="state" size="24">
+			<svg>
+				<defs>
+					<g id="dot">
+						<circle cx="12" cy="12" r="8"/>
+					</g>
+				</defs>
+			</svg>
+		</iron-iconset-svg>
 
 		<vaadin-dialog id="addUrlDialog">
 			<template>
@@ -47,9 +59,10 @@
 		</vaadin-dialog>
 
 		<div class="toolbar">
-			<paper-icon-button icon="add" on-tap="_handleAdd" ></paper-icon-button>
+			<paper-icon-button icon="add" on-tap="_handleAdd"></paper-icon-button>
 			<paper-icon-button icon="delete" on-tap="_handleDelete" hidden$="[[hideDeleteButton]]"></paper-icon-button>
-			<paper-icon-button icon="file-download" on-tap="_handleDownload" hidden$="[[hideDownloadButton]]"></paper-icon-button>
+			<paper-icon-button icon="file-download" on-tap="_handleDownload"
+			                   hidden$="[[hideDownloadButton]]"></paper-icon-button>
 		</div>
 
 		<vaadin-grid id="grid"
@@ -57,29 +70,38 @@
 		             items="[[tasks]]"
 		             on-selected-items-changed="_selectedItemsChanged"
 		             size="20"
-		             column-reordering-allowed column-resizing multi-sort >
+		             column-reordering-allowed column-resizing multi-sort>
 			<vaadin-grid-selection-column auto-select></vaadin-grid-selection-column>
-			<vaadin-grid-column>
+			<vaadin-grid-column width="60px" flex-grow="0" align="center">
+				<template class="header">
+					<vaadin-grid-sorter path="state">State</vaadin-grid-sorter>
+				</template>
+				<template>
+					<div>
+						<iron-icon id="stateicon" icon="state:dot" role="img" aria-label="[[item.state]]"
+						           style$="color: [[_stateColor(item.state)]];"></iron-icon>
+						<paper-tooltip for="stateicon">[[item.state]]</paper-tooltip>
+					</div>
+				</template>
+			</vaadin-grid-column>
+			<vaadin-grid-column resizable>
 				<template class="header">
 					<vaadin-grid-sorter path="sourceUrl">Url</vaadin-grid-sorter>
 				</template>
 				<template>[[item.sourceUrl]]</template>
 			</vaadin-grid-column>
-			<vaadin-grid-column>
+			<vaadin-grid-column resizable>
 				<template class="header">
 					<vaadin-grid-sorter path="name">Name</vaadin-grid-sorter>
 				</template>
 				<template>[[item.name]]</template>
 			</vaadin-grid-column>
-			<vaadin-grid-column style="width: 120px;">
-				<template class="header">
-					<vaadin-grid-sorter path="expectedSize">Size</vaadin-grid-sorter>
-				</template>
-				<template>[[_formatBytes(item.expectedSize,1)]]</template>
-			</vaadin-grid-column>
-			<vaadin-grid-column style="width: 120px;">
-				<template class="header"><vaadin-grid-sorter path="state">State</vaadin-grid-sorter></template>
-				<template>[[item.state]]</template>
+			<vaadin-grid-column width="60px" flex-grow="" 0
+			" >
+			<template class="header">
+				<vaadin-grid-sorter path="expectedSize">Size</vaadin-grid-sorter>
+			</template>
+			<template>[[_formatBytes(item.expectedSize,1)]]</template>
 			</vaadin-grid-column>
 		</vaadin-grid>
 
@@ -89,9 +111,9 @@
 	<script>
 		class TaskList extends GetdownConsole.ReduxMixin(Polymer.Element) {
 
-			constructor(){
+			constructor() {
 				super()
-				this._formatBytes=formatBytes;
+				this._formatBytes = formatBytes;
 			}
 
 			static get is() {
@@ -100,24 +122,24 @@
 
 			static get properties() {
 				return {
-					tasks:{
+					tasks: {
 						type: Array,
 						statePath: 'tasksReducer.tasks'
 					},
-					hideDeleteButton:{
+					hideDeleteButton: {
 						type: Boolean,
 						computed: 'isSelectionEmpty(_selectedItems)',
 						notify: true,
 						reflectToAttribute: true
 					},
-					hideDownloadButton:{
+					hideDownloadButton: {
 						type: Boolean,
 						computed: 'isSelectionEmpty(_selectedItems)',
 						notify: true,
 						reflectToAttribute: true
 					},
-					_selectedItems:{
-						type:Array,
+					_selectedItems: {
+						type: Array,
 						statePath: 'tasksReducer.selectedTasks'
 					}
 
@@ -125,65 +147,76 @@
 			}
 
 
+			_stateColor(state) {
+				if (!state)
+					return "#757575"
+				if ("VALIDATED" === state)
+					return "#0f9d58"
+				if ("INVALID" === state)
+					return "#E53935"
+				if ("VALIDATING" === state)
+					return "#FDD835"
+				if ("SUBMITTED" === state)
+					return "#039BE5"
+				return "#757575"
+			}
 
-
-			_selectedItemsChanged(event){
+			_selectedItemsChanged(event) {
 
 				console.log('selection changed')
-				var added=[],removed=[]
+				var added = [], removed = []
 
-				if(!event.detail.path){
-					if(event.detail.value.length===0)
-						this.dispatch('unselectAllTasks',event.detail.value)
+				if (!event.detail.path) {
+					if (event.detail.value.length === 0)
+						this.dispatch('unselectAllTasks', event.detail.value)
 					else
-						this.dispatch('selectAllTasks',event.detail.value)
+						this.dispatch('selectAllTasks', event.detail.value)
 
 					return
 				}
 
 
+				if ("selectedItems.splices" === event.detail.path && event.detail.value.indexSplices) {
 
-				if("selectedItems.splices" === event.detail.path &&event.detail.value.indexSplices){
-
-					const indexSplices=event.detail.value.indexSplices
+					const indexSplices = event.detail.value.indexSplices
 
 
-					for(let i=0;i<indexSplices.length;i++){
-						const changes=event.detail.value.indexSplices[i]
-						added=added.concat(changes.object)
-						removed=removed.concat(changes.removed)
+					for (let i = 0; i < indexSplices.length; i++) {
+						const changes = event.detail.value.indexSplices[i]
+						added = added.concat(changes.object)
+						removed = removed.concat(changes.removed)
 					}
 
-					if(added.length>0)
-						this.dispatch('selectTasks',added)
+					if (added.length > 0)
+						this.dispatch('selectTasks', added)
 
-					if(removed.length>0)
-						this.dispatch('unselectTasks',removed)
+					if (removed.length > 0)
+						this.dispatch('unselectTasks', removed)
 				}
 			}
 
 
-			connectedCallback(){
+			connectedCallback() {
 				super.connectedCallback()
 				this.dispatch('fetchTasks')
 			}
 
-			_handleDelete(){
-				this.dispatch('removeTasks',this._selectedItems)
+			_handleDelete() {
+				this.dispatch('removeTasks', this._selectedItems)
 			}
 
-			_handleDownload(){
-				this.dispatch('addJob',this._selectedItems)
+			_handleDownload() {
+				this.dispatch('addJob', this._selectedItems)
 			}
 
-			_handleAdd(){
-				this.$.addUrlDialog.opened=true;
+			_handleAdd() {
+				this.$.addUrlDialog.opened = true;
 			}
 
-			isSelectionEmpty(items){
+			isSelectionEmpty(items) {
 				return !items
 						||
-						(!items.length>0)
+						(!items.length > 0)
 			}
 		}
 

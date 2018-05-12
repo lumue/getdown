@@ -161,7 +161,7 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 			conn.getInputStream();
 			return conn.getContentLength();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			return -1L;
 		} finally {
 			if (conn instanceof HttpURLConnection) {
 				((HttpURLConnection) conn).disconnect();

@@ -1,4 +1,8 @@
 function formatBytes(bytes,decimals) {
+
+	if(!bytes)
+		return ""
+
 	if(bytes == 0) return '0 Bytes';
 	var k = 1024,
 			dm = decimals || 2,
