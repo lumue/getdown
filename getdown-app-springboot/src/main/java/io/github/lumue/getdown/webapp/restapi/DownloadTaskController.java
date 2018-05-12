@@ -37,12 +37,11 @@ public class DownloadTaskController implements Consumer<Event<DownloadTask>> {
 	
 	private final static Logger LOGGER=LoggerFactory.getLogger(DownloadTaskController.class);
 	
+	private final SseEmitters sseEmitters=new SseEmitters();
 	
 	private final DownloadTaskRepository taskRepository;
 
 	private final DownloadService downloadService;
-	
-	private final List<SseEmitter> emitters = new ArrayList<>();
 	
 	
 	@Autowired
@@ -87,26 +86,13 @@ public class DownloadTaskController implements Consumer<Event<DownloadTask>> {
 	}
 	@RequestMapping(path = "/events", method = RequestMethod.GET)
 	public SseEmitter stream() {
-		
-		SseEmitter emitter = new SseEmitter();
-		
-		this.emitters.add(emitter);
-		emitter.onCompletion(() -> emitters.remove(emitter));
-		
-		return emitter;
+		return sseEmitters.newEmitter();
 	}
 	
 	@Override
 	public void accept(Event<DownloadTask> downloadJobEvent) {
 		Message<DownloadTask> message=MessageBuilder.withPayload(downloadJobEvent.getData()).build();
-		emitters.forEach(sseEmitter -> {
-			try {
-				sseEmitter.send(message);
-			} catch (Throwable e) {
-				sseEmitter.complete();
-				LOGGER.error("Error sending Message to "+sseEmitter,e);
-			}
-		});
+		sseEmitters.sendMessage(message);
 	}
 
 }

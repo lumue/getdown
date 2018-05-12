@@ -12,10 +12,8 @@ import org.springframework.hateoas.Resources;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.bus.Event;
-import rx.Emitter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +35,7 @@ public class DownloadJobController implements Consumer<Event<DownloadJob>> {
 	
 	private final DownloadService downloadService;
 	
-	private final List<SseEmitter> emitters = new ArrayList<>();
+	private final SseEmitters sseEmitters=new SseEmitters();
 	
 	private final static Logger LOGGER=LoggerFactory.getLogger(DownloadJobController.class);
 	
@@ -67,28 +65,13 @@ public class DownloadJobController implements Consumer<Event<DownloadJob>> {
 	
 	@RequestMapping(path = "/events", method = RequestMethod.GET)
 	public SseEmitter stream() {
-		
-		SseEmitter emitter = new SseEmitter();
-		
-		this.emitters.add(emitter);
-		emitter.onCompletion(() -> emitters.remove(emitter));
-		
-		return emitter;
+		return sseEmitters.newEmitter();
 	}
 	
 	@Override
 	public void accept(Event<DownloadJob> downloadJobEvent) {
 		Message<DownloadJob> message=MessageBuilder.withPayload(downloadJobEvent.getData()).build();
-		List<SseEmitter> activeEmitters=new ArrayList<>();
-		activeEmitters.addAll(emitters);
-		activeEmitters.forEach(sseEmitter -> {
-			try {
-				sseEmitter.send(message);
-			} catch (Throwable e) {
-				sseEmitter.completeWithError(e);
-				LOGGER.error("Error sending Message to "+sseEmitter,e);
-			}
-		});
+		sseEmitters.sendMessage(message);
 	}
 	
 }
