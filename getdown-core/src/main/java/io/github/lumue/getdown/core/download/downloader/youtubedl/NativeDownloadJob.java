@@ -51,44 +51,52 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 	public void executeDownload() {
 		progress(new DownloadProgress());
 		start();
-		try {
-			message("downloading...");
-			final DownloadFilesStep downloadFilesStep = new DownloadFilesStep(
-					getDownloadTask().getSelectedFormats(),
-					getWorkPath(),
-					progressionListener
-			);
-			downloadFilesStep.run();
-			
-			final String ouputfilename = "MERGED." + getDownloadTask().getExt();
-			
-			if (getDownloadTask().getSelectedFormats().size() == 2) {
-				message("merging...");
-				final MergeFilesStep mergeFilesStep = new MergeFilesStep(
+		getDownloadProgress().ifPresent(dp-> {
+			try {
+				dp.start();
+				message("downloading...");
+				final DownloadFilesStep downloadFilesStep = new DownloadFilesStep(
 						getDownloadTask().getSelectedFormats(),
 						getWorkPath(),
-						ouputfilename,
 						progressionListener
 				);
-				mergeFilesStep.run();
+				downloadFilesStep.run();
 				
-				getDownloadTask().getSelectedFormats().forEach(f-> {
-					FileUtils.deleteQuietly(new File(getWorkPath() + File.separator + f.getFilename()));
-				});
+				final String ouputfilename = "MERGED." + getDownloadTask().getExt();
+				
+				if (getDownloadTask().getSelectedFormats().size() == 2) {
+					message("merging...");
+					final MergeFilesStep mergeFilesStep = new MergeFilesStep(
+							getDownloadTask().getSelectedFormats(),
+							getWorkPath(),
+							ouputfilename,
+							progressionListener
+					);
+					mergeFilesStep.run();
+					
+					getDownloadTask().getSelectedFormats().forEach(f -> {
+						FileUtils.deleteQuietly(new File(getWorkPath() + File.separator + f.getFilename()));
+					});
+				}
+				
+				FileUtils.moveFile(
+						new File(getWorkPath() + File.separator + ouputfilename),
+						new File(getWorkPath() + File.separator + getDownloadTask().getName() + "." + getDownloadTask().getExt())
+				);
+				
+				message("writing info.json");
+				
+				FileUtils.writeStringToFile(new File(getWorkPath() + File.separator + getDownloadTask().getName() + ".info.json"), getDownloadTask().getInfoJsonString(), Charset.forName("UTF-8"));
+				
+				dp.finish();
+				
+			} catch (IOException e) {
+				error(e);
 			}
+		});
 			
-			FileUtils.moveFile(
-					new File(getWorkPath() + File.separator + ouputfilename),
-					new File(getWorkPath() + File.separator + getDownloadTask().getName() + "." + getDownloadTask().getExt())
-			);
-			
-			message("writing info.json");
-			
-			FileUtils.writeStringToFile(new File(getWorkPath() + File.separator + getDownloadTask().getName() + ".info.json"), getDownloadTask().getInfoJsonString(), Charset.forName("UTF-8"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		finish();
+		
+		
 	}
 	
 	

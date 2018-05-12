@@ -12,6 +12,8 @@
 <link rel="import" href="redux-store.html">
 <link rel="import" href="url-input.html">
 
+<script src="utils.js" type="application/javascript"></script>
+
 <dom-module id="task-list">
 	<template>
 		<style include="shared-styles">
@@ -63,7 +65,7 @@
 				<template class="header">
 					<vaadin-grid-sorter path="expectedSize">Size</vaadin-grid-sorter>
 				</template>
-				<template>[[item.expectedSize]]</template>
+				<template>[[_formatBytes(item.expectedSize,1)]]</template>
 			</vaadin-grid-column>
 			<vaadin-grid-column style="width: 120px;">
 				<template class="header"><vaadin-grid-sorter path="state">State</vaadin-grid-sorter></template>
@@ -76,6 +78,11 @@
 
 	<script>
 		class TaskList extends GetdownConsole.ReduxMixin(Polymer.Element) {
+
+			constructor(){
+				super()
+				this._formatBytes=formatBytes;
+			}
 
 			static get is() {
 				return 'task-list';
@@ -106,6 +113,9 @@
 
 				}
 			}
+
+			
+			
 
 			_selectedItemsChanged(event){
 				
@@ -168,5 +178,6 @@
 		}
 
 		window.customElements.define(TaskList.is, TaskList);
+
 	</script>
 </dom-module>

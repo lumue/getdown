@@ -1,15 +1,14 @@
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
-	var contentUrl=info.linkUrl;
-	var xmlhttp = new XMLHttpRequest();
-	var url = "http://192.168.1.105:7001/download/add?url="+encodeURIComponent(contentUrl);
+	var contentUrl=[info.linkUrl];
 
-	xmlhttp.onreadystatechange = function() {
-	    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-	       ondata(JSON.parse(xmlhttp.responseText));
-	    }
-	}
-	xmlhttp.open("PUT", url, true);
-	xmlhttp.send();
+	fetch("http://192.168.1.105:7001/api/tasks", {
+		method: "POST",
+		headers: {
+			'Accept': 'application/json, text/plain, */*',
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(contentUrl)
+	})
 });
 
 chrome.contextMenus.create({
