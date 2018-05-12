@@ -66,7 +66,7 @@ public class DownloadFormat implements Serializable {
 	}
 	
 	public String getFilename() {
-		return getType().name()+filenameExtension;
+		return getType().name()+"."+filenameExtension;
 	}
 	
 	public String getCodec() {

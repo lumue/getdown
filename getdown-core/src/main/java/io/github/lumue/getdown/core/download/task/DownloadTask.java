@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -43,6 +44,8 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 	private final List<DownloadFormat> availableFormats= new ArrayList<>();
 	
 	private final List<DownloadFormat> selectedFormats= new ArrayList<>();
+	private String ext;
+	private String infoJsonString;
 	
 	
 	@JsonCreator
@@ -57,13 +60,14 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 			@JsonProperty("expectedSize") Long expectedSize,
 			@JsonProperty("priority") Long priority,
 			@JsonProperty("availableFormats") List<DownloadFormat> availableFormats,
-			@JsonProperty("selectedFormats") List<DownloadFormat> selectedFormats) {
+			@JsonProperty("selectedFormats") List<DownloadFormat> selectedFormats,
+			@JsonProperty("ext") String ext) {
 		this(state, handle, sourceUrl, creationTime);
 		this.targetLocation = targetLocation;
 		this.lastValidation=lastValidation;
 		this.expectedSize=expectedSize;
 		this.priority=priority;
-		
+		this.ext=ext;
 	}
 	
 	private DownloadTask(TaskState state, String handle, String sourceUrl, LocalDateTime creationTime) {
@@ -133,6 +137,8 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 	}
 	
 	public String getName() {
+		if(StringUtils.isEmpty(name))
+			return getSourceUrl();
 		return name;
 	}
 	
@@ -180,6 +186,22 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 	
 	public List<DownloadFormat> getSelectedFormats() {
 		return selectedFormats;
+	}
+	
+	public void setTargetExtension(String ext) {
+		this.ext=ext;
+	}
+	
+	public String getExt() {
+		return ext;
+	}
+	
+	public void setInfoJsonString(String infoJsonString) {
+		this.infoJsonString = infoJsonString;
+	}
+	
+	public String getInfoJsonString() {
+		return infoJsonString;
 	}
 	
 	

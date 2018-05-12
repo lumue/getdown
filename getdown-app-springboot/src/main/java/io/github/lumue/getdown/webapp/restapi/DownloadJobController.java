@@ -79,16 +79,16 @@ public class DownloadJobController implements Consumer<Event<DownloadJob>> {
 	@Override
 	public void accept(Event<DownloadJob> downloadJobEvent) {
 		Message<DownloadJob> message=MessageBuilder.withPayload(downloadJobEvent.getData()).build();
-		List<SseEmitter> failedEmitters=new ArrayList<>();
-		emitters.forEach(sseEmitter -> {
+		List<SseEmitter> activeEmitters=new ArrayList<>();
+		activeEmitters.addAll(emitters);
+		activeEmitters.forEach(sseEmitter -> {
 			try {
 				sseEmitter.send(message);
 			} catch (Throwable e) {
-				failedEmitters.add(sseEmitter);
+				sseEmitter.completeWithError(e);
 				LOGGER.error("Error sending Message to "+sseEmitter,e);
 			}
 		});
-		failedEmitters.forEach(ResponseBodyEmitter::complete);
 	}
 	
 }

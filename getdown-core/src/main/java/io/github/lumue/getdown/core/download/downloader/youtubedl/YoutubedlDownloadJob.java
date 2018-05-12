@@ -133,66 +133,6 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob {
 		}
 	}
 	
-	@Override
-	public void postProcess() {
-		getDownloadProgress().ifPresent(downloadProgress -> {
-			if (FINISHED.equals(downloadProgress.getState())) {
-				String movingmsg = "moving downloaded files for download " + getName() + " to " + getTargetPath();
-				LOGGER.info(movingmsg);
-				try {
-					message(movingmsg);
-					Path target = Paths.get(getTargetPath());
-					if (!Files.exists(target))
-						Files.createDirectory(target);
-					Files.list(Paths.get(getWorkPath()))
-							.filter(p -> !Files.isDirectory(p))
-							.map(p -> new Path[]{p, target.resolve(p.getFileName())})
-							.map(pa -> {
-										pa[1] = createUniqueFilenam(pa[1]);
-										return pa;
-									}
-							)
-							.forEach(pa -> {
-								try {
-									Files.move(pa[0], pa[1]);
-									Files.setPosixFilePermissions(pa[1], PosixFilePermissions.fromString("rw-rw-rw-"));
-								} catch (IOException e) {
-									String msg = "error moving files for download " + getName() + " to " + getTargetPath();
-									error(new RuntimeException(msg + ":" + e.getClass().getSimpleName(), e));
-									LOGGER.error(msg, e);
-									throw new RuntimeException("msg", e);
-								}
-							});
-					String movedmsg = "moved files for download " + getName() + " to " + getTargetPath();
-					message(movedmsg);
-					finish();
-					LOGGER.info(movedmsg);
-				} catch (IOException e) {
-					String msg = "error moving files for download " + getName() + " to " + getTargetPath();
-					error(new RuntimeException(msg + ":" + e.getClass().getSimpleName(), e));
-					LOGGER.error(msg, e);
-					throw new RuntimeException("msg", e);
-				}
-			}
-		});
-	}
-	
-	private Path createUniqueFilenam(final Path basepath) {
-		Path uniquepath = basepath;
-		for (int i = 0; Files.exists(uniquepath); i++)
-			uniquepath = appendCountToFile(basepath, i);
-		return uniquepath;
-	}
-	
-	private Path appendCountToFile(Path path, int i) {
-		final String pathString = path.toString();
-		boolean isInfoJson = pathString.endsWith(".info.json");
-		String pathWithoutExt = !isInfoJson ? FilenameUtils.removeExtension(pathString) : pathString.replace(".info.json", "");
-		String ext = !isInfoJson ? FilenameUtils.getExtension(pathString) : "info.json";
-		final String newPath = pathWithoutExt + "_" + Integer.toString(i) + "." + ext;
-		return new File(newPath).toPath();
-	}
-	
 	private void handlePrepared(YdlDownloadTask ydlDownloadTask, SingleInfoJsonMetadataAccessor singleInfoJsonMetadataAccessor) {
 		singleInfoJsonMetadataAccessor.getTitle().ifPresent(this::updateName);
 		prepared();

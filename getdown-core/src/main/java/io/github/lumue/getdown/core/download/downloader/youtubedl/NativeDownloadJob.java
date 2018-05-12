@@ -4,11 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.lumue.getdown.core.download.job.*;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class NativeDownloadJob extends AbstractDownloadJob {
 	
 	
-	private final ProgressionListener progressionListener = (message,p) -> getDownloadProgress().ifPresent(dp ->
+	private final ProgressionListener progressionListener = (message, p) -> getDownloadProgress().ifPresent(dp ->
 	{
 		dp.setSize(p.getMax());
 		dp.updateDownloadedSize(p.getValue());
@@ -37,6 +42,8 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 	
 	@Override
 	public void prepare() {
+		preparing();
+		new YoutubedlValidateTaskJob(getDownloadTask()).run();
 		prepared();
 	}
 	
@@ -44,31 +51,46 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 	public void executeDownload() {
 		progress(new DownloadProgress());
 		start();
-		
-		message("downloading...");
-		final DownloadFilesStep downloadFilesStep = new DownloadFilesStep(
-				getDownloadTask().getSelectedFormats(),
-				getWorkPath(),
-				progressionListener
-		);
-		downloadFilesStep.run();
-		
-		if(getDownloadTask().getSelectedFormats().size()==2) {
-			message("merging...");
-			final MergeFilesStep mergeFilesStep = new MergeFilesStep(
+		try {
+			message("downloading...");
+			final DownloadFilesStep downloadFilesStep = new DownloadFilesStep(
 					getDownloadTask().getSelectedFormats(),
 					getWorkPath(),
 					progressionListener
 			);
-			mergeFilesStep.run();
+			downloadFilesStep.run();
+			
+			final String ouputfilename = "MERGED." + getDownloadTask().getExt();
+			
+			if (getDownloadTask().getSelectedFormats().size() == 2) {
+				message("merging...");
+				final MergeFilesStep mergeFilesStep = new MergeFilesStep(
+						getDownloadTask().getSelectedFormats(),
+						getWorkPath(),
+						ouputfilename,
+						progressionListener
+				);
+				mergeFilesStep.run();
+				
+				getDownloadTask().getSelectedFormats().forEach(f-> {
+					FileUtils.deleteQuietly(new File(getWorkPath() + File.separator + f.getFilename()));
+				});
+			}
+			
+			FileUtils.moveFile(
+					new File(getWorkPath() + File.separator + ouputfilename),
+					new File(getWorkPath() + File.separator + getDownloadTask().getName() + "." + getDownloadTask().getExt())
+			);
+			
+			message("writing info.json");
+			
+			FileUtils.writeStringToFile(new File(getWorkPath() + File.separator + getDownloadTask().getName() + ".info.json"), getDownloadTask().getInfoJsonString(), Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		finish();
 	}
 	
-	@Override
-	public void postProcess() {
-	
-	}
 	
 	@Override
 	public void cancel() {
@@ -77,7 +99,7 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 	
 	@Override
 	public boolean isPrepared() {
-		return true;
+		return DownloadJobState.PREPARED.equals(getState());
 	}
 	
 	public static NativeDownloadJobBuilder builder(DownloadTask downloadTask) {

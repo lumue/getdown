@@ -7,12 +7,12 @@ import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.metadata.single_info_json.Format;
 import io.github.lumue.ydlwrapper.metadata.single_info_json.HttpHeaders;
 import io.github.lumue.ydlwrapper.metadata.single_info_json.RequestedFormat;
-import io.github.lumue.ydlwrapper.metadata.single_info_json.SingleInfoJsonMetadataAccessor;
-import io.github.lumue.ydlwrapper.metadata.statusmessage.YdlStatusMessage;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -57,7 +57,9 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 										f -> f.getFormatId().equals(formatId)
 								).collect(Collectors.toList());
 						getTask().setSelectedFormats(selectedFormats);
-						getTask().setExpectedSize(selectedFormats.stream().mapToLong(f->f.getExpectedSize()).sum());
+						getTask().setExpectedSize(selectedFormats.stream().mapToLong(DownloadFormat::getExpectedSize).sum());
+						getTask().setTargetExtension(ydlInfoJson.getExt());
+						getYdlTask().getYdlInfoJsonAsText().ifPresent(t->getTask().setInfoJsonString(t));
 					}
 			);
 			
@@ -187,12 +189,6 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 			}
 		}
 		return result;
-	}
-	
-	private void handleError(YdlDownloadTask ydlDownloadTask, YdlStatusMessage ydlStatusMessage) {
-	}
-	
-	private void handlePrepared(YdlDownloadTask ydlDownloadTask, SingleInfoJsonMetadataAccessor singleInfoJsonMetadataAccessor) {
 	}
 	
 
