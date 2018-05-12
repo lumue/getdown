@@ -18,20 +18,20 @@ import javax.annotation.PostConstruct;
  * the prepare and download executors.
  */
 public class AsyncJobRunner implements Runnable {
-
+	
 	private final ScheduledThreadPoolExecutor downloadExecutor;
-
+	
 	private final ScheduledThreadPoolExecutor prepareExecutor;
-
+	
 	private final ScheduledThreadPoolExecutor postprocessExecutor;
-
+	
 	private final AtomicBoolean shouldRun = new AtomicBoolean(false);
-
-
+	
+	
 	private final List<DownloadJob> running = new ArrayList<>();
-
+	
 	private final List<DownloadJob> done = new ArrayList<>();
-
+	
 	//queue capacity can be small.. running a job should be virtually nonblocking, since prepare an download are implemented as async operations
 	private final BlockingQueue<DownloadJob> jobQueue = new PriorityBlockingQueue<>(10, new Comparator<DownloadJob>() {
 		@Override
@@ -39,12 +39,12 @@ public class AsyncJobRunner implements Runnable {
 			return o1.getIndex().compareTo(o2.getIndex());
 		}
 	});
-
-
+	
+	
 	private static Logger LOGGER = LoggerFactory.getLogger(AsyncJobRunner.class);
 	private final Executor jobRunner;
-
-
+	
+	
 	public AsyncJobRunner(
 			int maxThreadsPrepare,
 			int maxThreadsDownload,
@@ -55,8 +55,8 @@ public class AsyncJobRunner implements Runnable {
 		this.postprocessExecutor = executor(maxThreadsPostprocess);
 		this.jobRunner = executor(1);
 	}
-
-
+	
+	
 	private void runJob(final DownloadJob job) {
 		String jobUrl = job.getUrl();
 		AsyncJobRunner.LOGGER.debug("starting " + jobUrl);
@@ -64,39 +64,63 @@ public class AsyncJobRunner implements Runnable {
 		if (!job.isPrepared()) {
 			CompletableFuture.runAsync(job::prepare, prepareExecutor)
 					.thenRunAsync(job::executeDownload, downloadExecutor)
-					.thenRunAsync(job::postProcess,postprocessExecutor)
+					.thenRunAsync(job::postProcess, postprocessExecutor)
 					.thenRun(() -> {
 						running.remove(job);
 						done.add(job);
 					});
 		} else
 			CompletableFuture.runAsync(job::executeDownload, downloadExecutor)
-					.thenRunAsync(job::postProcess,postprocessExecutor)
+					.thenRunAsync(job::postProcess, postprocessExecutor)
 					.thenRun(() -> {
 						running.remove(job);
 						done.add(job);
 					});
 	}
-
-	public void submitJob(final DownloadJob job) {
+	
+	public synchronized void  submitJob(final DownloadJob job) {
+		boolean alreadySubmitted = isAlreadySubmitted(job);
+		
+		if (alreadySubmitted) {
+			LOGGER.warn(job.getUrl() + " already submitted. wont queue ");
+			return;
+		}
+		
 		String jobUrl = job.getUrl();
 		job.waiting();
 		AsyncJobRunner.LOGGER.debug("queueing " + jobUrl + " for execution");
 		jobQueue.add(job);
 	}
-
-
+	
+	private boolean isAlreadySubmitted(DownloadJob job) {
+		boolean alreadySubmitted = false;
+		for (DownloadJob j : running) {
+			if (j.getUrl().equals(job.getUrl())) {
+				alreadySubmitted = true;
+				break;
+			}
+		}
+		if(!alreadySubmitted)
+			for (DownloadJob j : jobQueue) {
+				if (j.getUrl().equals(job.getUrl())) {
+					alreadySubmitted = true;
+					break;
+				}
+			}
+		return alreadySubmitted;
+	}
+	
+	
 	public void cancelJob(DownloadJob job) {
 		job.cancel();
 	}
-
-
-
+	
+	
 	private static ScheduledThreadPoolExecutor executor(Integer threads) {
 		return (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threads);
-
+		
 	}
-
+	
 	@Override
 	public void run() {
 		while (shouldRun.get()) {
@@ -107,25 +131,25 @@ public class AsyncJobRunner implements Runnable {
 			}
 		}
 	}
-
+	
 	public void stop() {
 		shouldRun.compareAndSet(true, false);
 	}
-
-
+	
+	
 	public Stream<DownloadJob> streamRunning() {
 		return running.stream();
 	}
-
-
+	
+	
 	public Stream<DownloadJob> streamQueued() {
 		return jobQueue.stream();
 	}
-
+	
 	public Stream<DownloadJob> streamDone() {
 		return done.stream();
 	}
-
+	
 	@PostConstruct
 	public void start() {
 		shouldRun.compareAndSet(false, true);
