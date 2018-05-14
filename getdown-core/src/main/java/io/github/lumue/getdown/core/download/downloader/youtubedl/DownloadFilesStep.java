@@ -113,6 +113,8 @@ public class DownloadFilesStep implements Runnable {
 						}
 					}
 				} else {
+					if(status==HttpStatus.SC_REQUESTED_RANGE_NOT_SATISFIABLE)
+						Files.deleteIfExists(new File(filename).toPath());
 					throw new RuntimeException("Unexpected response status: " + status);
 				}
 			}

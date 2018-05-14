@@ -98,6 +98,7 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 				
 			} catch (IOException e) {
 				error(e);
+				dp.error(e);
 			}
 		});
 		
