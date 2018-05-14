@@ -24,9 +24,12 @@ import java.util.List;
 
 public class DownloadFilesStep implements Runnable {
 	
+	class RangeNotSatisfiableException extends RuntimeException{
+	
+	}
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DownloadFilesStep.class);
-	private static final int BUFFER_SIZE = 1024 * 512;
+	private static final int BUFFER_SIZE = 1024 * 16;
 	private final List<DownloadFormat> selectedFormats;
 	private final String downloadPath;
 	private final ProgressionListener progressionListener;
