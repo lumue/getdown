@@ -69,7 +69,7 @@ public class DownloadFilesStep implements Runnable {
 				int bytesRead;
 				byte[] buffer = new byte[BUFFER_SIZE];
 				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outputStream.write(buffer, 0, bytesRead);
+					outputStream.write(buffer);
 					progressionListener.onProgress("downloading "+format.getFilename(),progression.incrementProgress(bytesRead));
 				}
 				inputStream.close();
