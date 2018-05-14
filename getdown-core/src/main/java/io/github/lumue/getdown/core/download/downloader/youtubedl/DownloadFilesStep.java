@@ -7,6 +7,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class DownloadFilesStep implements Runnable {
 		final long totalExpectedSize = selectedFormats.stream().mapToLong(f -> f.getExpectedSize()).sum();
 		progression = new Progression(0, totalExpectedSize);
 		progressionListener.onProgress("starting downloads",progression);
-		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableContentCompression().build()) {
 			selectedFormats.forEach(format -> downloadFile(httpClient, format));
 		} catch (Exception exception) {
 			LOGGER.error("error downloading", exception);
