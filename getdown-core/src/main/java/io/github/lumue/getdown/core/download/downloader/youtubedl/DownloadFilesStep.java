@@ -43,7 +43,9 @@ public class DownloadFilesStep implements Runnable {
 	
 	@Override
 	public void run() {
-		final long totalExpectedSize = selectedFormats.stream().mapToLong(f -> f.getExpectedSize()).sum();
+		final long totalExpectedSize = selectedFormats.stream()
+				.mapToLong(DownloadFormat::getExpectedSize)
+				.sum();
 		progression = new Progression(0, totalExpectedSize);
 		progressionListener.onProgress("starting downloads", progression);
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableContentCompression().build()) {
