@@ -42,12 +42,12 @@ public class DownloadFilesStep implements Runnable {
 	public void run() {
 		final long totalExpectedSize = selectedFormats.stream().mapToLong(f -> f.getExpectedSize()).sum();
 		progression = new Progression(0, totalExpectedSize);
-		progressionListener.onProgress("starting downloads",progression);
+		progressionListener.onProgress("starting downloads", progression);
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableContentCompression().build()) {
 			selectedFormats.forEach(format -> downloadFile(httpClient, format));
 		} catch (Exception exception) {
 			LOGGER.error("error downloading", exception);
-			throw new RuntimeException("error downloading",exception);
+			throw new RuntimeException("error downloading", exception);
 		}
 	}
 	
@@ -64,17 +64,20 @@ public class DownloadFilesStep implements Runnable {
 				HttpEntity entity = response.getEntity();
 				
 				// opens an output stream to save into file
-				FileOutputStream outputStream = new FileOutputStream(filename);
-				InputStream inputStream = entity.getContent();
-				
-				int bytesRead;
-				byte[] buffer = new byte[BUFFER_SIZE];
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outputStream.write(buffer);
-					progressionListener.onProgress("downloading "+format.getFilename(),progression.incrementProgress(bytesRead));
+				try (
+						FileOutputStream outputStream = new FileOutputStream(filename);
+						InputStream inputStream = entity.getContent()
+				) {
+					
+					int bytesRead;
+					byte[] buffer = new byte[BUFFER_SIZE];
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						LOGGER.debug(bytesRead + " read from " + format.getUrl());
+						outputStream.write(buffer);
+						LOGGER.debug(bytesRead + " written to " + filename);
+						progressionListener.onProgress("downloading " + format.getFilename(), progression.incrementProgress(bytesRead));
+					}
 				}
-				inputStream.close();
-				outputStream.close();
 			} else {
 				throw new RuntimeException("Unexpected response status: " + status);
 			}
