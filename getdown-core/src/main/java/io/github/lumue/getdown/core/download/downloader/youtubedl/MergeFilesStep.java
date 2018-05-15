@@ -56,8 +56,8 @@ public class MergeFilesStep implements Runnable {
 		
 		
 		try {
-			ffmpeg = new FFmpeg("/usr/bin/ffmpeg");
-			ffprobe = new FFprobe("/usr/bin/ffprobe");
+			ffmpeg = new FFmpeg("/usr/local/bin/ffmpeg");
+			ffprobe = new FFprobe("/usr/local/bin/ffprobe");
 			
 			String audioInputfilename= downloadPath + File.separator + audioFormat.getFilename();
 			String videoInputfilename= downloadPath + File.separator + videoFormat.getFilename();

@@ -2,7 +2,8 @@ FROM lumue/jdkydl:alpine
 MAINTAINER lm "mueller.lutz@gmail.com"
 
 RUN ln -s `which youtube-dl` /usr/local/bin/youtube-dl
-
+RUN ln -s `which ffmpeg` /usr/local/bin/ffmpeg
+RUN ln -s `which ffprobe` /usr/local/bin/ffprobe
 
 ADD *.jar /app.jar
 CMD mkdir /getdown && mkdir /downloads

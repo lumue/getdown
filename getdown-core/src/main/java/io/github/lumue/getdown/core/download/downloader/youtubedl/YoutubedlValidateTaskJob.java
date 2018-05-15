@@ -30,7 +30,7 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 	private transient AtomicReference<YdlDownloadTask> ydlTaskReference = new AtomicReference<>(null);
 	private boolean forceMp4OnYoutube = true;
 	
-	private String pathToYdl = "/usr/bin/youtube-dl";
+	private String pathToYdl = "/usr/local/bin/youtube-dl";
 
 	
 	
