@@ -13,4 +13,4 @@ EXPOSE 8001
 VOLUME ["/getdown"]
 VOLUME ["/downloads"]
 
-ENTRYPOINT ["java","-Xms20M","-Xmx100M","-Dgetdown.path.home=/getdown","-Dgetdown.path.media=/downloads", "-Xdebug", "-Xrunjdwp:transport=dt_socket,address=7002,server=y,suspend=n","-Dcom.sun.management.jmxremote.port=7003","-Dcom.sun.management.jmxremote.local.only=false","-Dcom.sun.management.jmxremote.rmi.port=7003","-Dcom.sun.management.jmxremote.authenticate=false","-Dcom.sun.management.jmxremote.ssl=false" ,"-jar","/app.jar"]
+ENTRYPOINT ["java","-Xms20M","-Xmx100M","-Dgetdown.path.home=/getdown","-Dgetdown.path.media=/downloads", "-Xdebug", "-Xrunjdwp:transport=dt_socket,address=7002,server=y,suspend=n","-Dcom.sun.management.jmxremote.port=7003","-Djava.rmi.server.hostname=127.0.0.1","-Dcom.sun.management.jmxremote.local.only=false","-Dcom.sun.management.jmxremote.rmi.port=7003","-Dcom.sun.management.jmxremote.authenticate=false","-Dcom.sun.management.jmxremote.ssl=false" ,"-jar","/app.jar"]
