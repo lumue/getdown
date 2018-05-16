@@ -160,36 +160,11 @@
 
 			_selectedItemsChanged(event) {
 
-				console.log('selection changed')
-				var added = [], removed = []
-
-				if (!event.detail.path) {
-					if (event.detail.value.length === 0)
-						this.dispatch('unselectAllJobs', event.detail.value)
-					else
-						this.dispatch('selectAllJobs', event.detail.value)
-
-					return
-				}
-
-
-				if ("selectedItems.splices" === event.detail.path && event.detail.value.indexSplices) {
-
-					const indexSplices = event.detail.value.indexSplices
-
-
-					for (let i = 0; i < indexSplices.length; i++) {
-						const changes = event.detail.value.indexSplices[i]
-						added = added.concat(changes.object)
-						removed = removed.concat(changes.removed)
-					}
-
-					if (added.length > 0)
-						this.dispatch('selectJobs', added)
-
-					if (removed.length > 0)
-						this.dispatch('unselectJobs', removed)
-				}
+				if("selectedItems.length"===event.detail.path)
+					return;
+				const selectedJobs=this.$.grid.selectedItems;
+				console.log('selection changed to '+selectedJobs)
+				this.dispatch('setSelectedJobs',selectedJobs);
 			}
 
 

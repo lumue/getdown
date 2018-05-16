@@ -26,32 +26,15 @@
 				})
 			}
 
-			case 'TASKS_SELECTED': {
-				const items = state.selectedTasks.concat(action.tasks)
+			case 'TASKS_SELECTED_CHANGED': {
+				const items = state.selectedTasks.splice().concat(action.tasks)
+				console.log("setting selected tasks to:" +items);
 				return Object.assign({}, state, {
 					selectedTasks: items
 				})
 			}
 
-			case 'TASKS_ALL_SELECTED': {
-				const items=state.tasks.slice()
-				return Object.assign({}, state, {
-					selectedTasks: items
-				})
-			}
 
-			case 'TASKS_ALL_UNSELECTED': {
-				return Object.assign({}, state, {
-					selectedTasks: []
-				})
-			}
-
-			case 'TASKS_UNSELECTED': {
-				const items = _.differenceWith(state.selectedTasks,action.tasks,compareTasks )
-				return Object.assign({}, state, {
-					selectedTasks: items
-				})
-			}
 
 			case 'TASKS_REMOVED': {
 				const items = _.differenceWith(state.tasks,action.tasks,compareTasks )

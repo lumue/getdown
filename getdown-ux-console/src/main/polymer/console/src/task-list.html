@@ -140,7 +140,8 @@
 					},
 					_selectedItems: {
 						type: Array,
-						statePath: 'tasksReducer.selectedTasks'
+						statePath: 'tasksReducer.selectedTasks',
+						notify: true
 					}
 
 				}
@@ -162,37 +163,11 @@
 			}
 
 			_selectedItemsChanged(event) {
-
-				console.log('selection changed')
-				var added = [], removed = []
-
-				if (!event.detail.path) {
-					if (event.detail.value.length === 0)
-						this.dispatch('unselectAllTasks', event.detail.value)
-					else
-						this.dispatch('selectAllTasks', event.detail.value)
-
-					return
-				}
-
-
-				if ("selectedItems.splices" === event.detail.path && event.detail.value.indexSplices) {
-
-					const indexSplices = event.detail.value.indexSplices
-
-
-					for (let i = 0; i < indexSplices.length; i++) {
-						const changes = event.detail.value.indexSplices[i]
-						added = added.concat(changes.object)
-						removed = removed.concat(changes.removed)
-					}
-
-					if (added.length > 0)
-						this.dispatch('selectTasks', added)
-
-					if (removed.length > 0)
-						this.dispatch('unselectTasks', removed)
-				}
+				if("selectedItems.length"===event.detail.path)
+					return;
+				const selectedTasks=this.$.grid.selectedItems;
+				console.log('selection changed to '+selectedTasks)
+				this.dispatch('setSelectedTasks',selectedTasks);
 			}
 
 
@@ -202,11 +177,15 @@
 			}
 
 			_handleDelete() {
-				this.dispatch('removeTasks', this._selectedItems)
+				let items = this._selectedItems;
+				console.log("requesting removal for tasks "+ items);
+				this.dispatch('removeTasks', items)
 			}
 
 			_handleDownload() {
-				this.dispatch('addJob', this._selectedItems)
+				let items = this._selectedItems;
+				console.log("requesting download for tasks "+ items);
+				this.dispatch('addJob', items)
 			}
 
 			_handleAdd() {

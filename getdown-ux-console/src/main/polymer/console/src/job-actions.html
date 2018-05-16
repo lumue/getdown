@@ -60,38 +60,17 @@
 			}
 		}
 
-		function selectJobs(jobs){
+		function setSelectedJobs(jobs){
 			return {
-				type: 'JOBS_SELECTED',
+				type: 'JOBS_SELECTED_CHANGED',
 				jobs:jobs
 			}
 		}
 
-		function selectAllJobs(){
-			return {
-				type: 'JOBS_ALL_SELECTED',
-			}
-		}
-
-		function unselectAllJobs(){
-			return {
-				type: 'JOBS_ALL_UNSELECTED',
-			}
-		}
-
-		function unselectJobs(jobs){
-			return {
-				type: 'JOBS_UNSELECTED',
-				jobs:jobs
-			}
-		}
 
 		GetdownConsole.actions.fetchJobs=fetchJobs
 		GetdownConsole.actions.addJob=addJobs
 		GetdownConsole.actions.jobsUpdated=jobsUpdated
-		GetdownConsole.actions.selectJobs=selectJobs
-		GetdownConsole.actions.unselectJobs=unselectJobs
-		GetdownConsole.actions.unselectAllJobs=unselectAllJobs
-		GetdownConsole.actions.selectAllJobs=selectAllJobs
+		GetdownConsole.actions.setSelectedJobs=setSelectedJobs
 	}());
 </script>

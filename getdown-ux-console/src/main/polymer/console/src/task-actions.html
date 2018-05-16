@@ -25,31 +25,14 @@
 			}
 		}
 
-		function selectTasks(tasks){
+		function setSelectedTasks(tasks){
 			return {
-				type: 'TASKS_SELECTED',
+				type: 'TASKS_SELECTED_CHANGED',
 				tasks:tasks
 			}
 		}
 
-		function selectAllTasks(){
-			return {
-				type: 'TASKS_ALL_SELECTED',
-			}
-		}
 
-		function unselectAllTasks(){
-			return {
-				type: 'TASKS_ALL_UNSELECTED',
-			}
-		}
-
-		function unselectTasks(tasks){
-			return {
-				type: 'TASKS_UNSELECTED',
-				tasks:tasks
-			}
-		}
 
 		function removeTasks(tasks){
 			return dispatch =>{
@@ -118,9 +101,6 @@
 		GetdownConsole.actions.addTasks=addTasks
 		GetdownConsole.actions.removeTasks=removeTasks
 		GetdownConsole.actions.tasksUpdated=tasksUpdated
-		GetdownConsole.actions.selectTasks=selectTasks
-		GetdownConsole.actions.unselectTasks=unselectTasks
-		GetdownConsole.actions.unselectAllTasks=unselectAllTasks
-		GetdownConsole.actions.selectAllTasks=selectAllTasks
+		GetdownConsole.actions.setSelectedTasks=setSelectedTasks
  	}());
 </script>

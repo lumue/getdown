@@ -51,28 +51,9 @@
 					lastUpdated: action.receivedAt
 				})
 			}
-			case 'JOBS_SELECTED': {
-				const items = state.selectedJobs.concat(action.jobs)
-				return Object.assign({}, state, {
-					selectedJobs: items
-				})
-			}
-
-			case 'JOBS_ALL_SELECTED': {
-				const items=state.jobs.slice()
-				return Object.assign({}, state, {
-					selectedJobs: items
-				})
-			}
-
-			case 'JOBS_ALL_UNSELECTED': {
-				return Object.assign({}, state, {
-					selectedJobs: []
-				})
-			}
-
-			case 'JOBS_UNSELECTED': {
-				const items = _.differenceWith(state.selectedJobs,action.jobs,compareJobs )
+			case 'JOBS_SELECTED_CHANGED': {
+				const items = state.selectedTasks.splice().concat(action.jobs)
+				console.log("setting selected jobs to:" +items);
 				return Object.assign({}, state, {
 					selectedJobs: items
 				})
