@@ -61,7 +61,7 @@
 					let found = false;
 					for (let i = 0; i < items.length && !found; i++) {
 						if (items[i].handle === d.handle) {
-							items[i]=d;
+							Object.assign(items[i],d);
 							found = true
 						}
 					}
