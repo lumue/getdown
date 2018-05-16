@@ -17,9 +17,6 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-before_install:
-  - npm install -g bower
-  - npm install -g gulp
 
 before_script:
   - ./gradlew npmInstall
@@ -30,7 +27,6 @@ script:
 
 after_success:
   - docker login  -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker tag  lumue/getdown:master-SNAPSHOT lumue/getdown:latest
-  - docker push lumue/getdown:master-SNAPSHOT
-  - docker push lumue/getdown:latest
+  - docker tag  lumue/getdown:upgrade-to-boot2
+  - docker push lumue/getdown:upgrade-to-boot2
 
