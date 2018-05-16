@@ -2,9 +2,7 @@ package io.github.lumue.getdown.webapp;
 
 import io.github.lumue.getdown.webapp.restapi.DownloadJobController;
 import io.github.lumue.getdown.webapp.restapi.DownloadTaskController;
-import io.github.lumue.getdown.webapp.websocket.DownloadWebsocketController;
 import io.github.lumue.getdown.core.download.job.ThrottlingDownloadJobEventTap;
-import io.github.lumue.getdown.webapp.websocket.TaskWebsocketController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -26,10 +24,6 @@ public class ReactorEventRoutes {
 
 	private static final String THROTTELED_DOWNLOADS = "throtteled-downloads";
 
-	private final DownloadWebsocketController downloadWebsocketController;
-
-	private final TaskWebsocketController taskWebsocketController;
-
 	private final EventBus eventbus;
 
 	private final ThrottlingDownloadJobEventTap throttlingDownloadJobEventTap;
@@ -39,12 +33,10 @@ public class ReactorEventRoutes {
 	private final DownloadTaskController downloadTaskController;
 	
 	@Autowired
-	public ReactorEventRoutes(DownloadWebsocketController websocketController,
-	                          TaskWebsocketController taskWebsocketController,
+	public ReactorEventRoutes(
 	                          EventBus eventbus,
 	                          DownloadJobController downloadJobController, DownloadTaskController downloadTaskController) {
-		this.downloadWebsocketController = websocketController;
-		this.taskWebsocketController = taskWebsocketController;
+
 		this.eventbus = eventbus;
 		this.throttlingDownloadJobEventTap = new ThrottlingDownloadJobEventTap(eventbus, THROTTELED_DOWNLOADS, 5000);
 		this.downloadJobController = downloadJobController;
@@ -57,9 +49,7 @@ public class ReactorEventRoutes {
 	@PostConstruct
 	public void setup(){
 		this.eventbus.on(R("downloads-(.+)"),throttlingDownloadJobEventTap);
-		this.eventbus.on($(THROTTELED_DOWNLOADS), downloadWebsocketController);
 		this.eventbus.on($(THROTTELED_DOWNLOADS), downloadJobController);
-		this.eventbus.on(R("tasks-(.+)"), downloadWebsocketController);
 		this.eventbus.on(R("tasks-(.+)"), downloadTaskController);
 	}
 }

@@ -1,11 +1,6 @@
 {
   "properties": [
     {
-      "name": "tomcat.version",
-      "type": "java.lang.String",
-      "description": "Description for tomcat.version."
-    },
-    {
       "name": "getdown.websocket.broadcastinterval.downloads",
       "type": "java.lang.String",
       "description": "Description for getdown.websocket.broadcastinterval.downloads."

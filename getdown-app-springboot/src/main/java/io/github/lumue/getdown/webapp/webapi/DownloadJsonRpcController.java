@@ -22,7 +22,7 @@ public class DownloadJsonRpcController {
 
 
 	@Autowired
-	public DownloadJsonRpcController(DownloadService downloadService, SimpMessagingTemplate messagingTemplate) {
+	public DownloadJsonRpcController(DownloadService downloadService) {
 		super();
 		this.downloadService = downloadService;
 	}

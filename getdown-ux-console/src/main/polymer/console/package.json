@@ -19,6 +19,7 @@
   "dependencies": {
     "lodash": "^4.17.10",
     "redux": "^3.7.2",
+    "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1"
   }

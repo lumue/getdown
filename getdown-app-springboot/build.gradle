@@ -8,11 +8,10 @@ buildscript {
 
 
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'propdeps'
 apply plugin: 'propdeps-maven'
 apply plugin: 'propdeps-idea'
-
-ext['tomcat.version'] = '8.5.2'
 
 apply plugin: "com.github.lkishalmi.gatling"
 gatling {
@@ -39,14 +38,10 @@ dependencies {
 
 
 	compile project(':getdown-core')
-	//compile project(':getdown-webconsole')
 	compile project(':getdown-ux-console')
 
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-logging")
-	compile("org.springframework.boot:spring-boot-starter-websocket")
-	compile("org.springframework.boot:spring-boot-starter-tomcat")
-	compile("org.springframework.boot:spring-boot-configuration-processor")
 	compile("org.springframework.boot:spring-boot-starter-actuator")
 
 	compile("org.springframework:spring-messaging")
@@ -59,7 +54,6 @@ dependencies {
 
 
 	compile 'org.slf4j:slf4j-api:1.7.10'
-	compile group: 'org.apache.tomcat', name: 'tomcat-juli', version: '8.5.2'
 
 	testCompile 'junit:junit:4.11'
 	testCompile group: 'ch.qos.logback', name: 'logback-classic', version: "$logback_version"
