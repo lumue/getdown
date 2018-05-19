@@ -52,7 +52,7 @@
 				})
 			}
 			case 'JOBS_SELECTED_CHANGED': {
-				const items = state.selectedTasks.splice().concat(action.jobs)
+				const items = state.selectedJobs.splice().concat(action.jobs)
 				console.log("setting selected jobs to:" +items);
 				return Object.assign({}, state, {
 					selectedJobs: items
