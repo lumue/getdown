@@ -7,7 +7,6 @@ import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
 import io.github.lumue.getdown.core.common.util.Observable;
 import io.github.lumue.getdown.core.common.util.ObservableTemplate;
 import io.github.lumue.getdown.core.common.util.Observer;
-import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlDownloadJob;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -63,13 +62,8 @@ public abstract class AbstractDownloadJob implements  java.io.Serializable, Down
 		}
 		AbstractDownloadJob other = (AbstractDownloadJob) obj;
 		if (handle == null) {
-			if (other.handle != null) {
-				return false;
-			}
-		} else if (!handle.equals(other.handle)) {
-			return false;
-		}
-		return true;
+			return other.handle == null;
+		} else return handle.equals(other.handle);
 	}
 
 	/**
@@ -167,7 +161,6 @@ public abstract class AbstractDownloadJob implements  java.io.Serializable, Down
 		this.host = host;
 		this.targetPath = targetPath;
 		this.downloadTask = downloadTask;
-		this.contentLocation = contentLocation;
 		this.downloadProgress = downloadProgress;
 		this.index=index;
 	}
@@ -284,18 +277,17 @@ public abstract class AbstractDownloadJob implements  java.io.Serializable, Down
 			message = "error: " + e.getLocalizedMessage();
 		});
 	}
-
+	
 	@Override
-	public Observable addObserver(Observer<?> observer) {
-		observableTemplate.addObserver(observer);
-		return this;
+	public <T extends Observable> T addObserver(Observer<T> observer) {
+		return (T) observableTemplate.addObserver(observer);
 	}
-
+	
 	@Override
-	public Observable removeObserver(Observer<?> observer) {
-		observableTemplate.addObserver(observer);
-		return this;
+	public <T extends Observable> T removeObserver(Observer<T> observer) {
+		return (T) observableTemplate.removeObserver(observer);
 	}
+	
 	
 	@Override
 	public Observable removeObservers() {

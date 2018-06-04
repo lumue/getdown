@@ -1,25 +1,34 @@
-package io.github.lumue.getdown.core.download.downloader.youtubedl;
+package io.github.lumue.getdown.core.download.downloader;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.lumue.getdown.core.common.util.Observable;
+import io.github.lumue.getdown.core.common.util.Observer;
 import io.github.lumue.getdown.core.download.job.*;
+import io.github.lumue.getdown.core.download.task.DownloadFormat;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class NativeDownloadJob extends AbstractDownloadJob {
 	
 	
-	private final ProgressionListener progressionListener = (message, p) -> getDownloadProgress().ifPresent(dp ->
+	private final Consumer<Progression> progressionListener = (p) -> getDownloadProgress().ifPresent(dp ->
 	{
 		dp.setSize(p.getMax());
 		dp.updateDownloadedSize(p.getValue());
 		progress(dp);
 		message(message);
 	});
+	
+	private final Observer<DownloadFilesStep> progressionObserver= observable -> progressionListener.accept(observable.getProgression());
 	
 	@JsonCreator
 	private NativeDownloadJob(
@@ -47,6 +56,8 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 		prepared();
 	}
 	
+	
+	
 	@Override
 	public void executeDownload() {
 		progress(new DownloadProgress());
@@ -57,10 +68,10 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 				message("downloading...");
 				final DownloadFilesStep downloadFilesStep = new DownloadFilesStep(
 						getDownloadTask().getSelectedFormats(),
-						getWorkPath(),
-						progressionListener
+						getWorkPath()
 				);
-				downloadFilesStep.run();
+				downloadFilesStep.addObserver(progressionObserver);
+				downloadFilesStep.execute();
 				
 				final String ouputfilename = "MERGED." + getDownloadTask().getExt();
 				
@@ -69,10 +80,10 @@ public class NativeDownloadJob extends AbstractDownloadJob {
 					final MergeFilesStep mergeFilesStep = new MergeFilesStep(
 							getDownloadTask().getSelectedFormats(),
 							getWorkPath(),
-							ouputfilename,
-							progressionListener
+							ouputfilename
 					);
-					mergeFilesStep.run();
+					mergeFilesStep.addObserver(progressionObserver);
+					mergeFilesStep.execute();
 					
 					getDownloadTask().getSelectedFormats().forEach(f -> {
 						FileUtils.deleteQuietly(new File(getWorkPath() + File.separator + f.getFilename()));

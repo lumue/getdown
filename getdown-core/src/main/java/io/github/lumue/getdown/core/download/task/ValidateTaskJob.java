@@ -11,7 +11,7 @@ public abstract class ValidateTaskJob implements Runnable, Observable {
 	
 	
 	@JsonIgnore
-	private ObservableTemplate observableTemplate=new ObservableTemplate(this);
+	private ObservableTemplate<ValidateTaskJob> observableTemplate=new ObservableTemplate<>(this);
 	
 	protected ValidateTaskJob(DownloadTask task) {
 		this.task = task;
@@ -28,13 +28,13 @@ public abstract class ValidateTaskJob implements Runnable, Observable {
 	}
 	
 	@Override
-	public Observable addObserver(Observer<?> observer) {
+	public <T extends Observable> T addObserver(Observer<T> observer)  {
 		return observableTemplate.addObserver(observer);
 		
 	}
 	
 	@Override
-	public Observable removeObserver(Observer<?> observer) {
+	public <T extends Observable> T removeObserver(Observer<T> observer) {
 		return observableTemplate.removeObserver(observer);
 	}
 	

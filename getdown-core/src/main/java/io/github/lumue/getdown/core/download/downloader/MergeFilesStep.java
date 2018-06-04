@@ -1,9 +1,6 @@
-package io.github.lumue.getdown.core.download.downloader.youtubedl;
+package io.github.lumue.getdown.core.download.downloader;
 
-import io.github.lumue.getdown.core.download.job.Progression;
-import io.github.lumue.getdown.core.download.job.ProgressionListener;
 import io.github.lumue.getdown.core.download.task.DownloadFormat;
-import io.github.lumue.getdown.core.download.task.DownloadTask;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
@@ -11,33 +8,29 @@ import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static io.github.lumue.getdown.core.download.task.DownloadFormat.*;
+import static io.github.lumue.getdown.core.download.task.DownloadFormat.Type;
 
-public class MergeFilesStep implements Runnable {
+public class MergeFilesStep extends AbstractStep {
 	
 	private final List<DownloadFormat> selectedFormats;
 	private final String downloadPath;
 	private String ouputfilename;
-	private final ProgressionListener progressionListener;
 	
 	public MergeFilesStep(List<DownloadFormat> selectedFormats,
 	                      String downloadPath,
-	                      String ouputfilename,
-	                      ProgressionListener progressionListener
-	                      ) {
+	                      String ouputfilename
+	) {
 		
 		this.selectedFormats = selectedFormats;
 		this.downloadPath = downloadPath;
 		this.ouputfilename = ouputfilename;
-		this.progressionListener = progressionListener;
 	}
 	
 	@Override
-	public void run() {
+	public void execute() {
 		
 		FFmpeg ffmpeg;
 		FFprobe ffprobe;
@@ -81,11 +74,10 @@ public class MergeFilesStep implements Runnable {
 			
 			FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
 			
-			final Progression progression=new Progression(0,durationInSeconds);
+			initProgression(durationInSeconds);
 			executor.createJob(builder, progress -> {
 				long outputSeconds = TimeUnit.NANOSECONDS.toSeconds(progress.out_time_ns);
-				progression.incrementProgress(outputSeconds-progression.getValue());
-				progressionListener.onProgress("merging audio and video",progression);
+				incrementProgression(outputSeconds-getProgression().getValue());
 			}).run();
 
 		} catch (Throwable t) {

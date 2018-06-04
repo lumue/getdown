@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.download.downloader.youtubedl;
+package io.github.lumue.getdown.core.download.downloader;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,16 +11,10 @@ import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.download.YdlFileDownload;
 import io.github.lumue.ydlwrapper.metadata.single_info_json.SingleInfoJsonMetadataAccessor;
 import io.github.lumue.ydlwrapper.metadata.statusmessage.YdlStatusMessage;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.github.lumue.getdown.core.download.job.DownloadState.*;

@@ -1,4 +1,4 @@
-package io.github.lumue.getdown.core.download.downloader.youtubedl;
+package io.github.lumue.getdown.core.download.downloader;
 
 import io.github.lumue.getdown.core.download.task.DownloadFormat;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
@@ -7,12 +7,10 @@ import io.github.lumue.ydlwrapper.download.YdlDownloadTask;
 import io.github.lumue.ydlwrapper.metadata.single_info_json.Format;
 import io.github.lumue.ydlwrapper.metadata.single_info_json.HttpHeaders;
 import io.github.lumue.ydlwrapper.metadata.single_info_json.RequestedFormat;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

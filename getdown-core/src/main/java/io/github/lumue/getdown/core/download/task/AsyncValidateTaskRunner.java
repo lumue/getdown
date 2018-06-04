@@ -1,7 +1,7 @@
 package io.github.lumue.getdown.core.download.task;
 
 import io.github.lumue.getdown.core.common.util.Observer;
-import io.github.lumue.getdown.core.download.downloader.youtubedl.YoutubedlValidateTaskJob;
+import io.github.lumue.getdown.core.download.downloader.YoutubedlValidateTaskJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;

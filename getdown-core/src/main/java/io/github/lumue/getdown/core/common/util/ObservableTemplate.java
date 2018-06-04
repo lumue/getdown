@@ -10,21 +10,22 @@ import java.util.List;
  * @author lm
  *
  */
-public class ObservableTemplate implements Observable{
+public class ObservableTemplate<T extends Observable> implements Observable{
 	
 	
 
-	private final Observable observable;
+	private final T observable;
 
-	public ObservableTemplate(Observable observable) {
+	public ObservableTemplate(T observable) {
 		this.observable = observable;
 	}
 
-	public Observable getObservable() {
+	public T getObservable() {
 		return observable;
 	}
-
-
+	
+	
+	
 	@FunctionalInterface
 	public interface ObservedStateChange {
 		void doObserved();
@@ -35,16 +36,16 @@ public class ObservableTemplate implements Observable{
 	private final List<Observer> observers=new ArrayList<>();
 	
 	@Override
-	public synchronized Observable addObserver(Observer<?> observer) {
+	public <R extends Observable> R addObserver(Observer<R> observer) {
 		if(!observers.contains(observer))
 			observers.add(observer);
-		return this;
+		return (R) this.observable;
 	}
 
 	@Override
-	public synchronized Observable removeObserver(Observer<?> observer) {
+	public <R extends Observable> R removeObserver(Observer<R> observer) {
 		observers.remove(observer);
-		return this;
+		return (R) this.observable;
 	}
 	
 	@Override
