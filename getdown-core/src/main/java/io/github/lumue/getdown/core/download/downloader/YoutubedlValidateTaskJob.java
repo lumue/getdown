@@ -55,6 +55,7 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 										f -> f.getFormatId().equals(formatId)
 								).collect(Collectors.toList());
 						getTask().setSelectedFormats(selectedFormats);
+						getTask().setThumbnailLocation(ydlInfoJson.getThumbnail());
 						getTask().setExpectedSize(selectedFormats.stream().mapToLong(DownloadFormat::getExpectedSize).sum());
 						getTask().setTargetExtension(ydlInfoJson.getExt());
 						getYdlTask().getYdlInfoJsonAsText().ifPresent(t->getTask().setInfoJsonString(t));

@@ -1,6 +1,7 @@
 package io.github.lumue.getdown.core.download.task;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.lumue.getdown.core.common.persistence.HasIdentity;
 import io.github.lumue.getdown.core.common.persistence.ObjectBuilder;
@@ -44,8 +45,13 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 	private final List<DownloadFormat> availableFormats= new ArrayList<>();
 	
 	private final List<DownloadFormat> selectedFormats= new ArrayList<>();
+	
 	private String ext;
+	
+	@JsonIgnore
 	private String infoJsonString;
+	
+	private String thumbnailLocation;
 	
 	
 	@JsonCreator
@@ -61,13 +67,15 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 			@JsonProperty("priority") Long priority,
 			@JsonProperty("availableFormats") List<DownloadFormat> availableFormats,
 			@JsonProperty("selectedFormats") List<DownloadFormat> selectedFormats,
-			@JsonProperty("ext") String ext) {
+			@JsonProperty("ext") String ext,
+			@JsonProperty("thumbnailLocation") String thumbnailLocation) {
 		this(state, handle, sourceUrl, creationTime);
 		this.targetLocation = targetLocation;
 		this.lastValidation=lastValidation;
 		this.expectedSize=expectedSize;
 		this.priority=priority;
 		this.ext=ext;
+		this.thumbnailLocation=thumbnailLocation;
 	}
 	
 	 public DownloadTask(TaskState state, String handle, String sourceUrl, LocalDateTime creationTime) {
@@ -200,8 +208,17 @@ public class DownloadTask implements HasIdentity<String>, Serializable {
 		this.infoJsonString = infoJsonString;
 	}
 	
+	@JsonIgnore
 	public String getInfoJsonString() {
 		return infoJsonString;
+	}
+	
+	public String getThumbnailLocation() {
+		return thumbnailLocation;
+	}
+	
+	public void setThumbnailLocation(String thumbnailLocation) {
+		this.thumbnailLocation = thumbnailLocation;
 	}
 	
 	

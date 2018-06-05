@@ -5,6 +5,8 @@ import io.github.lumue.getdown.core.common.util.ObservableTemplate;
 import io.github.lumue.getdown.core.common.util.Observer;
 import io.github.lumue.getdown.core.download.job.Progression;
 
+import java.util.concurrent.CompletableFuture;
+
 public abstract class AbstractStep implements Observable {
 	private final ObservableTemplate<? extends AbstractStep> observableTemplate = new ObservableTemplate<>(this);
 	private Progression progression;
@@ -13,14 +15,15 @@ public abstract class AbstractStep implements Observable {
 	
 	void initProgression(long totalExpectedSize) {
 		observableTemplate.doObserved(() ->
-			progression = new Progression(0, totalExpectedSize)
+				progression = new Progression(0, totalExpectedSize)
 		);
 	}
 	
-	void incrementProgression(long resumeAt) {
-		observableTemplate.doObserved(()->
-		    progression.incrementProgress(resumeAt)
-		);
+	void incrementProgression(long value) {
+		CompletableFuture.runAsync(() ->
+				observableTemplate.doObserved(() ->
+						progression.incrementProgress(value)
+				));
 	}
 	
 	@Override
