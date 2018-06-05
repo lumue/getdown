@@ -14,10 +14,22 @@
 
 				padding: 10px;
 			}
-
-			vaadin-form-layout.with-text-fields > vaadin-text-field {
-				margin-top: .5em;
-				margin-bottom: .5em;
+			.content{
+				display: flex;
+				flex-direction: row;
+			}
+			.content-left{
+				flex-grow: 0;     /* do not grow   - initial value: 0 */
+				flex-shrink: 0;   /* do not shrink - initial value: 1 */
+				flex-basis: 140px;
+			}
+			.content-right{
+				display: flex;
+				flex-direction: column;
+			}
+			.label{
+				margin-right: 10px;
+				font-weight: bold;
 			}
 		</style>
 
@@ -26,8 +38,24 @@
 		</custom-style>
 
 		<div class="paper-material" elevation="1" style="width: 90%; padding: 10px;">
-			<h2>[[job.name]]</h2>
-			<img src="[[job.downloadTask.thumbnailLocation]]" height="90" width="120">
+			<div class="content">
+				<div class="content-left">
+					<img src="[[job.downloadTask.thumbnailLocation]]" height="90" width="120">
+				</div>
+				<div class="content-right">
+					<h2>[[job.name]]</h2>
+					<div><label class="label">url</label><span>[[job.url]]</span></div>
+					<div><label class="label">target path</label><span>[[job.targetPath]]</span></div>
+					<div><label class="label">state</label><span>[[job.state]]</span></div>
+					<div><label class="label">size</label><span>[[job.downloadProgress.size]]</span></div>
+					<div><label class="label">downloaded</label><span>[[job.downloadProgress.downloadedSize]]</span></div>
+					<div><label class="label">started</label><span>[[job.downloadProgress.startedAt]]</span></div>
+					<div><label class="label">finished</label><span>[[job.downloadProgress.finishedAt]]</span></div>
+					<div><label class="label">last update</label><span>[[job.downloadProgress.updatedAt]]</span></div>
+					<div><label class="label">last message</label><span>[[job.message]]</span></div>
+				</div>
+			</div>
+
 		</div>
 
 
