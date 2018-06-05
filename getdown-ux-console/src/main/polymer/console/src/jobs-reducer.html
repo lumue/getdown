@@ -17,7 +17,7 @@
 			case 'JOBS_ADDED': {
 				const items = state.jobs.concat(action.jobs)
 				return Object.assign({}, state, {
-					jobs: items
+					isAdding: false
 				})
 			}
 

@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="redux-store.html">
+<link rel="import" href="job-detail.html">
 
 <script src="utils.js" type="application/javascript"></script>
 
@@ -43,8 +44,15 @@
 		             items="[[jobs]]"
 		             theme="compact"
 		             on-selected-items-changed="_selectedItemsChanged"
+		             on-active-item-changed="_onActiveItemChanged"
 		             size="40"
 		             column-reordering-allowed column-resizing multi-sort >
+
+
+			<template class="row-details">
+				<job-detail job="[[item]]"></job-detail>
+			</template>
+
 
 			<vaadin-grid-selection-column width="30px" flex-grow="0" auto-select>
 			</vaadin-grid-selection-column>
@@ -132,6 +140,10 @@
 				this.dispatch('fetchJobs')
 			}
 
+			_toJson(item){
+				return JSON.stringify(item)
+			}
+
 			_percentage(gw, pw) {
 				if(gw===0||!gw ||!pw)
 					return 0;
@@ -167,6 +179,9 @@
 				this.dispatch('setSelectedJobs',selectedJobs);
 			}
 
+			_onActiveItemChanged(e) {
+				this.$.grid.detailsOpenedItems = [e.detail.value];
+			}
 
 		}
 

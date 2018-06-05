@@ -1,0 +1,56 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/custom-style.html">
+<link rel="import" href="../bower_components/paper-styles/shadow.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="redux-store.html">
+
+
+<dom-module id="job-detail">
+	<template>
+		<style include="shared-styles">
+			:host {
+				display: block;
+
+				padding: 10px;
+			}
+
+			vaadin-form-layout.with-text-fields > vaadin-text-field {
+				margin-top: .5em;
+				margin-bottom: .5em;
+			}
+		</style>
+
+		<custom-style>
+			<style is="custom-style" include="paper-material-styles"></style>
+		</custom-style>
+
+		<div class="paper-material" elevation="1" style="width: 90%; padding: 10px;">
+			<h2>[[job.name]]</h2>
+			<img src="[[job.downloadTask.thumbnailLocation]]" height="90" width="120">
+		</div>
+
+
+	</template>
+
+	<script>
+		class JobDetail extends GetdownConsole.ReduxMixin(Polymer.Element) {
+			static get is() {
+				return 'job-detail';
+			}
+
+
+			static get properties() {
+				return {
+					job: {
+						type: Object
+					}
+				}
+			}
+
+
+		}
+
+		window.customElements.define(JobDetail.is, JobDetail);
+	</script>
+</dom-module>
