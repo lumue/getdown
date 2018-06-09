@@ -22,14 +22,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
+public class YoutubedlValidateTaskJob extends ValidateTaskJob {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(YoutubedlValidateTaskJob.class);
 	private transient AtomicReference<YdlDownloadTask> ydlTaskReference = new AtomicReference<>(null);
 	private boolean forceMp4OnYoutube = true;
 	
 	private String pathToYdl = "/usr/local/bin/youtube-dl";
-
 	
 	
 	public YoutubedlValidateTaskJob(DownloadTask task) {
@@ -47,10 +46,21 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 						getTask().setName(ydlInfoJson.getTitle());
 						final String formatId = ydlInfoJson.getFormatId();
 						final List<DownloadFormat> availableFormats = toFormats(ydlInfoJson.getFormats());
+						if (availableFormats.isEmpty()) {
+							availableFormats.add(
+									new DownloadFormat(DownloadFormat.Type.MERGED,
+											formatId,
+											getFilesizeFromUrl(ydlInfoJson.getUrl()),
+											ydlInfoJson.getUrl(),
+											toMap(ydlInfoJson.getHttpHeaders()),
+											ydlInfoJson.getExt(),
+											ydlInfoJson.getExt())
+							);
+						}
 						getTask().setAvailableFormats(availableFormats);
 						boolean isMergedFormats = ydlInfoJson.getRequestedFormats() != null && ydlInfoJson.getRequestedFormats().size() > 1;
 						final List<DownloadFormat> selectedFormats = isMergedFormats ?
-								toFormatsFromRequested(ydlInfoJson.getRequestedFormats()):
+								toFormatsFromRequested(ydlInfoJson.getRequestedFormats()) :
 								availableFormats.stream().filter(
 										f -> f.getFormatId().equals(formatId)
 								).collect(Collectors.toList());
@@ -58,7 +68,7 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 						getTask().setThumbnailLocation(ydlInfoJson.getThumbnail());
 						getTask().setExpectedSize(selectedFormats.stream().mapToLong(DownloadFormat::getExpectedSize).sum());
 						getTask().setTargetExtension(ydlInfoJson.getExt());
-						getYdlTask().getYdlInfoJsonAsText().ifPresent(t->getTask().setInfoJsonString(t));
+						getYdlTask().getYdlInfoJsonAsText().ifPresent(t -> getTask().setInfoJsonString(t));
 					}
 			);
 			
@@ -68,7 +78,6 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 			LOGGER.error("error validating task ", e);
 		}
 	}
-	
 	
 	
 	private List<DownloadFormat> toFormatsFromRequested(List<RequestedFormat> requestedFormats) {
@@ -85,15 +94,14 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 	
 	private static DownloadFormat toFormat(Format format) {
 		DownloadFormat.Type type = DownloadFormat.Type.MERGED;
-		String codec=format.getExt();
-		if (!StringUtils.isEmpty(format.getVcodec())&&!StringUtils.isEmpty(format.getAcodec())){
+		String codec = format.getExt();
+		if (!StringUtils.isEmpty(format.getVcodec()) && !StringUtils.isEmpty(format.getAcodec())) {
 			if ("none".equals(format.getAcodec())) {
 				type = DownloadFormat.Type.VIDEO;
-				codec=format.getVcodec();
-			}
-			else if("none".equals(format.getVcodec())) {
+				codec = format.getVcodec();
+			} else if ("none".equals(format.getVcodec())) {
 				type = DownloadFormat.Type.AUDIO;
-				codec=format.getAcodec();
+				codec = format.getAcodec();
 			}
 		}
 		return new DownloadFormat(type,
@@ -106,30 +114,29 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 	}
 	
 	private static Map<String, String> toMap(HttpHeaders httpHeaders) {
-		final HashMap<String,String> map = new HashMap<>();
-		map.put("Accept",httpHeaders.getAccept());
-		map.put("AcceptCharset",httpHeaders.getAcceptCharset());
-		map.put("AcceptEncoding",httpHeaders.getAcceptEncoding());
-		map.put("AcceptLanguage",httpHeaders.getAcceptLanguage());
+		final HashMap<String, String> map = new HashMap<>();
+		map.put("Accept", httpHeaders.getAccept());
+		map.put("AcceptCharset", httpHeaders.getAcceptCharset());
+		map.put("AcceptEncoding", httpHeaders.getAcceptEncoding());
+		map.put("AcceptLanguage", httpHeaders.getAcceptLanguage());
 		httpHeaders.getAdditionalProperties().entrySet().forEach(
-				e->map.put(e.getKey(),e.getValue().toString())
+				e -> map.put(e.getKey(), e.getValue().toString())
 		);
-		map.put("UserAgent",httpHeaders.getUserAgent());
+		map.put("UserAgent", httpHeaders.getUserAgent());
 		return map;
 	}
 	
 	private static DownloadFormat toFormat(RequestedFormat format) {
 		
 		DownloadFormat.Type type = DownloadFormat.Type.MERGED;
-		String codec=format.getExt();
-		if (!StringUtils.isEmpty(format.getVcodec())&&!StringUtils.isEmpty(format.getAcodec())){
+		String codec = format.getExt();
+		if (!StringUtils.isEmpty(format.getVcodec()) && !StringUtils.isEmpty(format.getAcodec())) {
 			if ("none".equals(format.getAcodec())) {
 				type = DownloadFormat.Type.VIDEO;
-				codec=format.getVcodec();
-			}
-			else if("none".equals(format.getVcodec())) {
+				codec = format.getVcodec();
+			} else if ("none".equals(format.getVcodec())) {
 				type = DownloadFormat.Type.AUDIO;
-				codec=format.getAcodec();
+				codec = format.getAcodec();
 			}
 		}
 		
@@ -148,7 +155,7 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 		try {
 			url = new URL(urlstring);
 		} catch (MalformedURLException e) {
-			LOGGER.error("error getting filesize",e);
+			LOGGER.error("error getting filesize", e);
 			return 0;
 		}
 		URLConnection conn = null;
@@ -190,5 +197,5 @@ public class YoutubedlValidateTaskJob extends ValidateTaskJob  {
 		return result;
 	}
 	
-
+	
 }
