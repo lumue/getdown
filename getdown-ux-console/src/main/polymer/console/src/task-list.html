@@ -96,12 +96,17 @@
 				</template>
 				<template>[[item.name]]</template>
 			</vaadin-grid-column>
-			<vaadin-grid-column width="60px" flex-grow="" 0
-			" >
+			<vaadin-grid-column width="60px" flex-grow="0">
 			<template class="header">
 				<vaadin-grid-sorter path="expectedSize">Size</vaadin-grid-sorter>
 			</template>
 			<template>[[_formatBytes(item.expectedSize,1)]]</template>
+			</vaadin-grid-column>
+			<vaadin-grid-column width="100px" flex-grow="0" >
+			<template class="header">
+				<vaadin-grid-sorter path="creationTime">Added</vaadin-grid-sorter>
+			</template>
+			<template>[[_formatDateTime(item.creationTime)]]</template>
 			</vaadin-grid-column>
 		</vaadin-grid>
 
@@ -114,6 +119,7 @@
 			constructor() {
 				super()
 				this._formatBytes = formatBytes;
+				this._formatDateTime=formatDateTime;
 			}
 
 			static get is() {
