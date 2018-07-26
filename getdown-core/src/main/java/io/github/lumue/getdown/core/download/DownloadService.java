@@ -17,6 +17,7 @@ import io.github.lumue.getdown.core.download.task.DownloadTask;
 import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 
@@ -83,6 +84,11 @@ public class DownloadService {
 	public void validateTask(DownloadTask task){
 		task=downloadTaskRepository.get(task.getHandle());
 		validateTaskRunner.submitTask(task);
+	}
+	
+	@Scheduled(cron = "15 * * * * *")
+	public void refreshValidations(){
+		downloadTaskRepository.stream().forEach(this::validateTask);
 	}
 
 	public DownloadTask removeDownloadTask(final DownloadTask task) {
