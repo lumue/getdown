@@ -88,11 +88,12 @@ public class DownloadService {
 	
 	@Scheduled(cron = "15 * * * * *")
 	public void refreshValidations(){
+		LOGGER.info("refreshing all validations");
 		downloadTaskRepository.stream().forEach(this::validateTask);
 	}
 
 	public DownloadTask removeDownloadTask(final DownloadTask task) {
-
+		LOGGER.info("removing task "+task);
 		downloadTaskRepository.remove(task.getHandle());
 		eventbus.notify("tasks-removed", Event.wrap(Objects.requireNonNull(task)));
 		return task;
@@ -107,6 +108,7 @@ public class DownloadService {
 			throw new RuntimeException(e);
 		}
 		eventbus.notify("tasks-created", Event.wrap(Objects.requireNonNull(task)));
+		LOGGER.info("task "+task+" created");
 		return task;
 	}
 
