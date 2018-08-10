@@ -32,7 +32,7 @@
     "vaadin-form-layout": "vaadin/vaadin-form-layout#^2.0.0",
     "vaadin-tabs": "vaadin/vaadin-tabs#^2.0.0",
     "paper-tooltip": "^2.1.1",
-    "moment": "momentjs#^2.22.2"
+    "moment": "^2.22.2"
   },
   "resolutions": {
     "polymer": "^2.0.0"
