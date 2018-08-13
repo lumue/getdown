@@ -15,6 +15,7 @@ import io.github.lumue.getdown.core.download.job.UrlProcessor;
 import io.github.lumue.getdown.core.download.task.AsyncValidateTaskRunner;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
+import io.github.lumue.getdown.core.download.task.TaskState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -86,10 +87,19 @@ public class DownloadService {
 		validateTaskRunner.submitTask(task);
 	}
 	
-	@Scheduled(cron = "15 * * * * *")
+	@Scheduled(cron = "15 */10 * * * *")
 	public void refreshValidations(){
 		LOGGER.info("refreshing all validations");
 		downloadTaskRepository.stream().forEach(this::validateTask);
+	}
+	
+	
+	@Scheduled(cron = "15 * * * * *")
+	public void retryFailedValidations(){
+		LOGGER.info("refreshing all validations");
+		downloadTaskRepository.stream()
+				.filter(t->!TaskState.VALIDATED.equals(t.getState()))
+				.forEach(this::validateTask);
 	}
 
 	public DownloadTask removeDownloadTask(final DownloadTask task) {
