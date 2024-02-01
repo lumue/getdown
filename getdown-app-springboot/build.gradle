@@ -1,7 +1,7 @@
 buildscript {
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version")
-		classpath "gradle.plugin.com.github.lkishalmi.gradle:gradle-gatling-plugin:0.4.1"
+		classpath "gradle.plugin.io.gatling.gradle:gatling-gradle-plugin:3.4.0"
 	}
 }
 
@@ -9,7 +9,7 @@ buildscript {
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-apply plugin: "com.github.lkishalmi.gatling"
+apply plugin: "io.gatling.gradle"
 gatling {
 	toolVersion = '2.2.2'
 	jvmArgs = [ '-server', '-Xms512M', '-Xmx512M' ]

@@ -1,6 +1,6 @@
 
 plugins {
-	id "com.moowork.node" version "1.2.0"
+	id("com.github.node-gradle.node") version "2.2.4"
 }
 
 
@@ -29,9 +29,8 @@ task generateWebResources(type: Copy,dependsOn: 'polymerBuild'){
 generateWebResources.dependsOn('polymerBuild')
 
 node {
-	version = '9.7.1'
-	npmVersion = 'latest'
-	distBaseUrl = 'https://nodejs.org/dist'
+	version = '9.11.2'
+	npmVersion = '5.6.0'
 	nodeModulesDir = file(polymerAppDir)
 	download = true
 }
