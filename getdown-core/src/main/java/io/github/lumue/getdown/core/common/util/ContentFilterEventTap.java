@@ -1,18 +1,16 @@
 package io.github.lumue.getdown.core.common.util;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import reactor.bus.Event;
 import reactor.bus.EventBus;
-
+import reactor.fn.Consumer;
 
 /**
  *
  * Listens to Events matching a given selector and matches them to a given
  * predicate
- *
  * events are either ignored or repackaged and forwarded with a new selector key
  *
  * @author lm

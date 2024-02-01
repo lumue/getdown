@@ -2,11 +2,8 @@ package io.github.lumue.getdown.webapp.restapi;
 
 
 import io.github.lumue.getdown.core.download.DownloadService;
-import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -18,24 +15,21 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.bus.Event;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import reactor.fn.Consumer;
 import java.util.stream.Collectors;
 
 /**
  * Webapi Rest Controller for DownloadTask
  *
  * @author lm
- * @created 08.12.16.
  */
 
 @RestController
 @RequestMapping("/api/tasks")
 @CrossOrigin
 public class DownloadTaskController implements Consumer<Event<DownloadTask>> {
-	
-	private final static Logger LOGGER=LoggerFactory.getLogger(DownloadTaskController.class);
+
 	
 	private final SseEmitters sseEmitters=new SseEmitters();
 	

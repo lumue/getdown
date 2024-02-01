@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import reactor.bus.EventBus;
-import reactor.core.publisher.TopicProcessor;
+import reactor.core.Dispatcher;
+import reactor.core.dispatch.ThreadPoolExecutorDispatcher;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -84,12 +85,12 @@ public class ApplicationConfiguration {
 
 
 
-	@Bean public TopicProcessor dispatcher(){
-		return TopicProcessor.create();
+	@Bean public Dispatcher dispatcher(){
+		return new ThreadPoolExecutorDispatcher(20, 1000);
 	}
 	
 	@Bean
-	public EventBus eventBus(TopicProcessor dispatcher) {
+	public EventBus eventBus(Dispatcher dispatcher) {
 		return EventBus.create(dispatcher);
 	}
 
