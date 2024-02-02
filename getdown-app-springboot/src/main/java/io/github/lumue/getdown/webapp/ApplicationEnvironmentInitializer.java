@@ -23,8 +23,6 @@ public class ApplicationEnvironmentInitializer implements InitializingBean{
 	private FileSystemResource homePath;
 	@Value("${getdown.path.config}")
 	private FileSystemResource configPath;
-	@Value("${getdown.path.log}")
-	private FileSystemResource logPath;
 	@Value("${getdown.path.download}")
 	private FileSystemResource downloadPath;
 	@Value("${getdown.path.repository}")
@@ -38,7 +36,6 @@ public class ApplicationEnvironmentInitializer implements InitializingBean{
 	public void initEnvironment() {
 		createIfNotExists(homePath);
 		createIfNotExists(configPath);
-		createIfNotExists(logPath);
 		createIfNotExists(downloadPath);
 		createIfNotExists(repositoryPath);
 	}
