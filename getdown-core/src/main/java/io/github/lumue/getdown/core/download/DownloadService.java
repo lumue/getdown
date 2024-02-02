@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import io.github.lumue.getdown.core.download.downloader.NativeDownloadJob;
+import io.github.lumue.getdown.core.download.downloader.YoutubedlDownloadJob;
 import io.github.lumue.getdown.core.download.files.WorkPathManager;
 import io.github.lumue.getdown.core.download.job.AsyncJobRunner;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
@@ -137,7 +137,7 @@ public class DownloadService {
 	private DownloadJob createDownloadJob(String handle) {
 		DownloadTask task = downloadTaskRepository.get(handle);
 
-		DownloadJob job = NativeDownloadJob.builder(task)
+		DownloadJob job = YoutubedlDownloadJob.builder(task)
 				.withUrl(task.getSourceUrl())
 				.withDownloadPath(workPathManager.getPath(handle).toString())
 				.withTargetPath(downloadPath+ File.separator+task.getTargetLocation())
