@@ -334,7 +334,7 @@ public abstract class AbstractDownloadJob implements  java.io.Serializable, Down
 							.forEach(pa -> {
 								try {
 									Files.move(pa[0], pa[1]);
-									Files.setPosixFilePermissions(pa[1], PosixFilePermissions.fromString("rw-rw-rw-"));
+									//Files.setPosixFilePermissions(pa[1], PosixFilePermissions.fromString("rw-rw-rw-"));
 								} catch (IOException e) {
 									String msg = "error moving files for download " + getName() + " to " + getTargetPath();
 									error(new RuntimeException(msg + ":" + e.getClass().getSimpleName(), e));
