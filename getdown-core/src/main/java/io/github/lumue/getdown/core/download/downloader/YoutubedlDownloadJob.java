@@ -79,9 +79,9 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob {
 					.setWriteInfoJson(true)
 					.setPathToYdl(pathToYdl)
 					.onStdout(this::handleMessage)
-					.onStateChanged(this::handleProgress)
-					.onNewOutputFile(this::handleProgress)
-					.onOutputFileChange(this::handleProgress)
+					.onStateChanged(this::handleStateChange)
+					.onNewOutputFile(this::handleOutputFileChange)
+					.onOutputFileChange(this::handleOutputFileChange)
 					.onPrepared(this::handlePrepared);
 			
 			if (getUrl().contains("youtube.com")) {
@@ -133,6 +133,7 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob {
 	}
 	
 	private void handleMessage(YdlDownloadTask ydlDownloadTask, YdlStatusMessage ydlStatusMessage) {
+        LOGGER.debug("handleMessage({}{})",ydlDownloadTask,ydlStatusMessage);
 		message(ydlStatusMessage.getLine());
 	}
 	
@@ -142,7 +143,8 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob {
 		getDownloadProgress().ifPresent(downloadProgress -> downloadProgress.error(t));
 	}
 	
-	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
+	private void handleStateChange(YdlDownloadTask ydlDownloadTask, YdlDownloadTask.YdlDownloadState ydlDownloadState) {
+		LOGGER.debug("handleStateChange({}{})",ydlDownloadTask,ydlDownloadState);
 		getDownloadProgress().ifPresent(downloadProgress -> {
 			if (downloadProgress.getState().equals(WAITING)) {
 				if (ydlDownloadState.equals(YdlDownloadTask.YdlDownloadState.EXECUTING)) {
@@ -163,7 +165,8 @@ public class YoutubedlDownloadJob extends AbstractDownloadJob {
 		});
 	}
 	
-	private void handleProgress(YdlDownloadTask ydlDownloadTask, YdlFileDownload ydlFileDownload) {
+	private void handleOutputFileChange(YdlDownloadTask ydlDownloadTask, YdlFileDownload ydlFileDownload) {
+		LOGGER.debug("handleOutputFileChange({}{})",ydlDownloadTask,ydlFileDownload);
 		getDownloadProgress().ifPresent(downloadProgress -> {
 			if (ydlFileDownload.getExpectedSize() != null)
 				downloadProgress.setSize(ydlFileDownload.getExpectedSize());
