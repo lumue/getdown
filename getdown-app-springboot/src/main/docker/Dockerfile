@@ -1,12 +1,25 @@
-FROM lumue/jdkydl:alpine
-MAINTAINER lm "mueller.lutz@gmail.com"
+FROM alpine:edge
+MAINTAINER Lutz Mueller <mueller.lutz@gmail.com>
 
-RUN ln -s `which youtube-dl` /usr/local/bin/youtube-dl
-RUN ln -s `which ffmpeg` /usr/local/bin/ffmpeg
-RUN ln -s `which ffprobe` /usr/local/bin/ffprobe
+RUN apk upgrade --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
+    apk add --update libstdc++ \
+    curl \
+    ca-certificates \
+    bash \
+    ffmpeg \
+    rtmpdump \
+    aria2 \
+    openjdk8 \
+    python3 --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
+    curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/bin/youtube-dl && \
+    chmod a+rx /usr/bin/youtube-dl && \
+    /usr/bin/youtube-dl -U && \
+    ln -s /usr/bin/youtube-dl /usr/local/bin/youtube-dl && \
+    ln -s `which ffmpeg` /usr/local/bin/ffmpeg && \
+    ln -s `which ffprobe` /usr/local/bin/ffprobe && \
+    mkdir /getdown && mkdir /downloads
 
 ADD *.jar /app.jar
-CMD mkdir /getdown && mkdir /downloads
 
 EXPOSE 8001
 
