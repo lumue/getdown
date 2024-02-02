@@ -93,7 +93,7 @@ task dockerRun(type: Exec){
 	executable = 'docker'
 	args=['run','-d',
 	      '--name',"getdown_${project.version}",
-	      '-p','8001:8001',
+	      '-p','8101:8001',
 	      "lumue/getdown:${project.version}"]
 
 	doLast{
