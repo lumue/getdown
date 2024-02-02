@@ -1,13 +1,18 @@
-getdown:
-  image: lumue/getdown:master-SNAPSHOT
-  restart: always
-  log_driver: "syslog"
-  log_opt:
-    tag: "getdown_getdown"
-    syslog-address: "udp://192.168.1.105:514"
-  volumes:
-    - /data/docker-volumes/getdown/getdown:/getdown
-    - /mnt/nasbox/media:/downloads
-  ports:
-    - "7001:8001"
+version: '3.5'
+
+services:
+
+  getdown:
+    image: lumue/getdown:master-SNAPSHOT
+    restart: always
+    volumes:
+      - ./getdown:/getdown
+      - /mnt/truenas/downloads/:/downloads
+    ports:
+      - "7001:8001"
+    environment:
+      - LANG=C.UTF-8
+      - JAVA_OPTS="-Dfile.encoding=UTF-8"
+
+
 
