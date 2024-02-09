@@ -43,6 +43,8 @@ work
 .idea/uiDesigner.xml
 .idea/modules
 
+.idea/httpRequests/
+
 # Gradle:
 .idea/gradle.xml
 .idea/libraries
