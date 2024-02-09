@@ -5,30 +5,30 @@ sourceCompatibility = jdk_version
 targetCompatibility = jdk_version
 dependencies {
 
-	compile 'com.github.lumue:ydlwrapper:master-SNAPSHOT'
+	implementation 'com.github.lumue:ydlwrapper:master-SNAPSHOT'
 
-	compile "io.projectreactor:reactor-core:$reactor_version"
-	compile "io.projectreactor:reactor-bus:$reactor_version"
+    implementation "io.projectreactor:reactor-core:$reactor_version"
+    implementation "io.projectreactor:reactor-bus:$reactor_version"
 
 
-	compile "com.fasterxml.jackson.core:jackson-core:$jackson_version"
-	compile "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
-	compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
-	compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jackson_version"
-	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
-	compile "org.slf4j:slf4j-api:$slf4j_version"
+    implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jackson_version"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
+    implementation "org.slf4j:slf4j-api:$slf4j_version"
 
-	compile 'io.reactivex:rxjava-file-utils:0.1.4'
-	compile 'io.reactivex:rxjava-reactive-streams:1.2.1'
+    implementation 'io.reactivex:rxjava-file-utils:0.1.4'
+    implementation 'io.reactivex:rxjava-reactive-streams:1.2.1'
 
-	compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.5'
 
-	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
 
-	compile group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
+    implementation group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
 
-	compile group: 'javax.annotation', name: 'jsr250-api', version: '1.0'
-	compile group: 'org.springframework', name: 'spring-context', version: '4.3.17.RELEASE'
+    implementation group: 'javax.annotation', name: 'jsr250-api', version: '1.0'
+    implementation group: 'org.springframework', name: 'spring-context', version: '4.3.17.RELEASE'
 }
 
 apply from: '../gradle/plantuml.gradle'

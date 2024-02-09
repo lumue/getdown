@@ -28,31 +28,31 @@ sourceSets {
 
 
 dependencies {
-	compile project(':getdown-core')
-//	compile project(':getdown-ux-console')
+	implementation project(':getdown-core')
+//	implementation project(':getdown-ux-console')
 
-	compile("org.springframework.boot:spring-boot-starter-web")
-	compile("org.springframework.boot:spring-boot-starter-logging")
-	compile("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-logging")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-	compile("org.springframework:spring-messaging")
-	compile("io.projectreactor.spring:reactor-spring-context:$reactor_spring_version")
-	compile "io.projectreactor:reactor-core:$reactor_version"
-	compile "io.projectreactor:reactor-bus:$reactor_version"
-	compile "io.projectreactor:reactor-stream:$reactor_version"
+	implementation("org.springframework:spring-messaging")
+	implementation("io.projectreactor.spring:reactor-spring-context:$reactor_spring_version")
+	implementation "io.projectreactor:reactor-core:$reactor_version"
+	implementation "io.projectreactor:reactor-bus:$reactor_version"
+	implementation "io.projectreactor:reactor-stream:$reactor_version"
 
-	compile 'org.springframework.hateoas:spring-hateoas:0.20.0.RELEASE'
+	implementation 'org.springframework.hateoas:spring-hateoas:0.20.0.RELEASE'
 
 
-	compile 'org.slf4j:slf4j-api:1.7.10'
+	implementation 'org.slf4j:slf4j-api:1.7.10'
 
-	testCompile 'junit:junit:4.13.1'
-	testCompile group: 'ch.qos.logback', name: 'logback-classic', version: "$logback_version"
-	testCompile("org.springframework.boot:spring-boot-starter-test")
+	testImplementation 'junit:junit:4.13.1'
+	testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: "$logback_version"
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 	// helper libs
-	testCompile("org.apache.httpcomponents:httpclient:${apache_http_version}")
-	testCompile("org.apache.httpcomponents:fluent-hc:${apache_http_version}")
+	testImplementation("org.apache.httpcomponents:httpclient:${apache_http_version}")
+	testImplementation("org.apache.httpcomponents:fluent-hc:${apache_http_version}")
 }
 
 compileJava.dependsOn(processResources)

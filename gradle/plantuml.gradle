@@ -7,7 +7,7 @@ task plantUmlDependency( type: JavaExec) {
 
 	standardInput = System.in
 
-	main='net.sourceforge.plantumldependency.cli.main.program.PlantUMLDependencyProgram'
+	mainClass='net.sourceforge.plantumldependency.cli.main.program.PlantUMLDependencyProgram'
 
 	String outputFile = "$project.buildDir/plantuml.puml"
 	String baseFolder = "$project.rootDir/getdown-core/src/main/java"
