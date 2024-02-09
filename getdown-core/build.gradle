@@ -1,8 +1,5 @@
 
 apply plugin:'java'
-//java configuration
-sourceCompatibility = jdk_version
-targetCompatibility = jdk_version
 dependencies {
 
 	implementation 'com.github.lumue:ydlwrapper:master-SNAPSHOT'

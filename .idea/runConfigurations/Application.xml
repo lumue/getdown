@@ -7,7 +7,7 @@
         <option name="value" value="$PROJECT_DIR$/work" />
       </param>
     </additionalParameters>
-    <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
+    <option name="ALTERNATIVE_JRE_PATH" value="21" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <module name="getdown.getdown-app-springboot.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="io.github.lumue.getdown.webapp.Application" />
