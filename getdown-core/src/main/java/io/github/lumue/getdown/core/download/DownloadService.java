@@ -170,6 +170,8 @@ public class DownloadService {
 		if(RUNNING.equals(downloadJob.getState())){
 			cancelDownload(downloadJobHandle);
 		}
+		
+		removeDownloadTask(downloadJob.getDownloadTask());
 	}
 
 

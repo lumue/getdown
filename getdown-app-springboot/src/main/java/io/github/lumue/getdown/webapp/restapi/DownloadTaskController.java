@@ -5,9 +5,8 @@ import io.github.lumue.getdown.core.download.DownloadService;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import io.github.lumue.getdown.core.download.task.DownloadTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
-import org.springframework.http.HttpStatus;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -45,13 +44,13 @@ public class DownloadTaskController implements Consumer<Event<DownloadTask>> {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	Resources<Resource<DownloadTask>> getAll() {
-		return Resources.wrap(this.taskRepository.list());
+	CollectionModel<EntityModel<DownloadTask>> getAll() {
+		return CollectionModel.wrap(this.taskRepository.list());
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	Resources<Resource<DownloadTask>> post(@RequestBody List<String> urls) {
-		return Resources.wrap(
+	CollectionModel<EntityModel<DownloadTask>> post(@RequestBody List<String> urls) {
+		return CollectionModel.wrap(
 				urls.stream()
 				.map(downloadService::addDownloadTask)
 				.collect(Collectors.toList())
@@ -59,8 +58,8 @@ public class DownloadTaskController implements Consumer<Event<DownloadTask>> {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE)
-	Resources<Resource<DownloadTask>> delete(@RequestBody List<DownloadTask> tasks) {
-		return Resources.wrap(
+	CollectionModel<EntityModel<DownloadTask>> delete(@RequestBody List<DownloadTask> tasks) {
+		return CollectionModel.wrap(
 				tasks.stream()
 						.map(downloadService::removeDownloadTask)
 						.collect(Collectors.toList())
@@ -68,13 +67,13 @@ public class DownloadTaskController implements Consumer<Event<DownloadTask>> {
 	}
 
 	@RequestMapping(value="/{key}", method = RequestMethod.GET)
-	ResponseEntity<Resource<DownloadTask>> getOne(@PathVariable("key") String id){
+	ResponseEntity<?> getOne(@PathVariable("key") String id){
 		DownloadTask downloadTask = this.taskRepository.get(id);
 		if(downloadTask==null)
 		{
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return ResponseEntity.notFound().build();
 		}
-		Resource<DownloadTask> downloadTaskResource = new Resource<>(downloadTask);
+		var downloadTaskResource = EntityModel.of(downloadTask);
 		return ResponseEntity.ok(downloadTaskResource);
 
 	}

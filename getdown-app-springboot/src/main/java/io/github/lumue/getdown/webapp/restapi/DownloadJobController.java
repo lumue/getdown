@@ -5,8 +5,8 @@ import io.github.lumue.getdown.core.download.DownloadService;
 import io.github.lumue.getdown.core.download.job.DownloadJob;
 import io.github.lumue.getdown.core.download.task.DownloadTask;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
@@ -40,16 +40,16 @@ public class DownloadJobController implements Consumer<Event<DownloadJob>> {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
-	Resources<Resource<DownloadJob>> getAll() {
-		return Resources.wrap(
+	CollectionModel<EntityModel<DownloadJob>> getAll() {
+		return CollectionModel.wrap(
 				this.downloadService.streamDownloads()
 						.collect(Collectors.toList())
 		);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	Resources<Resource<DownloadJob>> post(@RequestBody List<DownloadTask> tasks) {
-		return Resources.wrap(
+	CollectionModel<EntityModel<DownloadJob>> post(@RequestBody List<DownloadTask> tasks) {
+		return CollectionModel.wrap(
 				tasks.stream()
 						.map(DownloadTask::getHandle)
 						.map(downloadService::startDownload)

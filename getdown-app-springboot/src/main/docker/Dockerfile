@@ -9,7 +9,7 @@ RUN apk upgrade --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --
     ffmpeg \
     rtmpdump \
     aria2 \
-    openjdk8 \
+    openjdk21-jdk \
     python3 --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
     curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/bin/youtube-dl && \
     chmod a+rx /usr/bin/youtube-dl && \

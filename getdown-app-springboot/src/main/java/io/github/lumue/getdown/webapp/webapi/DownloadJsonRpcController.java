@@ -37,12 +37,12 @@ public class DownloadJsonRpcController {
 	@RequestMapping(value = "/add", method = RequestMethod.PUT)
 	public DownloadJobView addDownload(@RequestParam(value = "url", required = true) String url) {
 
-		LOGGER.debug("adding and starting download job for " + url);
+        LOGGER.debug("adding and starting download job for {}", url);
 
 		DownloadTask download = downloadService.addDownloadTask(url);
 		DownloadJob job=downloadService.startDownload(download.getHandle());
 
-		LOGGER.debug("download job for " + url + " added and started");
+        LOGGER.debug("download job for {} added and started", url);
 
 		return DownloadJobView.wrap(job);
 	}
@@ -107,25 +107,25 @@ public class DownloadJsonRpcController {
 	
 	@RequestMapping(value = "/{handle}", method = RequestMethod.GET)
 	public DownloadJobView getDownload(@PathVariable String handle) {
-		DownloadJob downloadJob=downloadService.getDownload(new String(handle));
+		DownloadJob downloadJob=downloadService.getDownload(handle);
 		return DownloadJobView.wrap(downloadJob);
 	}
 
 	@RequestMapping(value = "/{handle}", method = RequestMethod.DELETE)
 	public void removeDownload(@PathVariable String handle) {
-		downloadService.removeDownload(new String(handle));
+		downloadService.removeDownload(handle);
 	}
 	
 	@RequestMapping(value = "/{handle}/cancel", method = RequestMethod.POST)
 	public void cancelDownload(@PathVariable String handle) {
-		LOGGER.debug("canceling download job with handle " + handle);
-		downloadService.cancelDownload(new String(handle));
+        LOGGER.debug("canceling download job with handle {}", handle);
+		downloadService.cancelDownload(handle);
 	}
 
 	@RequestMapping(value = "/{handle}/restart", method = RequestMethod.POST)
 	public void restartDownload(@PathVariable String handle) {
-		LOGGER.debug("canceling download job with handle " + handle);
-		downloadService.restartDownload(new String(handle));
+        LOGGER.debug("restarting download job with handle {}", handle);
+		downloadService.restartDownload(handle);
 	}
 	
 

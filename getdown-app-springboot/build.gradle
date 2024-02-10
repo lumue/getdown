@@ -29,11 +29,12 @@ sourceSets {
 
 dependencies {
 	implementation project(':getdown-core')
-//	implementation project(':getdown-ux-console')
+	implementation project(':getdown-ux-console')
 
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-logging")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.boot:spring-boot-starter-hateoas")
 
 	implementation("org.springframework:spring-messaging")
 	implementation("io.projectreactor.spring:reactor-spring-context:$reactor_spring_version")
@@ -41,13 +42,10 @@ dependencies {
 	implementation "io.projectreactor:reactor-bus:$reactor_version"
 	implementation "io.projectreactor:reactor-stream:$reactor_version"
 
-	implementation 'org.springframework.hateoas:spring-hateoas:0.20.0.RELEASE'
 
+	implementation "org.slf4j:slf4j-api:$slf4j_version"
 
-	implementation 'org.slf4j:slf4j-api:1.7.10'
-
-	testImplementation 'junit:junit:4.13.1'
-	testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: "$logback_version"
+	testImplementation "junit:junit$junit_version"
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 	// helper libs
@@ -55,13 +53,20 @@ dependencies {
 	testImplementation("org.apache.httpcomponents:fluent-hc:${apache_http_version}")
 }
 
-compileJava.dependsOn(processResources)
+tasks.named("compileJava"){
+	dependsOn+= tasks.named("processResources")
+}
 
-task docker(dependsOn: build) {
+tasks.named("jar") {
+	enabled = false
+}
+
+task docker(dependsOn: assemble) {
 
 	dependsOn 'dockerBuild'
 
 }
+
 
 task dockerBuild(type: Exec){
 	def stageDir = file(project.buildDir.absolutePath + '/docker')
@@ -72,7 +77,7 @@ task dockerBuild(type: Exec){
 
 	doFirst {
 		copy {
-			from jar
+			from bootJar
 			into stageDir
 		}
 		copy {
@@ -131,9 +136,8 @@ task dockerTagLatest(type: Exec){
 
 	mustRunAfter 'dockerBuild'
 
-	def stageDir = file(project.buildDir.absolutePath + '/docker')
+	workingDir(file(project.buildDir.absolutePath + '/docker'))
 
-	workingDir stageDir
 	executable = 'docker'
 	args= ['tag', "lumue/getdown:${project.version}", 'lumue/getdown:latest']
 

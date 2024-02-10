@@ -1,7 +1,8 @@
 rootProject.name = 'getdown'
 
 include (
-	  'getdown-app-springboot',
-	  'getdown-core'
+	  	'getdown-app-springboot',
+		'getdown-ux-console',
+	  	'getdown-core'
 )
 
