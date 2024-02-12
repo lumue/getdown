@@ -46,11 +46,22 @@ allprojects {
 
 	dependencies{
 		implementation "org.scala-lang:scala-library:2.13.11"
-
-		testImplementation 'junit:junit:4.13.1'
 		testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: "$logback_version"
+
+		testImplementation(platform('org.junit:junit-bom:5.10.2'))
+		testImplementation('org.junit.jupiter:junit-jupiter')
+		testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 	}
 
+
+
+
+	test {
+		useJUnitPlatform()
+		testLogging {
+			events "passed", "skipped", "failed"
+		}
+	}
 
 	idea {
 		module {

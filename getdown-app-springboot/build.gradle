@@ -44,8 +44,6 @@ dependencies {
 
 
 	implementation "org.slf4j:slf4j-api:$slf4j_version"
-
-	testImplementation "junit:junit$junit_version"
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 	// helper libs

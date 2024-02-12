@@ -1,10 +1,10 @@
 package io.github.lumue.getdown.core.download.job;
 
-import static java.lang.Thread.sleep;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static java.lang.Thread.sleep;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DownloadJobThrottleTest {
 
@@ -15,9 +15,10 @@ public class DownloadJobThrottleTest {
 		
 		DownloadJobThrottle throttle=new DownloadJobThrottle(MIN_DELAY_BETWEEN_EVENTS);
 		DownloadJob downloadJob=new MockDownloadJob();
-		
-		assertTrue("first call should always return true",throttle.test(downloadJob));
-		assertFalse("should fail for immediate second call",throttle.test(downloadJob));
+
+
+		assertTrue(throttle.test(downloadJob),"first call should always return true");
+		assertFalse(throttle.test(downloadJob),"first call should always return true");
 	}
 
 	@Test
@@ -26,9 +27,9 @@ public class DownloadJobThrottleTest {
 		DownloadJobThrottle throttle=new DownloadJobThrottle(MIN_DELAY_BETWEEN_EVENTS);
 		DownloadJob downloadJob=new MockDownloadJob();
 		
-		assertTrue("first call should always return true",throttle.test(downloadJob));
+		assertTrue(throttle.test(downloadJob),"first call should always return true");
 		sleep(MIN_DELAY_BETWEEN_EVENTS+1);
-		assertTrue("should succeed for delayed second call",throttle.test(downloadJob));
+		assertTrue(throttle.test(downloadJob),"should succeed for delayed second call");
 	}
 	
 	@Test
@@ -38,9 +39,9 @@ public class DownloadJobThrottleTest {
 		MockDownloadJob downloadJob=new MockDownloadJob();
 		
 		downloadJob.start();
-		assertTrue("first call should always return true",throttle.test(downloadJob));
+		assertTrue(throttle.test(downloadJob));
 		downloadJob.finish();
-		assertTrue("should succeed because the jobs state has changed",throttle.test(downloadJob));
+		assertTrue(throttle.test(downloadJob));
 	}
 
 }
