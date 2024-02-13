@@ -7,7 +7,6 @@ import io.github.lumue.getdown.core.download.task.DownloadTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import io.github.lumue.getdown.core.download.job.DownloadJob;
@@ -33,17 +32,16 @@ public class DownloadJsonRpcController {
 	 * Add and start a download
 	 * @param url
 	 * @return
+	 *
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.PUT)
 	public DownloadJobView addDownload(@RequestParam(value = "url", required = true) String url) {
-
-        LOGGER.debug("adding and starting download job for {}", url);
+		LOGGER.debug("adding and starting download job for {}", url);
 
 		DownloadTask download = downloadService.addDownloadTask(url);
 		DownloadJob job=downloadService.startDownload(download.getHandle());
 
         LOGGER.debug("download job for {} added and started", url);
-
 		return DownloadJobView.wrap(job);
 	}
 
@@ -78,7 +76,10 @@ public class DownloadJsonRpcController {
 				.collect(Collectors.toList());
 	}
 
-
+	@RequestMapping(method = RequestMethod.GET)
+	public Iterable<DownloadJobView> getDownloads() {
+		return listDownloads();
+	}
 
 	/**
 	 * get waiting
